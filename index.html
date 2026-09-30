@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Фундація майбутнього держави — Future State Foundation</title>
+<meta name="description" content="Громадська організація, що об'єднує громадянську освіту, підтримку місцевих ініціатив, аналітику й адвокацію реформ та волонтерство." />
+<meta name="theme-color" content="#01226b" />
+
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" href="assets/img/logo-32.png" type="image/png" sizes="32x32" />
+<link rel="icon" href="assets/img/logo-192.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="assets/img/logo-180.png" />
+
+<meta property="og:title" content="Фундація майбутнього держави — Future State Foundation" />
+<meta property="og:description" content="Об'єднуємо активних людей, локальні ініціативи та експертну аналітику, щоб реформи ставали реальністю." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="assets/img/logo-512.png" />
+
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<a href="#main-content" class="skip-link">Перейти до вмісту / Skip to content</a>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header" id="site-header">
+  <div class="container site-header__inner">
+    <a href="#top" class="brand" aria-label="Фундація майбутнього держави — на головну">
+      <img src="assets/img/logo-256.png" alt="" width="42" height="42" />
+      <span class="brand__sub">Фундація<br />майбутнього держави</span>
+    </a>
+
+    <nav class="main-nav" aria-label="Основна навігація">
+      <a href="#about" data-i18n="nav.about">Про нас</a>
+      <a href="#directions" data-i18n="nav.directions">Напрями</a>
+      <a href="#join" data-i18n="nav.volunteering">Волонтерство</a>
+      <a href="#join" data-i18n="nav.donate">Донати</a>
+      <a href="#media" data-i18n="nav.news">Новини</a>
+      <a href="#contact" data-i18n="nav.contacts">Контакти</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="ua">UA</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="#join" class="btn btn-primary" data-i18n="nav.cta">Долучитися</a>
+    </div>
+
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" data-i18n-aria-label="nav.menu">
+      <svg class="icon-menu" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M4 8h18M4 13h18M4 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="icon-close" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M6 6l14 14M20 6L6 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+</header>
+
+<!-- Mobile nav lives outside <header> on purpose: header's backdrop-filter
+     would otherwise create a containing block for this fixed-position panel
+     and collapse it to the header's own height. -->
+<div class="mobile-nav" id="mobile-nav">
+  <nav class="mobile-nav__inner" aria-label="Мобільна навігація">
+    <a href="#about" data-i18n="nav.about">Про нас</a>
+    <a href="#directions" data-i18n="nav.directions">Напрями</a>
+    <a href="#join" data-i18n="nav.volunteering">Волонтерство</a>
+    <a href="#join" data-i18n="nav.donate">Донати</a>
+    <a href="#media" data-i18n="nav.news">Новини</a>
+    <a href="#contact" data-i18n="nav.contacts">Контакти</a>
+    <div class="mobile-nav__footer">
+      <div class="lang-switch" role="group" aria-label="Мова / Language">
+        <button type="button" data-lang="ua">UA</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="#join" class="btn btn-primary" data-i18n="nav.cta">Долучитися</a>
+    </div>
+  </nav>
+</div>
+
+<main id="main-content">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero" style="--mx:70%; --my:20%">
+    <div id="top"></div>
+
+    <div class="hero__bg" id="hero-bg" aria-hidden="true">
+      <div class="hero__bg-track" id="hero-bg-track">
+        <figure class="hero__bg-slide is-active"><img src="assets/img/hero/bg/2-wheelchairs.jpg" alt="" loading="eager" /></figure>
+        <figure class="hero__bg-slide"><img src="assets/img/hero/bg/6-fishingfest.jpg" alt="" loading="lazy" /></figure>
+        <figure class="hero__bg-slide"><img src="assets/img/hero/bg/5-festival.jpg" alt="" loading="lazy" /></figure>
+        <figure class="hero__bg-slide"><img src="assets/img/hero/bg/4-exhibition.jpg" alt="" loading="lazy" /></figure>
+        <figure class="hero__bg-slide"><img src="assets/img/hero/bg/1-lawyers.jpg" alt="" loading="lazy" /></figure>
+        <figure class="hero__bg-slide"><img src="assets/img/hero/bg/3-haidai.jpg" alt="" loading="lazy" /></figure>
+      </div>
+    </div>
+    <svg class="hero__roots" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+      <path d="M200 40 L200 200" />
+      <path d="M200 160 L140 100" />
+      <path d="M200 160 L260 100" />
+      <path d="M140 100 L100 60" />
+      <path d="M140 100 L120 40" />
+      <path d="M260 100 L300 60" />
+      <path d="M260 100 L280 40" />
+      <path d="M200 200 L200 260" />
+      <path d="M200 260 L140 320" />
+      <path d="M200 260 L260 320" />
+      <path d="M200 260 L200 360" />
+    </svg>
+    <div class="hero__grain"></div>
+
+    <div class="container hero__inner">
+      <div>
+        <span class="hero__eyebrow" data-i18n="hero.eyebrow">Фундація майбутнього держави</span>
+        <h1 data-i18n="hero.title">Ми не чекаємо на державу майбутнього — ми її будуємо вже сьогодні</h1>
+        <p class="hero__subtitle" data-i18n="hero.subtitle">Об'єднуємо активних людей, локальні ініціативи та експертну аналітику, щоб реформи ставали реальністю, а не обіцянками.</p>
+        <div class="hero__actions">
+          <a href="#join" class="btn btn-primary" data-i18n="hero.ctaPrimary">Долучитися</a>
+          <a href="#directions" class="btn btn-secondary" data-i18n="hero.ctaSecondary">Наші напрями</a>
+        </div>
+      </div>
+
+      <div class="hero__side">
+        <figure class="hero__photo-card" id="hero-photo-card" data-i18n-aria-label="mediaStrip.ariaLabel" aria-label="Фото з діяльності фундації">
+          <div class="hero__photo-track" id="hero-photo-track">
+            <div class="hero__photo-slide is-active"><img src="assets/img/hero/card/4-exhibition.jpg" alt="" loading="eager" /></div>
+            <div class="hero__photo-slide"><img src="assets/img/hero/card/1-lawyers.jpg" alt="" loading="lazy" /></div>
+            <div class="hero__photo-slide"><img src="assets/img/hero/card/3-haidai.jpg" alt="" loading="lazy" /></div>
+            <div class="hero__photo-slide"><img src="assets/img/hero/card/2-wheelchairs.jpg" alt="" loading="lazy" /></div>
+            <div class="hero__photo-slide"><img src="assets/img/hero/card/5-festival.jpg" alt="" loading="lazy" /></div>
+            <div class="hero__photo-slide"><img src="assets/img/hero/card/6-fishingfest.jpg" alt="" loading="lazy" /></div>
+          </div>
+          <span class="hero__photo-badge"><span class="hero__photo-dot" aria-hidden="true"></span><span data-i18n="hero.liveBadge">Наживо з подій</span></span>
+          <div class="hero__photo-dots" id="hero-photo-dots"></div>
+        </figure>
+
+        <div class="hero__stats" id="hero-stats" role="group" aria-label="Ключові показники впливу фундації"></div>
+      </div>
+    </div>
+
+    <a href="#about" class="hero__scroll-hint">
+      <span data-i18n="hero.scrollHint">Гортайте, щоб дізнатись більше</span>
+      <span class="mouse" aria-hidden="true"><span class="dot"></span></span>
+    </a>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="reveal section-head">
+        <span class="eyebrow" data-i18n="about.eyebrow">Про нас</span>
+        <h2 class="section-title" data-i18n="about.title">Громадська організація, що з'єднує людей, ідеї та рішення</h2>
+        <p class="section-subtitle" data-i18n="about.subtitle">Фундація майбутнього держави створена, щоб скоротити відстань між активною громадянською позицією та реальною зміною.</p>
+      </div>
+      <div class="values-grid" id="about-values"></div>
+      <div class="structure-block reveal">
+        <div class="structure-block__head">
+          <h3 data-i18n="about.structure.title">Як ми влаштовані</h3>
+          <p data-i18n="about.structure.text">Прозора структура управління за статутом.</p>
+        </div>
+        <ol class="structure-flow" id="about-structure"></ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DIRECTIONS ============ -->
+  <section id="directions" class="section section--surface">
+    <div class="container">
+      <div class="reveal section-head">
+        <span class="eyebrow" data-i18n="directions.eyebrow">Чим ми займаємось</span>
+        <h2 class="section-title" data-i18n="directions.title">Чотири напрями однієї мети</h2>
+        <p class="section-subtitle" data-i18n="directions.subtitle">Кожен напрям — окремий шлях до змін.</p>
+      </div>
+      <ul class="grid grid--4" id="directions-grid"></ul>
+    </div>
+  </section>
+
+  <!-- ============ TEAM ============ -->
+  <section id="team" class="section">
+    <div class="container">
+      <div class="reveal section-head">
+        <span class="eyebrow" data-i18n="team.eyebrow">Команда</span>
+        <h2 class="section-title" data-i18n="team.title">Люди, які втілюють місію</h2>
+        <p class="section-subtitle" data-i18n="team.subtitle">Команда фундації поєднує підприємницький, громадський і аналітичний досвід.</p>
+      </div>
+      <ul class="grid grid--4" id="team-grid"></ul>
+    </div>
+  </section>
+
+  <!-- ============ JOIN CONSTRUCTOR ============ -->
+  <section id="join" class="section section--surface">
+    <div class="container">
+      <div class="reveal join-head">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="join.eyebrow">Долучитися</span>
+          <h2 class="section-title" data-i18n="join.title">Конструктор участі</h2>
+          <p class="section-subtitle" data-i18n="join.subtitle">Три кроки — і ми підкажемо, з чого почати саме вам.</p>
+        </div>
+        <button type="button" class="btn-text" id="join-skip" data-i18n="join.skip">Пропустити, я сам оберу</button>
+      </div>
+      <div class="join-panel reveal" id="join-panel"></div>
+    </div>
+  </section>
+
+  <!-- ============ MEDIA / NEWS ============ -->
+  <section id="media" class="section">
+    <div class="container">
+      <div class="reveal section-head">
+        <span class="eyebrow" data-i18n="media.eyebrow">Медіа</span>
+        <h2 class="section-title" data-i18n="media.title">Новини фундації</h2>
+        <p class="section-subtitle" data-i18n="media.subtitle">Останні події, публікації та історії успіху.</p>
+      </div>
+      <div class="news-carousel reveal">
+        <div class="news-carousel__viewport">
+          <ul class="news-carousel__track" id="news-grid"></ul>
+        </div>
+        <div class="news-carousel__controls">
+          <button type="button" class="news-carousel__nav news-carousel__nav--prev" id="news-prev" aria-label="Попередня новина">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="news-carousel__dots" id="news-dots"></div>
+          <button type="button" class="news-carousel__nav news-carousel__nav--next" id="news-next" aria-label="Наступна новина">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="note reveal" data-i18n="media.note">Новини — заглушки.</p>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section section--surface">
+    <div class="container contact-grid">
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="contact.eyebrow">Контакти</span>
+        <h2 class="section-title" data-i18n="contact.title">Напишіть нам</h2>
+        <p class="section-subtitle" data-i18n="contact.subtitle">Відповімо протягом 1–2 робочих днів.</p>
+
+        <div class="contact-info">
+          <p><a href="#" id="contact-email" style="font-weight:700;color:var(--blue)"></a></p>
+          <p><a href="#" id="contact-phone"></a></p>
+        </div>
+
+        <div>
+          <h3 style="margin-top:32px;font-size:0.85rem;font-weight:800" data-i18n="contact.social">Ми в соцмережах</h3>
+          <div class="social-row" id="social-row"></div>
+        </div>
+
+        <div class="legal-box">
+          <h3 data-i18n="contact.legalTitle">Юридичні реквізити</h3>
+          <p data-i18n="contact.legalName">Громадська організація «Фундація майбутнього держави»</p>
+          <p data-i18n="contact.legalEdrpou">Код ЄДРПОУ: буде надано клієнтом</p>
+          <p data-i18n="contact.legalAddress">Юридична адреса: буде надано клієнтом</p>
+        </div>
+      </div>
+
+      <form class="form reveal" id="contact-form" novalidate>
+        <div class="honeypot" aria-hidden="true">
+          <label for="field-website">Website</label>
+          <input type="text" id="field-website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="field-name" data-i18n="contact.form.name">Ім'я *</label>
+            <input type="text" id="field-name" name="name" autocomplete="name" required />
+            <p class="field-error"></p>
+          </div>
+          <div class="field">
+            <label for="field-email" data-i18n="contact.form.email">Email *</label>
+            <input type="email" id="field-email" name="email" autocomplete="email" required />
+            <p class="field-error"></p>
+          </div>
+          <div class="field">
+            <label for="field-phone" data-i18n="contact.form.phone">Телефон</label>
+            <input type="tel" id="field-phone" name="phone" autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="field-subject" data-i18n="contact.form.subject">Тема звернення *</label>
+            <select id="field-subject" name="subject"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="field-message" data-i18n="contact.form.message">Повідомлення *</label>
+          <textarea id="field-message" name="message" rows="4" required></textarea>
+          <p class="field-error"></p>
+        </div>
+
+        <div class="consent-row">
+          <input type="checkbox" id="field-consent" name="consent" required />
+          <label for="field-consent" data-i18n="contact.form.consent">Я даю згоду на обробку персональних даних *</label>
+          <p class="field-error sr-only"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" data-i18n="contact.form.submit">Надіслати</button>
+        <p class="form-status" id="contact-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="footer-brand">
+        <img src="assets/img/logo-256.png" alt="" />
+        <span>Фундація майбутнього держави<small>Future State Foundation</small></span>
+      </div>
+
+      <h3 style="margin-top:32px" data-i18n="footer.newsletterTitle">Будьте в курсі</h3>
+      <p style="margin-top:6px;color:rgba(255,255,255,.6);font-size:.88rem" data-i18n="footer.newsletterSubtitle">Щомісячний дайджест новин і результатів.</p>
+      <form class="newsletter-form" id="newsletter-form" novalidate>
+        <label for="newsletter-email" class="sr-only" data-i18n="footer.newsletterPlaceholder">Ваш email</label>
+        <input type="email" id="newsletter-email" required data-i18n-placeholder="footer.newsletterPlaceholder" />
+        <button type="submit" class="btn btn-primary" data-i18n="footer.newsletterCta">Підписатися</button>
+      </form>
+      <p class="form-status" id="newsletter-status" role="status" aria-live="polite"></p>
+    </div>
+
+    <div>
+      <h3 class="footer-links-title" data-i18n="footer.linksTitle">Розділи</h3>
+      <ul class="footer-links" id="footer-links"></ul>
+    </div>
+
+    <div>
+      <h3 class="footer-links-title" data-i18n="footer.contactsTitle">Контакти</h3>
+      <ul class="footer-contacts" id="footer-contacts"></ul>
+      <div class="footer-social" id="footer-social"></div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© <span id="year"></span> <span data-i18n="contact.legalName">Фундація майбутнього держави</span>. <span data-i18n="footer.rights">Усі права захищено.</span></p>
+    <div class="footer-bottom-links">
+      <a href="#" data-i18n="footer.privacy">Політика конфіденційності</a>
+      <a href="#" data-i18n="footer.terms">Публічна оферта</a>
+    </div>
+  </div>
+</footer>
+
+<button type="button" class="to-top" id="to-top" aria-label="Нагору">
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 14V3M4 8l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<!-- Team bio modal -->
+<div class="modal-backdrop" id="team-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-name">
+    <div class="modal__head">
+      <div>
+        <h3 id="team-modal-name"></h3>
+        <p class="role" id="team-modal-role"></p>
+      </div>
+      <button type="button" class="modal__close" id="team-modal-close" data-i18n-aria-label="team.close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal__body" id="team-modal-bio"></div>
+  </div>
+</div>
+
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
