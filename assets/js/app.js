@@ -918,6 +918,25 @@
   }
 
   /* ---------------- Forms ---------------- */
+  // URL Cloudflare Worker, який пересилає заявки в Telegram (див. telegram-worker/README.md).
+  var LEADS_ENDPOINT = "https://fsf-leads.YOUR-SUBDOMAIN.workers.dev";
+
+  function sendLead(payload) {
+    if (LEADS_ENDPOINT.indexOf("YOUR-SUBDOMAIN") > -1) {
+      console.warn("LEADS_ENDPOINT не налаштовано — заявку не надіслано.");
+      return Promise.resolve({ ok: true });
+    }
+    payload.lang = state.lang;
+    return fetch(LEADS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    });
+  }
+
   function validateContactForm(form) {
     var valid = true;
     var fields = {
@@ -978,16 +997,28 @@
       submitBtn.disabled = true;
       submitBtn.textContent = t("contact.form.submitting");
 
-      // No backend on static hosting by default — swap this block for a
-      // real endpoint (Formspree / EmailJS / your own API) when ready.
-      // See README "Підключення форм" for exact steps.
-      setTimeout(function () {
-        submitBtn.disabled = false;
-        submitBtn.textContent = t("contact.form.submit");
-        status.textContent = t("contact.form.success");
-        status.classList.add("success");
-        form.reset();
-      }, 500);
+      sendLead({
+        type: "contact",
+        name: form.querySelector("#field-name").value,
+        email: form.querySelector("#field-email").value,
+        phone: form.querySelector("#field-phone").value,
+        subject: form.querySelector("#field-subject").value,
+        message: form.querySelector("#field-message").value,
+        website: honeypot ? honeypot.value : "",
+      })
+        .then(function () {
+          status.textContent = t("contact.form.success");
+          status.classList.add("success");
+          form.reset();
+        })
+        .catch(function () {
+          status.textContent = t("contact.form.sendError");
+          status.classList.add("error");
+        })
+        .then(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = t("contact.form.submit");
+        });
     });
 
     form.querySelectorAll("input, textarea, select").forEach(function (fieldEl) {
@@ -1012,9 +1043,21 @@
         status.classList.add("error");
         return;
       }
-      status.textContent = t("footer.newsletterSuccess");
-      status.classList.add("success");
-      form.reset();
+      var submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      sendLead({ type: "newsletter", email: input.value })
+        .then(function () {
+          status.textContent = t("footer.newsletterSuccess");
+          status.classList.add("success");
+          form.reset();
+        })
+        .catch(function () {
+          status.textContent = t("footer.newsletterSendError");
+          status.classList.add("error");
+        })
+        .then(function () {
+          submitBtn.disabled = false;
+        });
     });
   }
 
