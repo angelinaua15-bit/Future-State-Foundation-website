@@ -89,8 +89,9 @@ module.exports = async function handler(req, res) {
   });
 
   if (!tg.ok) {
-    console.log("Telegram error", tg.status, await tg.text());
-    return res.status(502).json({ ok: false, error: "telegram" });
+    const tgBody = await tg.json().catch(() => ({}));
+    console.log("Telegram error", tg.status, tgBody);
+    return res.status(502).json({ ok: false, error: "telegram", detail: tgBody.description || null });
   }
   return res.status(200).json({ ok: true });
 };
