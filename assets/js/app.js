@@ -918,14 +918,11 @@
   }
 
   /* ---------------- Forms ---------------- */
-  // URL Cloudflare Worker, який пересилає заявки в Telegram (див. telegram-worker/README.md).
-  var LEADS_ENDPOINT = "https://fsf-leads.YOUR-SUBDOMAIN.workers.dev";
+  // Vercel Function, яка пересилає заявки в Telegram (api/lead.js).
+  // Абсолютна адреса, бо сайт також відкривається з GitHub Pages, де /api немає.
+  var LEADS_ENDPOINT = "https://future-state-foundation-website.vercel.app/api/lead";
 
   function sendLead(payload) {
-    if (LEADS_ENDPOINT.indexOf("YOUR-SUBDOMAIN") > -1) {
-      console.warn("LEADS_ENDPOINT не налаштовано — заявку не надіслано.");
-      return Promise.resolve({ ok: true });
-    }
     payload.lang = state.lang;
     return fetch(LEADS_ENDPOINT, {
       method: "POST",

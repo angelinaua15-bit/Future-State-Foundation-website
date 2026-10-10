@@ -64,7 +64,14 @@ assets/
 
 ## Підключення форм до реального відправлення
 
-Форма зворотного зв'язку та підписка на розсилку надсилають заявки в Telegram-групу через Cloudflare Worker (`telegram-worker/`). Адреса воркера задається в `assets/js/app.js` → `LEADS_ENDPOINT`. Покрокове налаштування — у [`telegram-worker/README.md`](telegram-worker/README.md).
+Форма зворотного зв'язку та підписка на розсилку надсилають заявки в Telegram-групу через Vercel Function `api/lead.js`. Адреса функції задається в `assets/js/app.js` → `LEADS_ENDPOINT`.
+
+Налаштування у Vercel (**Settings → Environment Variables**, після збереження — **Deployments → Redeploy**):
+
+- `BOT_TOKEN` — токен бота від @BotFather;
+- `CHAT_ID` — id групи. Щоб його дізнатися, напишіть будь-що в групу й відкрийте `https://api.telegram.org/bot<ТОКЕН>/getUpdates` — потрібне число з `"chat":{"id":-100...` (разом з мінусом).
+
+Якщо сайт переїде на інший домен, додайте його в `ALLOWED_ORIGINS` у `api/lead.js` — запити з інших адрес функція відхиляє. Якщо заявки не приходять, причину видно в логах функції: Vercel → **Logs**.
 
 ## Контент, який потрібно замінити
 
