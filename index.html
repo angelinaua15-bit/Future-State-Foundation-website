@@ -28,6 +28,8 @@
     } catch (e) {}
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.classList.add("js");
+    // Завжди відкриваємо сайт зверху (iOS Safari інакше відновлює стару позицію й «кидає» вниз)
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     // Прелоадер показуємо лише при першому заході (повторно — не раніше ніж через 30 хв)
     try {
       var seen = +localStorage.getItem("fsf-seen") || 0;
@@ -148,6 +150,9 @@
         <div class="hero__shade" id="hero-shade"></div>
       </div>
 
+      <!-- Іконки 8 напрямів кружляють навколо вікна (CSS: дві синусоїди дають еліпс) -->
+      <div class="hero__orbit" id="hero-orbit" aria-hidden="true"></div>
+
       <!-- Великий заголовок у дужках, що розходиться при скролі -->
       <div class="hero__word" aria-hidden="true">
         <span class="hero__bracket hero__bracket--l"></span>
@@ -200,10 +205,23 @@
         </div>
         <p class="section-subtitle" data-i18n="directions.subtitle"></p>
       </div>
-      <ul class="dir-list" id="directions-list"></ul>
+      <!-- Ліворуч список напрямів, праворуч закріплена картка з фото активного напряму -->
+      <div class="dir-wrap">
+        <ul class="dir-list" id="directions-list"></ul>
+        <aside class="dir-stage" aria-live="polite">
+          <div class="dir-stage__card">
+            <div class="dir-stage__media" id="dir-stage-media"></div>
+            <div class="dir-stage__info">
+              <span class="dir-stage__icon" id="dir-stage-icon"></span>
+              <h3 class="dir-stage__title" id="dir-stage-title"></h3>
+              <p class="dir-stage__text" id="dir-stage-text"></p>
+              <a class="btn btn-primary btn--sm" href="#join" id="dir-stage-cta" data-direction="" data-i18n="directions.cta">Долучитися до напряму</a>
+            </div>
+          </div>
+        </aside>
+      </div>
     </div>
     <!-- Фото, що пливе за курсором над рядком (лише миша) -->
-    <div class="dir-preview" id="dir-preview" aria-hidden="true"><div class="dir-preview__inner" id="dir-preview-inner"></div></div>
   </section>
 
   <!-- Дві перехресні стрічки в кольорах прапора: напрями й цінності біжать назустріч -->
@@ -222,29 +240,11 @@
         </div>
         <p class="section-subtitle" data-i18n="team.subtitle"></p>
       </div>
-      <ul class="team__strip" id="team-grid"></ul>
+      <ul class="team__strip reveal" id="team-grid"></ul>
     </div>
   </section>
 
-  <!-- ============ JOIN CONSTRUCTOR ============ -->
-  <section id="join" class="section join">
-    <div class="container">
-      <div class="head-split reveal">
-        <div>
-          <p class="section-tag"><span data-i18n="join.eyebrow">Долучитися</span></p>
-          <h2 class="section-title" data-i18n="join.title">Конструктор участі</h2>
-        </div>
-        <a href="#contact" class="spin-badge" id="spin-badge" data-i18n-aria-label="join.badgeLabel"></a>
-        <div>
-          <p class="section-subtitle" data-i18n="join.subtitle"></p>
-          <button type="button" class="btn-text join__skip" id="join-skip" data-i18n="join.skip">Пропустити, я сам оберу</button>
-        </div>
-      </div>
-      <div class="join-panel reveal" id="join-panel"></div>
-    </div>
-  </section>
-
-  <!-- ============ MEDIA / NEWS: горизонтальна стрічка ============ -->
+  <!-- ============ MEDIA / NEWS ============ -->
   <section id="media" class="section news" aria-labelledby="news-title">
     <div class="container head-split news__head">
       <div>
@@ -269,6 +269,25 @@
       <ul class="news__track" id="news-grid"></ul>
     </div>
   </section>
+
+  <!-- ============ JOIN CONSTRUCTOR ============ -->
+  <section id="join" class="section join">
+    <div class="container">
+      <div class="head-split reveal">
+        <div>
+          <p class="section-tag"><span data-i18n="join.eyebrow">Долучитися</span></p>
+          <h2 class="section-title" data-i18n="join.title">Конструктор участі</h2>
+        </div>
+        <a href="#contact" class="spin-badge" id="spin-badge" data-i18n-aria-label="join.badgeLabel"></a>
+        <div>
+          <p class="section-subtitle" data-i18n="join.subtitle"></p>
+          <button type="button" class="btn-text join__skip" id="join-skip" data-i18n="join.skip">Пропустити, я сам оберу</button>
+        </div>
+      </div>
+      <div class="join-panel reveal" id="join-panel"></div>
+    </div>
+  </section>
+
 
   <!-- ============ CONTACT ============ -->
   <section id="contact" class="section contact">

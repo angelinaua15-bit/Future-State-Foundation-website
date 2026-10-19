@@ -160,6 +160,44 @@
     });
   }
 
+  /* Великі слова першого екрана: кожна літера окремо — для «вильоту» при старті */
+  function splitHeroChars() {
+    var n = 0;
+    document.querySelectorAll('.hero__word [data-i18n^="hero.word"]').forEach(function (node) {
+      var text = node.textContent;
+      node.setAttribute("aria-hidden", "true");
+      node.innerHTML = text
+        .split(" ")
+        .map(function (word) {
+          return '<span class="chw">' + word.split("").map(function (ch) {
+            return '<span class="ch" style="--c:' + n++ + '">' + ch + "</span>";
+          }).join("") + "</span>";
+        })
+        .join(" ");
+    });
+  }
+
+  /* Слоган першого екрана: слова виїжджають з-під маски, коли вікно розкрилось */
+  function splitHeroTitle() {
+    var h = document.querySelector(".hero__title");
+    if (!h) return;
+    var text = h.textContent.trim();
+    h.setAttribute("aria-label", text);
+    h.innerHTML = text.split(/\s+/).map(function (w, i) {
+      return '<span class="sw" aria-hidden="true"><span style="--w:' + i + '">' + w + "</span></span>";
+    }).join(" ");
+  }
+
+  /* Орбіта: 8 іконок напрямів навколо вікна */
+  function renderOrbit() {
+    var orbit = document.getElementById("hero-orbit");
+    if (!orbit) return;
+    var items = t("directions.items");
+    orbit.innerHTML = items.map(function (d, i) {
+      return '<span class="orbit-x" style="--o:' + i + '"><span class="orbit-y"><span class="orbit-chip" title="' + d.title + '">' + window.FSF_ICONS.svg(d.icon) + "</span></span></span>";
+    }).join("");
+  }
+
   /* Заголовки секцій: кожне слово в окремій «масці» для появи по черзі */
   function splitTitles() {
     document.querySelectorAll(".section-title").forEach(function (h) {
@@ -417,14 +455,14 @@
   var ARROW_SVG =
     '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+  var dirActive = -1;
+
   function renderDirections() {
     var list = document.getElementById("directions-list");
     if (!list) return;
     list.innerHTML = "";
     list.classList.add("is-drawing-icons", "reveal");
     list.classList.remove("is-visible");
-    var preview = document.getElementById("dir-preview-inner");
-    if (preview) preview.innerHTML = "";
 
     t("directions.items").forEach(function (d, i) {
       var base = DATA.directionPhotos[d.slug];
@@ -433,32 +471,63 @@
       li.setAttribute("data-index", i);
       li.innerHTML =
         '<div class="dir__icon">' + window.FSF_ICONS.svg(d.icon) + "</div>" +
-        '<h3 class="dir__title">' + d.title + "</h3>" +
-        '<p class="dir__text">' + d.text + "</p>" +
+        '<div class="dir__main"><h3 class="dir__title">' + d.title + "</h3>" +
+        '<p class="dir__text">' + d.text + "</p></div>" +
         '<img class="dir__thumb" src="' + base + '@480w.webp" alt="" loading="lazy" decoding="async" />' +
         '<a class="dir__cta" href="#join" data-direction="' + d.slug + '"><span class="dir__cta-label">' + t("directions.cta") + "</span>" + ARROW_SVG + "</a>";
       list.appendChild(li);
-
-      // Фото для «плаваючого» прев'ю (лише для миші); завантажуються ліниво
-      if (preview && finePointer) {
-        var img = el("img");
-        img.alt = "";
-        img.decoding = "async";
-        img.setAttribute("data-src", base + "@480w.webp");
-        preview.appendChild(img);
-      }
     });
     observeReveals(list.parentNode);
+    var keep = dirActive;
+    dirActive = -1;
+    setDirection(Math.max(0, keep), true);
   }
 
-  /* Прев'ю за курсором: координати оновлюються в rAF лише поки курсор над списком */
+  /* Активний напрям: підсвічується рядок, у картці праворуч змінюється фото
+     (шторкою знизу), іконка, назва й опис. Нічого не перекриває список. */
+  function setDirection(i, instant) {
+    var items = t("directions.items");
+    var d = items[i];
+    if (!d || i === dirActive) return;
+    dirActive = i;
+    document.querySelectorAll("#directions-list .dir").forEach(function (row, k) {
+      row.classList.toggle("is-active", k === i);
+    });
+    var media = document.getElementById("dir-stage-media");
+    if (!media) return;
+    var base = DATA.directionPhotos[d.slug];
+    var img = el("img");
+    img.alt = "";
+    img.decoding = "async";
+    img.sizes = "(max-width: 1100px) 40vw, 520px";
+    img.srcset = base + "@480w.webp 480w, " + base + "@800w.webp 800w";
+    img.src = base + "@800w.webp";
+    if (!instant && !reduced) img.className = "is-entering";
+    media.appendChild(img);
+    var old = Array.prototype.slice.call(media.children, 0, -1);
+    setTimeout(function () { old.forEach(function (o) { o.remove(); }); }, instant ? 0 : 900);
+
+    var info = document.querySelector(".dir-stage__info");
+    function fill() {
+      document.getElementById("dir-stage-icon").innerHTML = window.FSF_ICONS.svg(d.icon);
+      document.getElementById("dir-stage-title").textContent = d.title;
+      document.getElementById("dir-stage-text").textContent = d.text;
+      document.getElementById("dir-stage-cta").setAttribute("data-direction", d.slug);
+      info.classList.remove("is-swapping");
+    }
+    if (instant || reduced) fill();
+    else {
+      info.classList.add("is-swapping");
+      setTimeout(fill, 220);
+    }
+  }
+
   function bindDirections() {
     var list = document.getElementById("directions-list");
-    var preview = document.getElementById("dir-preview");
-    var inner = document.getElementById("dir-preview-inner");
     if (!list) return;
+    var section = document.getElementById("directions");
 
-    list.addEventListener("click", function (e) {
+    section.addEventListener("click", function (e) {
       var cta = e.target.closest("[data-direction]");
       if (!cta) return;
       // Напрям одразу підставляється в конструктор участі
@@ -467,53 +536,19 @@
       if (!state.join.role) state.join.step = 1;
       renderJoin();
     });
-
-    if (!finePointer || reduced || !preview) return;
-    var tx = 0, ty = 0, x = 0, y = 0, raf = null, active = -1;
-
-    function loop() {
-      x += (tx - x) * 0.16;
-      y += (ty - y) * 0.16;
-      preview.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0)";
-      if (Math.abs(tx - x) > 0.3 || Math.abs(ty - y) > 0.3) raf = requestAnimationFrame(loop);
-      else raf = null;
-    }
-    function kick() {
-      if (!raf) raf = requestAnimationFrame(loop);
-    }
-    function setActive(i) {
-      if (i === active) return;
-      active = i;
-      Array.prototype.forEach.call(inner.children, function (img, k) {
-        img.classList.toggle("is-active", k === i);
-      });
-      preview.classList.toggle("is-on", i > -1);
-    }
-
-    // Фото для прев'ю вантажимо лише коли курсор уперше заходить у список
-    list.addEventListener("pointerenter", function () {
-      inner.querySelectorAll("img[data-src]").forEach(function (img) {
-        img.src = img.getAttribute("data-src");
-        img.removeAttribute("data-src");
-      });
-    });
-    list.addEventListener("pointermove", function (e) {
-      tx = e.clientX + 40;
-      ty = e.clientY;
-      if (active === -1) {
-        x = tx;
-        y = ty;
-      }
+    function rowIndex(e) {
       var row = e.target.closest(".dir");
-      setActive(row ? parseInt(row.getAttribute("data-index"), 10) : -1);
-      kick();
+      return row ? parseInt(row.getAttribute("data-index"), 10) : -1;
+    }
+    list.addEventListener("pointerover", function (e) {
+      if (e.pointerType !== "mouse") return;
+      var i = rowIndex(e);
+      if (i > -1) setDirection(i);
     });
-    list.addEventListener("pointerleave", function () {
-      setActive(-1);
+    list.addEventListener("focusin", function (e) {
+      var i = rowIndex(e);
+      if (i > -1) setDirection(i);
     });
-    window.addEventListener("scroll", function () {
-      if (active > -1) setActive(-1);
-    }, { passive: true });
   }
 
   /* ---------------- Team ---------------- */
@@ -1417,6 +1452,29 @@
     node.style[prop] = value;
   }
 
+  /* Паралакс першого екрана за курсором (лише поки вікно не розкрилось) */
+  var par = { x: 0, y: 0, tx: 0, ty: 0, raf: null };
+  function bindHeroParallax() {
+    if (!finePointer || reduced || !nodes.hero) return;
+    function loop() {
+      par.x += (par.tx - par.x) * 0.08;
+      par.y += (par.ty - par.y) * 0.08;
+      updateHero(window.scrollY);
+      if (Math.abs(par.tx - par.x) > 0.002 || Math.abs(par.ty - par.y) > 0.002) par.raf = requestAnimationFrame(loop);
+      else par.raf = null;
+    }
+    nodes.hero.addEventListener("pointermove", function (e) {
+      par.tx = e.clientX / geo.vw - 0.5;
+      par.ty = e.clientY / geo.vh - 0.5;
+      if (!par.raf) par.raf = requestAnimationFrame(loop);
+    });
+    nodes.hero.addEventListener("pointerleave", function () {
+      par.tx = 0;
+      par.ty = 0;
+      if (!par.raf) par.raf = requestAnimationFrame(loop);
+    });
+  }
+
   function updateHero(y) {
     var hero = nodes.hero;
     if (!hero || y > geo.heroBottom + 50) return;
@@ -1428,7 +1486,13 @@
     var sx = geo.sx0 + (1 - geo.sx0) * e;
     var sy = geo.sy0 + (1 - geo.sy0) * e;
     var zoom = 1.18 - 0.18 * e;
-    setStyle(nodes.heroFrame, "hf", "transform", "scale(" + sx.toFixed(4) + "," + sy.toFixed(4) + ")");
+    var k = 1 - e; // сила паралаксу згасає, коли вікно розкривається
+    var fx = par.x * 26 * k, fy = par.y * 18 * k;
+    setStyle(nodes.heroFrame, "hf", "transform", "translate3d(" + fx.toFixed(1) + "px," + fy.toFixed(1) + "px,0) scale(" + sx.toFixed(4) + "," + sy.toFixed(4) + ")");
+    if (nodes.orbit) {
+      setStyle(nodes.orbit, "or", "transform", "translate3d(" + (par.x * 40 * k).toFixed(1) + "px," + (par.y * 30 * k).toFixed(1) + "px,0) scale(" + (1 + e * 0.9).toFixed(3) + ")");
+      setStyle(nodes.orbit, "oo", "opacity", clamp(1 - e * 2.2, 0, 1).toFixed(3));
+    }
     // Радіус кутів не перераховуємо щокадру (це перемальовування) — лише перемикаємо в кінці
     nodes.heroFrame.classList.toggle("is-full", e > 0.97);
     setStyle(nodes.heroMedia, "hm", "transform", "scale(" + (zoom / sx).toFixed(4) + "," + (zoom / sy).toFixed(4) + ")");
@@ -1439,8 +1503,14 @@
     var d = geo.mobile ? e * geo.vh * 0.3 : e * geo.vw * 0.22;
     var axis = geo.mobile ? "translate3d(0," : "translate3d(";
     var tail = geo.mobile ? "px,0)" : "px,0,0)";
-    setStyle(nodes.wordL, "wl", "transform", axis + (-d).toFixed(1) + tail);
-    setStyle(nodes.wordR, "wr", "transform", axis + d.toFixed(1) + tail);
+    var wx = -par.x * 14 * k, wy = -par.y * 10 * k;
+    if (geo.mobile) {
+      setStyle(nodes.wordL, "wl", "transform", axis + (-d).toFixed(1) + tail);
+      setStyle(nodes.wordR, "wr", "transform", axis + d.toFixed(1) + tail);
+    } else {
+      setStyle(nodes.wordL, "wl", "transform", "translate3d(" + (-d + wx).toFixed(1) + "px," + wy.toFixed(1) + "px,0)");
+      setStyle(nodes.wordR, "wr", "transform", "translate3d(" + (d + wx).toFixed(1) + "px," + wy.toFixed(1) + "px,0)");
+    }
     setStyle(nodes.wordWrap, "wo", "opacity", wo);
     var bd = e * geo.vw * 0.08;
     setStyle(nodes.brL, "bl", "transform", "translate3d(" + (-bd).toFixed(1) + "px,0,0)");
@@ -1631,6 +1701,9 @@
   function renderAll() {
     applyStaticText();
     splitTitles();
+    splitHeroChars();
+    splitHeroTitle();
+    renderOrbit();
     renderHeroFacts();
     renderAbout();
     renderDirections();
@@ -1664,6 +1737,7 @@
       wordR: document.querySelector(".hero__word-r"),
       brL: document.querySelector(".hero__bracket--l"),
       brR: document.querySelector(".hero__bracket--r"),
+      orbit: document.getElementById("hero-orbit"),
       widgets: [],
       manifest: document.getElementById("about-manifest"),
       progress: document.getElementById("scroll-progress"),
@@ -1693,7 +1767,10 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     bindCursor();
+    bindHeroParallax();
     runPreloader();
+    // Без якоря в адресі сайт завжди відкривається з першого екрана
+    if (!location.hash) window.scrollTo(0, 0);
 
     window.addEventListener("scroll", requestTick, { passive: true });
     window.addEventListener("resize", remeasureSoon);
