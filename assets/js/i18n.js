@@ -14,6 +14,7 @@ window.FSF_I18N = {
       volunteering: "Волонтерство",
       donate: "Донати",
       news: "Новини",
+      team: "Команда",
       contacts: "Контакти",
       cta: "Долучитися",
       menu: "Меню",
@@ -22,14 +23,22 @@ window.FSF_I18N = {
     mediaStrip: {
       ariaLabel: "Фото з діяльності фундації",
     },
+    theme: {
+      toggle: "Перемкнути світлу чи темну тему",
+      toggleText: "Змінити тему",
+    },
+    cursor: { open: "Відкрити", drag: "Гортайте" },
     hero: {
       eyebrow: "Фундація майбутнього держави",
+      wordA: "(Фундація)",
+      wordB: "майбутнього",
+      wordC: "держави",
       title: "Ми не чекаємо на державу майбутнього — ми її будуємо вже сьогодні",
       subtitle:
         "Об'єднуємо активних людей, локальні ініціативи та експертну аналітику, щоб реформи ставали реальністю, а не обіцянками.",
       ctaPrimary: "Долучитися",
       ctaSecondary: "Наші напрями",
-      scrollHint: "Гортайте, щоб дізнатись більше",
+      scrollHint: "Гортайте вниз",
       liveBadge: "Наживо з подій",
       facts: [
         { value: "8", counter: true, label: "напрямів діяльності" },
@@ -63,52 +72,60 @@ window.FSF_I18N = {
       title: "Напрями, що охоплюють реальні потреби людей",
       subtitle:
         "Ключові напрями, де фундація вже зараз концентрує зусилля.",
-      cta: "Дізнатись більше",
+      cta: "Долучитися до напряму",
       items: [
         {
           slug: "civic-education",
+          word: "Освіта",
           icon: "civic-education",
           title: "Громадянська освіта",
           text: "Навчаємо людей розуміти свої права та впливати на рішення, що стосуються їхньої громади.",
         },
         {
           slug: "veterans",
+          word: "Ветерани",
           icon: "veterans",
           title: "Підтримка ветеранів і військових",
           text: "Сприяємо соціальній адаптації та захисту прав ветеранів, військовослужбовців і їхніх родин.",
         },
         {
           slug: "idp-support",
+          word: "Підтримка",
           icon: "idp-support",
           title: "Допомога ВПО та постраждалим",
           text: "Підтримуємо внутрішньо переміщених осіб та людей, які постраждали внаслідок війни, у відновленні життя.",
         },
         {
           slug: "local-initiatives",
+          word: "Громади",
           icon: "local-initiatives",
           title: "Підтримка місцевих ініціатив",
           text: "Допомагаємо локальним лідерам перетворювати ідеї на проєкти, що змінюють життя громад.",
         },
         {
           slug: "advocacy",
+          word: "Реформи",
           icon: "advocacy",
           title: "Аналітика й адвокація реформ",
           text: "Готуємо дані та аргументи, які просувають реформи на рівні ухвалення рішень.",
         },
         {
           slug: "youth-education",
+          word: "Молодь",
           icon: "youth-education",
           title: "Молодіжне лідерство й освіта",
           text: "Розвиваємо лідерський потенціал молоді та підтримуємо доступ до якісної освіти.",
         },
         {
           slug: "international",
+          word: "Європа",
           icon: "international",
           title: "Євроінтеграція та міжнародна співпраця",
           text: "Розбудовуємо партнерства з іноземними й міжнародними організаціями на підтримку курсу України до ЄС.",
         },
         {
           slug: "volunteering",
+          word: "Волонтери",
           icon: "volunteering",
           title: "Волонтерство",
           text: "Об'єднуємо тих, хто готовий діяти зараз, із проєктами, де їхній час матиме найбільшу вагу.",
@@ -120,6 +137,7 @@ window.FSF_I18N = {
       title: "Люди, які втілюють місію",
       subtitle: "Команда фундації поєднує підприємницький, громадський і аналітичний досвід — люди, які роками діяли кожен окремо, а тепер об'єднали сили.",
       readMore: "Читати біографію",
+      hint: "Наведіть або торкніться, щоб познайомитися",
       close: "Закрити",
     },
     join: {
@@ -220,6 +238,7 @@ window.FSF_I18N = {
       legalAddress: "Юридична адреса: 02002, м. Київ, Дніпровський район, вул. Євгена Сверстюка, 19, офіс 209. Дата заснування — 18.08.2026.",
     },
     footer: {
+      marquee: ["Майбутнє будуємо разом", "Дія понад слова", "Долучайтеся до фундації"],
       newsletterTitle: "Будьте в курсі",
       newsletterSubtitle: "Щомісячний дайджест новин і результатів — без спаму.",
       newsletterPlaceholder: "Ваш email",
@@ -255,6 +274,7 @@ window.FSF_I18N = {
       volunteering: "Volunteering",
       donate: "Donate",
       news: "News",
+      team: "Team",
       contacts: "Contacts",
       cta: "Get involved",
       menu: "Menu",
@@ -263,8 +283,16 @@ window.FSF_I18N = {
     mediaStrip: {
       ariaLabel: "Photos from the foundation's activities",
     },
+    theme: {
+      toggle: "Switch between light and dark theme",
+      toggleText: "Change theme",
+    },
+    cursor: { open: "Open", drag: "Scroll" },
     hero: {
       eyebrow: "Future State Foundation",
+      wordA: "(Future)",
+      wordB: "state",
+      wordC: "foundation",
       title: "We're not waiting for the future state — we're building it today",
       subtitle:
         "We bring together active citizens, local initiatives, and expert analysis so reforms become reality, not promises.",
@@ -304,52 +332,60 @@ window.FSF_I18N = {
       title: "Directions that answer real needs",
       subtitle:
         "The key areas where the foundation is focusing its efforts right now.",
-      cta: "Learn more",
+      cta: "Join this direction",
       items: [
         {
           slug: "civic-education",
+          word: "Education",
           icon: "civic-education",
           title: "Civic education",
           text: "We teach people to understand their rights and influence decisions that affect their community.",
         },
         {
           slug: "veterans",
+          word: "Veterans",
           icon: "veterans",
           title: "Veteran & military support",
           text: "We support the social reintegration and rights protection of veterans, service members, and their families.",
         },
         {
           slug: "idp-support",
+          word: "Support",
           icon: "idp-support",
           title: "Support for IDPs & war-affected people",
           text: "We help internally displaced people and those affected by the war rebuild their lives.",
         },
         {
           slug: "local-initiatives",
+          word: "Communities",
           icon: "local-initiatives",
           title: "Support for local initiatives",
           text: "We help local leaders turn ideas into projects that change communities' lives.",
         },
         {
           slug: "advocacy",
+          word: "Reforms",
           icon: "advocacy",
           title: "Reform analytics & advocacy",
           text: "We prepare the data and arguments that push reforms forward at the decision-making level.",
         },
         {
           slug: "youth-education",
+          word: "Youth",
           icon: "youth-education",
           title: "Youth leadership & education",
           text: "We develop young people's leadership potential and support access to quality education.",
         },
         {
           slug: "international",
+          word: "Europe",
           icon: "international",
           title: "EU integration & international cooperation",
           text: "We build partnerships with foreign and international organizations in support of Ukraine's path to the EU.",
         },
         {
           slug: "volunteering",
+          word: "Volunteers",
           icon: "volunteering",
           title: "Volunteering",
           text: "We connect people ready to act now with the projects where their time matters most.",
@@ -361,6 +397,7 @@ window.FSF_I18N = {
       title: "The people behind the mission",
       subtitle: "The foundation's team combines entrepreneurial, civic, and analytical experience — people who worked separately for years and have now joined forces.",
       readMore: "Read bio",
+      hint: "Hover or tap to meet the team",
       close: "Close",
     },
     join: {
@@ -461,6 +498,7 @@ window.FSF_I18N = {
       legalAddress: "Registered address: 02002, Kyiv, Dniprovskyi district, 19 Yevhena Sverstiuka St., office 209. Founded 18.08.2026.",
     },
     footer: {
+      marquee: ["Building the future together", "Action over words", "Join the foundation"],
       newsletterTitle: "Stay in the loop",
       newsletterSubtitle: "A monthly digest of news and results — no spam.",
       newsletterPlaceholder: "Your email",

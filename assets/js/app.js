@@ -1,6 +1,13 @@
 /* ==========================================================================
    Фундація майбутнього держави — інтерактивність
    Vanilla JS, без залежностей і без збірки.
+
+   Основні сцени:
+   - прелоадер: дерево з логотипу малюється лініями, потім синьо-жовта шторка;
+   - hero «апертура»: вікно з фото розкривається на весь екран зі скролом;
+   - «Напрями»: закріплена сцена, вкладки перемикаються скролом;
+   - «Новини»: горизонтальна стрічка, що їде при вертикальному скролі;
+   - перемикач світлої/темної теми з круговим розкриттям (View Transitions).
    ========================================================================== */
 (function () {
   "use strict";
@@ -8,11 +15,24 @@
   var DICT = window.FSF_I18N;
   var DATA = window.FSF_DATA;
   var LANG_KEY = "fsf-lang";
+  var THEME_KEY = "fsf-theme";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  var mqMobile = window.matchMedia("(max-width: 860px)");
 
   var state = {
     lang: "ua",
     join: { view: "wizard", step: 1, role: null, direction: null, detail: null },
+    direction: -1,
+    teamActive: 0,
   };
+
+  function clamp(v, a, b) {
+    return Math.min(b, Math.max(a, v));
+  }
+  function easeInOut(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  }
 
   /* ---------------- i18n helpers ---------------- */
   function t(path) {
@@ -48,26 +68,26 @@
     var metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute("content", t("meta.description"));
     renderAll();
+    onScroll();
   }
 
-  /* ---------------- generic data-i18n binding ---------------- */
   function applyStaticText() {
-    document.querySelectorAll("[data-i18n]").forEach(function (el) {
-      el.textContent = t(el.getAttribute("data-i18n"));
+    document.querySelectorAll("[data-i18n]").forEach(function (node) {
+      node.textContent = t(node.getAttribute("data-i18n"));
     });
-    document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
-      el.setAttribute("placeholder", t(el.getAttribute("data-i18n-placeholder")));
+    document.querySelectorAll("[data-i18n-placeholder]").forEach(function (node) {
+      node.setAttribute("placeholder", t(node.getAttribute("data-i18n-placeholder")));
     });
-    document.querySelectorAll("[data-i18n-aria-label]").forEach(function (el) {
-      el.setAttribute("aria-label", t(el.getAttribute("data-i18n-aria-label")));
+    document.querySelectorAll("[data-i18n-aria-label]").forEach(function (node) {
+      node.setAttribute("aria-label", t(node.getAttribute("data-i18n-aria-label")));
     });
     document.querySelectorAll(".lang-switch button").forEach(function (btn) {
-      btn.classList.toggle("is-active", btn.getAttribute("data-lang") === state.lang);
-      btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === state.lang ? "true" : "false");
+      var on = btn.getAttribute("data-lang") === state.lang;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
   }
 
-  /* ---------------- utility: build a card and register reveal ---------------- */
   function el(tag, className, html) {
     var node = document.createElement(tag);
     if (className) node.className = className;
@@ -75,105 +95,396 @@
     return node;
   }
 
-  function icon(name) {
-    var icons = {
-      arrow: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      chevron: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      bolt: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 11-14h-7l1-8Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      eye: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>',
-      link: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 16l-2 2a3.5 3.5 0 0 1-5-5l3-3a3.5 3.5 0 0 1 5 0M16 8l2-2a3.5 3.5 0 0 1 5 5l-3 3a3.5 3.5 0 0 1-5 0M9 15l6-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      shield: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    };
-    return icons[name] || "";
+  function srcset(base) {
+    return base + "@480w.jpg 480w, " + base + "@800w.jpg 800w, " + base + ".jpg 1200w";
   }
 
-  var VALUE_ICONS = ["bolt", "eye", "link", "shield"];
+  /* ---------------- Дерево з логотипу (SVG лініями) ----------------
+     Ліва половина синя, права — дзеркальна жовта. Кожен штрих має
+     pathLength="1", тож анімація «малювання» однакова для всіх ліній. */
+  var TREE_PATHS = [
+    { d: "M100 134 V30", leaf: false },
+    { d: "M100 112 Q80 104 58 84", leaf: false },
+    { d: "M100 92 Q84 82 70 60", leaf: false },
+    { d: "M100 70 Q90 60 86 42", leaf: false },
+    { d: "M58 84 q-16 -4 -20 -18 q15 2 20 18z", leaf: true },
+    { d: "M70 60 q-15 -6 -16 -21 q14 4 16 21z", leaf: true },
+    { d: "M86 42 q-11 -9 -9 -22 q11 7 9 22z", leaf: true },
+    { d: "M80 103 q-12 6 -25 1 q11 -10 25 -1z", leaf: true },
+    { d: "M28 134 H100", leaf: false },
+    { d: "M100 136 Q92 152 66 166", leaf: false },
+    { d: "M100 136 Q97 156 88 180", leaf: false },
+    { d: "M100 136 Q78 144 42 148", leaf: false },
+  ];
 
-  /* ---------------- About ---------------- */
-  function renderAbout() {
-    var wrap = document.getElementById("about-values");
+  function treeSVG() {
+    function half(cls, transform) {
+      return (
+        '<g class="' + cls + '"' + (transform ? ' transform="' + transform + '"' : "") +
+        ' fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">' +
+        TREE_PATHS.map(function (p, i) {
+          return '<path' + (p.leaf ? ' class="leaf"' : "") + ' style="--d:' + i + '" pathLength="1" d="' + p.d + '"/>';
+        }).join("") +
+        "</g>"
+      );
+    }
+    return (
+      '<svg class="tree-svg" viewBox="20 12 160 176" aria-hidden="true" focusable="false">' +
+      half("t-blue") +
+      half("t-yellow", "translate(200 0) scale(-1 1)") +
+      "</svg>"
+    );
+  }
+
+  function mountTrees() {
+    document.querySelectorAll("[data-tree]").forEach(function (node) {
+      node.innerHTML = treeSVG();
+    });
+  }
+
+  /* ---------------- Прелоадер ---------------- */
+  function runPreloader() {
+    var pre = document.getElementById("preloader");
+    var root = document.documentElement;
+    if (!pre || reduced) {
+      if (pre) pre.remove();
+      root.classList.add("is-loaded");
+      return;
+    }
+    var tree = pre.querySelector(".tree-svg");
+    var count = document.getElementById("preloader-count");
+    if (tree) tree.classList.add("is-drawing");
+    document.body.style.overflow = "hidden";
+
+    var start = null;
+    var DURATION = 1500;
+    function tick(ts) {
+      if (start === null) start = ts;
+      var k = clamp((ts - start) / DURATION, 0, 1);
+      count.textContent = String(Math.round(easeInOut(k) * 100)).padStart(3, "0");
+      if (k < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        finish();
+      }
+    }
+    function finish() {
+      pre.classList.add("is-closing");
+      setTimeout(function () {
+        pre.classList.add("is-done");
+        root.classList.add("is-loaded");
+        document.body.style.overflow = "";
+        setTimeout(function () {
+          pre.remove();
+        }, 950);
+      }, 680);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  /* ---------------- Тема ---------------- */
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    try {
+      window.localStorage.setItem(THEME_KEY, theme);
+    } catch (e) {
+      /* ignore */
+    }
+    document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+      b.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
+    });
+  }
+
+  function toggleTheme(e) {
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    var x = e && e.clientX ? e.clientX : window.innerWidth - 60;
+    var y = e && e.clientY ? e.clientY : 40;
+    if (!document.startViewTransition || reduced) {
+      applyTheme(next);
+      return;
+    }
+    // Нова тема «розливається» колом від кнопки
+    var r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+    var vt = document.startViewTransition(function () {
+      applyTheme(next);
+    });
+    vt.ready.then(function () {
+      document.documentElement.animate(
+        { clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + r + "px at " + x + "px " + y + "px)"] },
+        { duration: 750, easing: "cubic-bezier(0.65, 0, 0.35, 1)", pseudoElement: "::view-transition-new(root)" }
+      );
+    });
+  }
+
+  function bindTheme() {
+    applyTheme(currentTheme());
+    document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
+      b.addEventListener("click", toggleTheme);
+    });
+    // Якщо людина ще не обирала тему вручну — слідуємо за системою
+    var mq = window.matchMedia("(prefers-color-scheme: light)");
+    var onChange = function (ev) {
+      var saved = null;
+      try {
+        saved = window.localStorage.getItem(THEME_KEY);
+      } catch (e) {
+        /* ignore */
+      }
+      if (!saved) document.documentElement.setAttribute("data-theme", ev.matches ? "light" : "dark");
+    };
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+  }
+
+  /* ---------------- Hero: факти-віджети ---------------- */
+  var heroCountersDone = false;
+  function renderHeroFacts() {
+    var wrap = document.getElementById("hero-stats");
     if (!wrap) return;
     wrap.innerHTML = "";
-    t("about.values").forEach(function (v, i) {
-      var div = el("div", "reveal");
-      div.style.setProperty("--reveal-delay", i * 90);
-      div.innerHTML =
-        '<div class="value-card"><div class="value-card__dot">' + icon(VALUE_ICONS[i % VALUE_ICONS.length]) + '</div><h3>' + v.title + "</h3><p>" + v.text + "</p></div>";
-      wrap.appendChild(div);
+    t("hero.facts").forEach(function (m, i) {
+      var value = m.counter
+        ? '<span data-counter data-target="' + m.value + '" data-suffix="' + (m.suffix || "") + '">' + (heroCountersDone ? m.value + (m.suffix || "") : "0") + "</span>"
+        : m.value;
+      var w = el(
+        "div",
+        "widget",
+        '<div class="widget__value">' + value + '</div><div class="widget__label">' + m.label + '</div><div class="widget__bar"><span></span></div>'
+      );
+      w.style.setProperty("--i", i);
+      wrap.appendChild(w);
     });
-    observeReveals(wrap);
+  }
 
+  function animateCounter(node) {
+    var target = parseInt(node.getAttribute("data-target"), 10) || 0;
+    var suffix = node.getAttribute("data-suffix") || "";
+    if (reduced) {
+      node.textContent = target + suffix;
+      return;
+    }
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var k = Math.min((ts - start) / 1400, 1);
+      node.textContent = Math.round((1 - Math.pow(1 - k, 3)) * target) + suffix;
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------------- Hero: слайди ----------------
+     Слайд стає активним лише тоді, коли його зображення вже завантажене. */
+  function initHeroSlides() {
+    var slides = Array.prototype.slice.call(document.querySelectorAll("#hero-media .hero__slide"));
+    var dotsWrap = document.getElementById("hero-dots");
+    if (!slides.length) return;
+    var idx = 0;
+    var timer = null;
+
+    function ready(slide) {
+      var img = slide.querySelector("img");
+      return img && img.getAttribute("src") && img.complete && img.naturalWidth > 0;
+    }
+
+    dotsWrap.innerHTML = "";
+    slides.forEach(function (s, i) {
+      var dot = el("button", i === 0 ? "is-active" : "");
+      dot.type = "button";
+      dot.setAttribute("aria-label", (state.lang === "ua" ? "Фото " : "Photo ") + (i + 1));
+      dot.addEventListener("click", function () {
+        if (!ready(s)) return;
+        show(i);
+        restart();
+      });
+      dotsWrap.appendChild(dot);
+    });
+
+    function show(i) {
+      slides[idx].classList.remove("is-active");
+      dotsWrap.children[idx].classList.remove("is-active");
+      idx = i;
+      slides[idx].classList.add("is-active");
+      dotsWrap.children[idx].classList.add("is-active");
+    }
+    function advance() {
+      for (var step = 1; step < slides.length; step++) {
+        var next = (idx + step) % slides.length;
+        if (ready(slides[next])) {
+          show(next);
+          return;
+        }
+      }
+    }
+    function restart() {
+      if (reduced) return;
+      clearInterval(timer);
+      timer = setInterval(advance, 5200);
+    }
+
+    // Решта фото підвантажуються після повного завантаження сторінки
+    function loadDeferred() {
+      document.querySelectorAll("#hero-media img[data-src]").forEach(function (img) {
+        img.srcset = img.dataset.srcset;
+        img.src = img.dataset.src;
+        img.removeAttribute("data-src");
+        img.removeAttribute("data-srcset");
+      });
+    }
+    if (document.readyState === "complete") setTimeout(loadDeferred, 300);
+    else window.addEventListener("load", function () { setTimeout(loadDeferred, 300); });
+
+    restart();
+  }
+
+  /* ---------------- About: маніфест, що «загоряється» слово за словом ---------------- */
+  function renderManifest() {
+    var node = document.getElementById("about-manifest");
+    if (!node) return;
+    var words = t("about.subtitle").split(/\s+/);
+    node.setAttribute("aria-label", t("about.subtitle"));
+    node.innerHTML = words
+      .map(function (w) {
+        return '<span class="w" aria-hidden="true">' + w + "</span>";
+      })
+      .join(" ");
+    if (reduced) node.querySelectorAll(".w").forEach(function (w) { w.classList.add("is-lit"); });
+  }
+
+  function renderAbout() {
+    renderManifest();
+    var wrap = document.getElementById("about-values");
+    if (wrap) {
+      wrap.innerHTML = "";
+      t("about.values").forEach(function (v, i) {
+        var li = el("li", "reveal", "<h3>" + v.title + "</h3><p>" + v.text + "</p>");
+        li.style.setProperty("--i", i);
+        li.style.setProperty("--reveal-delay", i * 90);
+        wrap.appendChild(li);
+      });
+      observeReveals(wrap);
+    }
     var structWrap = document.getElementById("about-structure");
     if (structWrap) {
       structWrap.innerHTML = "";
       t("about.structure.items").forEach(function (s, i) {
-        var li = el("li", "reveal structure-flow__item");
-        li.style.setProperty("--reveal-delay", i * 110);
-        li.innerHTML =
-          '<div class="structure-flow__num">' + (i + 1) + "</div>" +
-          '<div class="structure-flow__body"><h4>' + s.title + "</h4><p>" + s.text + "</p></div>";
-        structWrap.appendChild(li);
+        structWrap.appendChild(
+          el("li", "", '<span class="structure__num">' + (i + 1) + "</span><div><h4>" + s.title + "</h4><p>" + s.text + "</p></div>")
+        );
       });
-      observeReveals(structWrap);
     }
   }
 
-  /* ---------------- Directions (single-open accordion — keeps the section
-     compact instead of stacking 8 full-height cards) ---------------- */
-  function renderDirections() {
-    var wrap = document.getElementById("directions-grid");
-    if (!wrap) return;
-    wrap.innerHTML = "";
-    t("directions.items").forEach(function (item, i) {
-      var li = el("li", "reveal accordion__item" + (i === 0 ? " is-open" : ""));
-      li.style.setProperty("--reveal-delay", i * 70);
-      var panelId = "direction-panel-" + i;
-      li.innerHTML =
-        '<h3 class="accordion__head">' +
-        '<button type="button" class="accordion__trigger" aria-expanded="' + (i === 0 ? "true" : "false") + '" aria-controls="' + panelId + '">' +
-        '<span class="accordion__icon"><img src="assets/img/icons/' + item.icon + '.svg" alt="" width="24" height="24" /></span>' +
-        '<span class="accordion__title">' + item.title + "</span>" +
-        '<span class="accordion__chevron">' + icon("chevron") + "</span>" +
-        "</button></h3>" +
-        '<div class="accordion__panel" id="' + panelId + '">' +
-        '<div class="accordion__panel-inner">' +
-        "<p>" + item.text + "</p>" +
-        '<a href="#join" class="btn-text">' + t("directions.cta") + " " + icon("arrow") + "</a>" +
-        "</div></div>";
-      wrap.appendChild(li);
-    });
+  /* ---------------- Directions: закріплена сцена ---------------- */
+  var SCRAMBLE_CHARS = "АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЮЯ#/<>*+";
+  var scrambleRaf = null;
 
-    wrap.querySelectorAll(".accordion__trigger").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var item = btn.closest(".accordion__item");
-        var wasOpen = item.classList.contains("is-open");
-        wrap.querySelectorAll(".accordion__item.is-open").forEach(function (openItem) {
-          openItem.classList.remove("is-open");
-          openItem.querySelector(".accordion__trigger").setAttribute("aria-expanded", "false");
-        });
-        if (!wasOpen) {
-          item.classList.add("is-open");
-          btn.setAttribute("aria-expanded", "true");
-        }
-      });
-    });
-
-    observeReveals(wrap);
+  function scrambleTo(node, text) {
+    if (reduced) {
+      node.textContent = text;
+      return;
+    }
+    cancelAnimationFrame(scrambleRaf);
+    var from = node.textContent;
+    var len = Math.max(from.length, text.length);
+    var frame = 0;
+    var total = 22;
+    function tick() {
+      var out = "";
+      for (var i = 0; i < len; i++) {
+        var settleAt = Math.floor((i / len) * total * 0.7) + 6;
+        if (frame >= settleAt) out += text[i] || "";
+        else if (i < text.length || frame < total / 2) out += SCRAMBLE_CHARS[(Math.random() * SCRAMBLE_CHARS.length) | 0];
+      }
+      node.textContent = out;
+      frame++;
+      if (frame <= total) scrambleRaf = requestAnimationFrame(tick);
+      else node.textContent = text;
+    }
+    tick();
   }
 
-  /* ---------------- Hero facts ---------------- */
-  function renderHeroFacts() {
-    var heroStats = document.getElementById("hero-stats");
-    if (!heroStats) return;
-    heroStats.innerHTML = "";
-    t("hero.facts").forEach(function (m) {
-      var valueHtml = m.counter
-        ? '<div class="hero__stat-value" data-counter data-target="' + m.value + '" data-suffix="' + (m.suffix || "") + '">0</div>'
-        : '<div class="hero__stat-value">' + m.value + "</div>";
-      var div = el("div", "", valueHtml + '<div class="hero__stat-label">' + m.label + "</div>");
-      heroStats.appendChild(div);
+  function renderDirectionTabs() {
+    var tabs = document.getElementById("directions-tabs");
+    if (!tabs) return;
+    tabs.innerHTML = "";
+    t("directions.items").forEach(function (d, i) {
+      var b = el("button", "directions__tab", d.title);
+      b.type = "button";
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", "false");
+      b.setAttribute("aria-controls", "direction-card");
+      b.addEventListener("click", function () {
+        // Без анімацій сцена не закріплена — просто перемикаємо вкладку
+        if (reduced) showDirection(i);
+        else scrollToDirection(i);
+      });
+      tabs.appendChild(b);
     });
-    observeCounters(heroStats);
+    var keep = state.direction;
+    state.direction = -1;
+    showDirection(Math.max(0, keep), true);
+  }
+
+  function scrollToDirection(i) {
+    var section = document.getElementById("directions");
+    var n = t("directions.items").length;
+    var range = section.offsetHeight - window.innerHeight;
+    var top = section.getBoundingClientRect().top + window.scrollY + range * ((i + 0.5) / n);
+    window.scrollTo({ top: top, behavior: reduced ? "auto" : "smooth" });
+  }
+
+  function showDirection(i, instant) {
+    var items = t("directions.items");
+    if (i === state.direction || !items[i]) return;
+    var d = items[i];
+    state.direction = i;
+
+    var word = document.getElementById("direction-word");
+    if (instant) word.textContent = d.word.toUpperCase();
+    else scrambleTo(word, d.word.toUpperCase());
+
+    var card = document.getElementById("direction-card");
+    var photo = document.getElementById("direction-photo");
+    var base = DATA.directionPhotos[d.slug];
+    var img = el("img");
+    img.alt = "";
+    img.decoding = "async";
+    img.sizes = "(max-width: 860px) 92vw, 46vw";
+    img.srcset = srcset(base);
+    img.src = base + "@800w.jpg";
+    if (!instant && !reduced) img.className = "is-entering";
+    photo.appendChild(img);
+    // Прибираємо попередні фото, коли нове вже накрило їх
+    var old = Array.prototype.slice.call(photo.children, 0, -1);
+    setTimeout(function () {
+      old.forEach(function (o) { o.remove(); });
+    }, instant ? 0 : 950);
+
+    function fill() {
+      document.getElementById("direction-icon").innerHTML = '<img src="assets/img/icons/' + d.icon + '.svg" alt="" width="22" height="22" />';
+      document.getElementById("direction-name").textContent = d.title;
+      document.getElementById("direction-text").textContent = d.text;
+      card.classList.remove("is-swapping");
+    }
+    if (instant || reduced) fill();
+    else {
+      card.classList.add("is-swapping");
+      setTimeout(fill, 260);
+    }
+
+    var tabs = document.querySelectorAll(".directions__tab");
+    tabs.forEach(function (tb, k) {
+      tb.setAttribute("aria-selected", k === i ? "true" : "false");
+    });
+    var active = tabs[i];
+    var bar = document.getElementById("directions-tabs");
+    if (active && bar && bar.scrollWidth > bar.clientWidth) {
+      bar.scrollTo({ left: active.offsetLeft - bar.clientWidth / 2 + active.offsetWidth / 2, behavior: reduced ? "auto" : "smooth" });
+    }
   }
 
   /* ---------------- Team ---------------- */
@@ -182,292 +493,131 @@
     if (!wrap) return;
     wrap.innerHTML = "";
     DATA.team.forEach(function (m, i) {
-      var li = el("li", "reveal");
-      li.style.setProperty("--reveal-delay", (i % 3) * 90);
+      var name = state.lang === "en" && m.nameEn ? m.nameEn : m.name;
+      var short = name.split(" ").slice(0, 2).join(" ");
+      var li = el("li", "member" + (i === state.teamActive ? " is-active" : ""));
+      li.setAttribute("data-cursor", "open");
       li.innerHTML =
-        '<div class="card team-card">' +
-        '<div class="team-card__media"><img src="' + m.img + '" alt="" loading="lazy" /></div>' +
-        '<div class="team-card__body">' +
-        "<h3>" + m.name + "</h3>" +
-        '<p class="role">' + m.role[state.lang] + "</p>" +
-        '<button type="button" class="btn-text" data-team-open="' + i + '">' + t("team.readMore") + " " + icon("arrow") + "</button>" +
-        "</div></div>";
+        '<img src="' + m.img + '" alt="" loading="lazy" decoding="async" />' +
+        '<span class="member__vertical" aria-hidden="true">' + short + "</span>" +
+        '<div class="member__body">' +
+        "<h3>" + name + "</h3>" +
+        '<p class="member__role">' + m.role[state.lang] + "</p>" +
+        '<p class="member__excerpt">' + m.bio[state.lang].split("\n")[0] + "</p>" +
+        '<button type="button" class="btn-text member__open" data-team-open="' + i + '">' + t("team.readMore") + "</button>" +
+        "</div>";
       wrap.appendChild(li);
     });
-    observeReveals(wrap);
+  }
+
+  function setTeamActive(i) {
+    if (i === state.teamActive) return;
+    state.teamActive = i;
+    document.querySelectorAll("#team-grid .member").forEach(function (m, k) {
+      m.classList.toggle("is-active", k === i);
+    });
   }
 
   var lastFocusedBeforeModal = null;
-
   function openTeamModal(index) {
     var member = DATA.team[index];
     if (!member) return;
     var backdrop = document.getElementById("team-modal");
-    document.getElementById("team-modal-name").textContent = member.name;
+    document.getElementById("team-modal-name").textContent = state.lang === "en" && member.nameEn ? member.nameEn : member.name;
     document.getElementById("team-modal-role").textContent = member.role[state.lang];
     document.getElementById("team-modal-bio").textContent = member.bio[state.lang];
+    document.getElementById("team-modal-img").src = member.img;
+    document.getElementById("team-modal-bio").scrollTop = 0;
     lastFocusedBeforeModal = document.activeElement;
     backdrop.classList.add("is-open");
     document.body.classList.add("modal-open");
     document.getElementById("team-modal-close").focus();
   }
-
   function closeTeamModal() {
-    var backdrop = document.getElementById("team-modal");
-    backdrop.classList.remove("is-open");
+    document.getElementById("team-modal").classList.remove("is-open");
     document.body.classList.remove("modal-open");
     if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) lastFocusedBeforeModal.focus();
   }
 
-  /* ---------------- Media / News ---------------- */
+  function bindTeam() {
+    var grid = document.getElementById("team-grid");
+    grid.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-team-open]");
+      if (btn) {
+        openTeamModal(parseInt(btn.getAttribute("data-team-open"), 10));
+        return;
+      }
+      var card = e.target.closest(".member");
+      if (!card) return;
+      var i = Array.prototype.indexOf.call(grid.children, card);
+      if (card.classList.contains("is-active") || mqMobile.matches) openTeamModal(i);
+      else setTeamActive(i);
+    });
+    grid.addEventListener("mouseover", function (e) {
+      if (!finePointer) return;
+      var card = e.target.closest(".member");
+      if (card) setTeamActive(Array.prototype.indexOf.call(grid.children, card));
+    });
+    grid.addEventListener("focusin", function (e) {
+      var card = e.target.closest(".member");
+      if (card) setTeamActive(Array.prototype.indexOf.call(grid.children, card));
+    });
+    document.getElementById("team-modal-close").addEventListener("click", closeTeamModal);
+    document.getElementById("team-modal").addEventListener("click", function (e) {
+      if (e.target === e.currentTarget) closeTeamModal();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && document.getElementById("team-modal").classList.contains("is-open")) closeTeamModal();
+    });
+  }
+
+  /* ---------------- News ---------------- */
   function renderMedia() {
     var wrap = document.getElementById("news-grid");
-    var dotsWrap = document.getElementById("news-dots");
     if (!wrap) return;
     wrap.innerHTML = "";
-    if (dotsWrap) dotsWrap.innerHTML = "";
-    var formatter = new Intl.DateTimeFormat(state.lang === "ua" ? "uk-UA" : "en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-    DATA.news.forEach(function (n, i) {
-      var li = el("li", "reveal news-carousel__slide");
-      li.style.setProperty("--reveal-delay", i * 100);
-      var srcset = n.image.replace(/\.jpg$/, "@480w.jpg") + " 480w, " + n.image.replace(/\.jpg$/, "@800w.jpg") + " 800w, " + n.image + " 1400w";
+    var fmt = new Intl.DateTimeFormat(state.lang === "ua" ? "uk-UA" : "en-US", { day: "numeric", month: "long", year: "numeric" });
+    DATA.news.forEach(function (n) {
+      var base = n.image.replace(/\.jpg$/, "");
+      var date = fmt.format(new Date(n.date));
+      var li = el("li", "news-card");
+      li.tabIndex = 0;
+      li.setAttribute("data-cursor", "open");
       li.innerHTML =
-        '<article class="card news-card">' +
-        '<div class="news-card__media"><img src="' + n.image + '" srcset="' + srcset + '" sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 92vw" alt="" loading="lazy" decoding="async" /></div>' +
-        '<div class="news-card__body">' +
-        '<time class="news-card__date" datetime="' + n.date + '">' + formatter.format(new Date(n.date)) + "</time>" +
-        "<h3>" + n.title[state.lang] + "</h3>" +
-        "<p>" + n.text[state.lang] + "</p>" +
-        '<span class="btn-text">' + t("media.readMore") + " " + icon("arrow") + "</span>" +
-        "</div></article>";
+        '<img src="' + base + '@800w.jpg" srcset="' + base + "@480w.jpg 480w, " + base + "@800w.jpg 800w, " + n.image + ' 1300w" sizes="(max-width: 860px) 76vw, 440px" alt="" loading="lazy" decoding="async" />' +
+        '<div class="news-card__meta"><time class="news-card__date" datetime="' + n.date + '">' + date + "</time><h3>" + n.title[state.lang] + "</h3></div>" +
+        '<div class="news-card__panel"><time datetime="' + n.date + '">' + date + "</time><h3>" + n.title[state.lang] + "</h3><p>" + n.text[state.lang] + "</p></div>";
       wrap.appendChild(li);
-
-      if (dotsWrap) {
-        var dot = el("button", "news-carousel__dot" + (i === 0 ? " is-active" : ""));
-        dot.type = "button";
-        dot.setAttribute("aria-label", (state.lang === "ua" ? "Новина " : "News ") + (i + 1));
-        dot.addEventListener("click", function () {
-          scrollNewsToSlide(i);
-        });
-        dotsWrap.appendChild(dot);
-      }
     });
-    observeReveals(wrap);
-    wrap.scrollLeft = 0;
-    updateNewsNavState(wrap);
-    updateNewsActiveDot(wrap, dotsWrap);
+    measureNews();
   }
 
-  function updateNewsActiveDot(track, dotsWrap) {
-    if (!dotsWrap) return;
-    var slides = track.querySelectorAll(".news-carousel__slide");
-    var dots = dotsWrap.querySelectorAll(".news-carousel__dot");
-    if (!slides.length || !dots.length) return;
-    var trackLeft = track.getBoundingClientRect().left;
-    var closestIdx = 0;
-    var closestDist = Infinity;
-    slides.forEach(function (s, i) {
-      var dist = Math.abs(s.getBoundingClientRect().left - trackLeft);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closestIdx = i;
-      }
-    });
-    dots.forEach(function (d, i) {
-      d.classList.toggle("is-active", i === closestIdx);
+  function bindNews() {
+    var wrap = document.getElementById("news-grid");
+    // На сенсорних екранах панель з текстом відкривається дотиком
+    wrap.addEventListener("click", function (e) {
+      var card = e.target.closest(".news-card");
+      if (!card || finePointer) return;
+      var open = card.classList.contains("is-open");
+      wrap.querySelectorAll(".news-card.is-open").forEach(function (c) { c.classList.remove("is-open"); });
+      if (!open) card.classList.add("is-open");
     });
   }
 
-  function newsScrollAmount(track) {
-    var slide = track.querySelector(".news-carousel__slide");
-    if (!slide) return track.clientWidth;
-    var style = window.getComputedStyle(track);
-    var gap = parseFloat(style.columnGap || style.gap) || 22;
-    return slide.getBoundingClientRect().width + gap;
-  }
-
-  function scrollNewsToSlide(i) {
+  var newsShift = 0;
+  function measureNews() {
+    var section = document.getElementById("media");
     var track = document.getElementById("news-grid");
-    if (!track) return;
-    var slide = track.children[i];
-    if (!slide) return;
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var delta = slide.getBoundingClientRect().left - track.getBoundingClientRect().left;
-    track.scrollTo({ left: track.scrollLeft + delta, behavior: reduced ? "auto" : "smooth" });
-  }
-
-  function updateNewsNavState(track) {
-    var prev = document.getElementById("news-prev");
-    var next = document.getElementById("news-next");
-    if (!prev || !next) return;
-    var max = track.scrollWidth - track.clientWidth;
-    prev.disabled = track.scrollLeft <= 4;
-    next.disabled = max <= 4 || track.scrollLeft >= max - 4;
-  }
-
-  /* ---------------- Hero media: background crossfade + floating photo card ----------------
-     Slides only ever become the active one once their <img> has actually finished
-     downloading — the interval-driven rotation skips over not-yet-ready slides
-     instead of switching to them blind, so a slow connection never produces a
-     blank "pop" mid-crossfade. The first slide of each group loads eagerly
-     (LCP-critical, preloaded in <head>); the rest carry data-src/data-srcset and
-     are only assigned a real src once the page has settled, so they never
-     compete with critical resources and never depend on native loading="lazy"
-     heuristics (unreliable for absolutely-positioned, opacity:0 carousel slides
-     on some mobile browsers). */
-  function markReady(slide) {
-    slide.dataset.ready = "1";
-  }
-
-  function slideIsReady(slide) {
-    if (slide.dataset.ready === "1") return true;
-    var img = slide.querySelector("img");
-    if (img && img.complete && img.naturalWidth > 0 && img.src) {
-      markReady(slide);
-      return true;
+    if (!section || !track) return;
+    if (mqMobile.matches || reduced) {
+      section.style.height = "";
+      newsShift = 0;
+      track.style.setProperty("--nx", 0);
+      return;
     }
-    return false;
-  }
-
-  function watchSlideImages(slides) {
-    slides.forEach(function (slide) {
-      var img = slide.querySelector("img");
-      if (!img) return;
-      if (slideIsReady(slide)) return;
-      img.addEventListener("load", function () {
-        markReady(slide);
-      });
-      img.addEventListener("error", function () {
-        slide.dataset.ready = "0";
-        slide.dataset.broken = "1";
-      });
-    });
-  }
-
-  function initCrossfadeGroup(opts) {
-    var slides = Array.prototype.slice.call(document.querySelectorAll(opts.slideSelector));
-    var dotsWrap = opts.dotsWrap ? document.getElementById(opts.dotsWrap) : null;
-    if (!slides.length) return;
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var idx = opts.startIndex ? opts.startIndex % slides.length : 0;
-    var timer = null;
-
-    watchSlideImages(slides);
-
-    slides.forEach(function (s, i) {
-      s.classList.toggle("is-active", i === idx);
-    });
-
-    if (dotsWrap) {
-      dotsWrap.innerHTML = "";
-      slides.forEach(function (s, i) {
-        var dot = document.createElement("button");
-        dot.type = "button";
-        dot.className = "dot" + (i === idx ? " is-active" : "");
-        dot.setAttribute("aria-label", (state.lang === "ua" ? "Слайд " : "Slide ") + (i + 1));
-        dot.addEventListener("click", function () {
-          if (!slideIsReady(s)) return;
-          show(i);
-          restart();
-        });
-        dotsWrap.appendChild(dot);
-      });
-    }
-
-    function show(i) {
-      slides[idx].classList.remove("is-active");
-      if (dotsWrap) dotsWrap.children[idx].classList.remove("is-active");
-      idx = i;
-      slides[idx].classList.add("is-active");
-      if (dotsWrap) dotsWrap.children[idx].classList.add("is-active");
-    }
-
-    function advance() {
-      for (var step = 1; step <= slides.length; step++) {
-        var next = (idx + step) % slides.length;
-        if (next === idx) return;
-        if (slideIsReady(slides[next])) {
-          show(next);
-          return;
-        }
-      }
-    }
-
-    function restart() {
-      if (reduced) return;
-      if (timer) clearInterval(timer);
-      timer = setInterval(advance, opts.interval);
-    }
-
-    restart();
-  }
-
-  function deferHeroImages() {
-    var deferred = document.querySelectorAll("#hero img[data-src]");
-    if (!deferred.length) return;
-    function loadAll() {
-      deferred.forEach(function (img) {
-        if (img.dataset.srcset) img.srcset = img.dataset.srcset;
-        if (img.dataset.src) img.src = img.dataset.src;
-        img.removeAttribute("data-src");
-        img.removeAttribute("data-srcset");
-      });
-    }
-    if (document.readyState === "complete") {
-      setTimeout(loadAll, 50);
-    } else {
-      window.addEventListener("load", function () {
-        setTimeout(loadAll, 50);
-      });
-    }
-  }
-
-  function initHeroMedia() {
-    initCrossfadeGroup({
-      slideSelector: "#hero-bg-track .hero__bg-slide",
-      interval: 6500,
-      startIndex: 0,
-    });
-    initCrossfadeGroup({
-      slideSelector: "#hero-photo-track .hero__photo-slide",
-      dotsWrap: "hero-photo-dots",
-      interval: 4800,
-      startIndex: 0,
-    });
-    deferHeroImages();
-  }
-
-  function bindNewsCarousel() {
-    var track = document.getElementById("news-grid");
-    var prev = document.getElementById("news-prev");
-    var next = document.getElementById("news-next");
-    if (!track || !prev || !next) return;
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    prev.addEventListener("click", function () {
-      track.scrollBy({ left: -newsScrollAmount(track), behavior: reduced ? "auto" : "smooth" });
-    });
-    next.addEventListener("click", function () {
-      track.scrollBy({ left: newsScrollAmount(track), behavior: reduced ? "auto" : "smooth" });
-    });
-    var dotsWrap = document.getElementById("news-dots");
-    var ticking = false;
-    track.addEventListener("scroll", function () {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(function () {
-        updateNewsNavState(track);
-        updateNewsActiveDot(track, dotsWrap);
-        ticking = false;
-      });
-    });
-    window.addEventListener("resize", function () {
-      updateNewsNavState(track);
-      updateNewsActiveDot(track, dotsWrap);
-    });
+    newsShift = Math.max(0, track.scrollWidth - window.innerWidth);
+    // Висота секції = горизонтальний шлях + один екран, щоб стрічка «доїхала» до кінця
+    section.style.height = Math.round(newsShift + window.innerHeight * 1.25) + "px";
   }
 
   /* ---------------- Footer ---------------- */
@@ -476,8 +626,7 @@
     if (links) {
       links.innerHTML = "";
       t("footer.links").forEach(function (l) {
-        var li = el("li", "", '<a href="' + l.href + '">' + l.label + "</a>");
-        links.appendChild(li);
+        links.appendChild(el("li", "", '<a href="' + l.href + '">' + l.label + "</a>"));
       });
     }
     var contacts = document.getElementById("footer-contacts");
@@ -486,9 +635,19 @@
         '<li><a href="mailto:' + DATA.contact.email + '">' + DATA.contact.email + "</a></li>" +
         '<li><a href="tel:' + DATA.contact.phone.replace(/\s/g, "") + '">' + DATA.contact.phone + "</a></li>";
     }
+    var track = document.getElementById("marquee-track");
+    if (track) {
+      var items = t("footer.marquee");
+      var html = "";
+      for (var r = 0; r < 2; r++) {
+        items.forEach(function (txt) {
+          html += '<span class="marquee__item">' + txt + '<span class="marquee__sep"></span></span>';
+        });
+      }
+      track.innerHTML = html;
+    }
   }
 
-  /* ---------------- Contact info + socials ---------------- */
   function renderContactStatic() {
     var email = document.getElementById("contact-email");
     var phone = document.getElementById("contact-phone");
@@ -505,7 +664,7 @@
       if (!wrap) return;
       wrap.innerHTML = "";
       DATA.social.forEach(function (s) {
-        var a = el("a", id === "social-row" ? "social-btn" : "", id === "social-row" ? socialSvg(s.id) : s.label.slice(0, 1));
+        var a = el("a", "social-btn", socialSvg(s.id));
         a.href = s.href;
         a.target = "_blank";
         a.rel = "noreferrer noopener";
@@ -524,9 +683,7 @@
         o.textContent = opt;
         subjectSelect.appendChild(o);
       });
-      if (currentValue && t("contact.form.subjectOptions").indexOf(currentValue) > -1) {
-        subjectSelect.value = currentValue;
-      }
+      if (currentValue && t("contact.form.subjectOptions").indexOf(currentValue) > -1) subjectSelect.value = currentValue;
     }
   }
 
@@ -768,155 +925,6 @@
     });
   }
 
-  /* ---------------- Scroll reveal ---------------- */
-  var revealObserver = null;
-  function getRevealObserver() {
-    if (revealObserver) return revealObserver;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
-    revealObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
-    );
-    return revealObserver;
-  }
-
-  function observeReveals(container) {
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var items = container.querySelectorAll(".reveal");
-    if (reduced) {
-      items.forEach(function (i) {
-        i.classList.add("is-visible");
-      });
-      return;
-    }
-    var obs = getRevealObserver();
-    items.forEach(function (i) {
-      obs.observe(i);
-    });
-  }
-
-  /* ---------------- Counters ---------------- */
-  var counterObserver = null;
-  function getCounterObserver() {
-    if (counterObserver) return counterObserver;
-    counterObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            animateCounter(entry.target);
-            counterObserver.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.4 }
-    );
-    return counterObserver;
-  }
-
-  function animateCounter(node) {
-    var target = parseInt(node.getAttribute("data-target"), 10) || 0;
-    var suffix = node.getAttribute("data-suffix") || "";
-    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      node.textContent = target.toLocaleString("uk-UA") + suffix;
-      return;
-    }
-    var duration = 1600;
-    var start = null;
-    function step(ts) {
-      if (start === null) start = ts;
-      var progress = Math.min((ts - start) / duration, 1);
-      var eased = 1 - Math.pow(1 - progress, 3);
-      node.textContent = Math.round(eased * target).toLocaleString("uk-UA") + suffix;
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  function observeCounters(container) {
-    var items = container.querySelectorAll("[data-counter]");
-    var obs = getCounterObserver();
-    items.forEach(function (i) {
-      obs.observe(i);
-    });
-  }
-
-  /* ---------------- Header / mobile nav / back-to-top ---------------- */
-  function bindChrome() {
-    var header = document.getElementById("site-header");
-    var onScroll = function () {
-      header.classList.toggle("is-scrolled", window.scrollY > 12);
-      var toTop = document.getElementById("to-top");
-      if (toTop) toTop.classList.toggle("is-visible", window.scrollY > 700);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    var toggle = document.getElementById("nav-toggle");
-    var mobileNav = document.getElementById("mobile-nav");
-    toggle.addEventListener("click", function () {
-      var open = mobileNav.classList.toggle("is-open");
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      document.body.style.overflow = open ? "hidden" : "";
-    });
-    mobileNav.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        mobileNav.classList.remove("is-open");
-        toggle.setAttribute("aria-expanded", "false");
-        document.body.style.overflow = "";
-      });
-    });
-
-    document.querySelectorAll(".lang-switch button").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        setLang(btn.getAttribute("data-lang"));
-      });
-    });
-
-    var toTop = document.getElementById("to-top");
-    if (toTop) {
-      toTop.addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    }
-
-    var hero = document.getElementById("hero");
-    if (hero && window.matchMedia("(hover: hover)").matches) {
-      hero.addEventListener("mousemove", function (e) {
-        var rect = hero.getBoundingClientRect();
-        var x = ((e.clientX - rect.left) / rect.width) * 100;
-        var y = ((e.clientY - rect.top) / rect.height) * 100;
-        hero.style.setProperty("--mx", x + "%");
-        hero.style.setProperty("--my", y + "%");
-      });
-    }
-  }
-
-  function bindTeamModal() {
-    var grid = document.getElementById("team-grid");
-    grid.addEventListener("click", function (e) {
-      var btn = e.target.closest("[data-team-open]");
-      if (!btn) return;
-      openTeamModal(parseInt(btn.getAttribute("data-team-open"), 10));
-    });
-    document.getElementById("team-modal-close").addEventListener("click", closeTeamModal);
-    document.getElementById("team-modal").addEventListener("click", function (e) {
-      if (e.target === e.currentTarget) closeTeamModal();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && document.getElementById("team-modal").classList.contains("is-open")) {
-        closeTeamModal();
-      }
-    });
-  }
-
   /* ---------------- Forms ---------------- */
   // Vercel Function, яка пересилає заявки в Telegram (api/lead.js).
   // Абсолютна адреса, бо сайт також відкривається з GitHub Pages, де /api немає.
@@ -1058,37 +1066,298 @@
     });
   }
 
+  /* ---------------- Scroll reveal ---------------- */
+  var revealObserver = null;
+  function observeReveals(container) {
+    var items = container.querySelectorAll(".reveal:not(.is-visible)");
+    if (reduced || !("IntersectionObserver" in window)) {
+      items.forEach(function (i) { i.classList.add("is-visible"); });
+      return;
+    }
+    if (!revealObserver) {
+      revealObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -50px 0px" }
+      );
+    }
+    items.forEach(function (i) { revealObserver.observe(i); });
+  }
+
+  /* ==========================================================================
+     Головний цикл скролу — усі сцени рахуються в одному requestAnimationFrame
+     ========================================================================== */
+  var nodes = {};
+  var lastY = 0;
+  var ticking = false;
+
+  function sectionProgress(section) {
+    var rect = section.getBoundingClientRect();
+    var range = section.offsetHeight - window.innerHeight;
+    if (range <= 0) return rect.top <= 0 ? 1 : 0;
+    return clamp(-rect.top / range, 0, 1);
+  }
+
+  function updateHero() {
+    var hero = nodes.hero;
+    if (!hero) return;
+    var p = reduced ? 1 : sectionProgress(hero);
+    var e = reduced ? 1 : easeInOut(clamp(p / 0.55, 0, 1));
+    var c = reduced ? 1 : clamp((p - 0.42) / 0.4, 0, 1);
+    hero.style.setProperty("--p", p.toFixed(4));
+    hero.style.setProperty("--e", e.toFixed(4));
+    hero.style.setProperty("--c", c.toFixed(4));
+    hero.classList.toggle("is-open", c > 0.5);
+    if (c > 0.45 && !heroCountersDone) {
+      heroCountersDone = true;
+      hero.querySelectorAll("[data-counter]").forEach(animateCounter);
+    }
+    // Шапка над великим фото — світла в обох темах
+    var heroBottom = hero.getBoundingClientRect().bottom;
+    nodes.header.classList.toggle("on-photo", e > 0.6 && heroBottom > 80);
+  }
+
+  function updateManifest() {
+    var m = nodes.manifest;
+    if (!m || reduced) return;
+    var rect = m.getBoundingClientRect();
+    var vh = window.innerHeight;
+    // Слова «загоряються», поки абзац проходить від низу екрана до верхньої третини
+    var k = clamp((vh * 0.88 - rect.top) / (rect.height + vh * 0.45), 0, 1);
+    var words = m.children;
+    var lit = Math.round(k * words.length);
+    for (var i = 0; i < words.length; i++) {
+      var on = i < lit;
+      if (words[i].classList.contains("is-lit") !== on) words[i].classList.toggle("is-lit", on);
+    }
+  }
+
+  function updateDirections() {
+    var s = nodes.directions;
+    if (!s || reduced) return;
+    var p = sectionProgress(s);
+    var n = t("directions.items").length;
+    nodes.dirProgress.style.setProperty("--dp", p.toFixed(4));
+    showDirection(clamp(Math.floor(p * n), 0, n - 1));
+  }
+
+  function updateNews() {
+    if (!newsShift) return;
+    var p = sectionProgress(nodes.news);
+    var x = p * newsShift;
+    nodes.newsTrack.style.setProperty("--nx", x.toFixed(1));
+    // Легкий паралакс фото всередині кожної картки
+    var cards = nodes.newsTrack.children;
+    var vw = window.innerWidth;
+    for (var i = 0; i < cards.length; i++) {
+      var r = cards[i].getBoundingClientRect();
+      var k = clamp((r.left + r.width) / (vw + r.width), 0, 1);
+      cards[i].style.setProperty("--par", (1 - k).toFixed(3));
+    }
+  }
+
+  function updateChrome() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    nodes.progress.style.setProperty("--sp", max > 0 ? (y / max).toFixed(4) : 0);
+    nodes.toTop.classList.toggle("is-visible", y > window.innerHeight * 2);
+
+    // Шапка ховається при скролі вниз і повертається при скролі вгору
+    var menuOpen = document.getElementById("mobile-nav").classList.contains("is-open");
+    var hide = y > lastY + 4 && y > window.innerHeight * 1.2 && !menuOpen;
+    if (y < lastY - 4 || y < 100) nodes.header.classList.remove("is-hidden");
+    else if (hide) nodes.header.classList.add("is-hidden");
+    lastY = y;
+
+    // Активний пункт меню — «пігулка» їде під ним
+    var mid = window.innerHeight * 0.4;
+    var current = null;
+    nodes.navLinks.forEach(function (a) {
+      var sec = document.querySelector(a.getAttribute("href"));
+      if (!sec) return;
+      var r = sec.getBoundingClientRect();
+      if (r.top <= mid && r.bottom > mid) current = a;
+    });
+    if (current !== nodes.activeLink) {
+      nodes.activeLink = current;
+      nodes.navLinks.forEach(function (a) { a.classList.toggle("is-active", a === current); });
+      movePill();
+    }
+  }
+
+  function movePill() {
+    var nav = nodes.nav;
+    if (!nav) return;
+    var a = nodes.activeLink;
+    nav.classList.toggle("has-active", !!a);
+    if (!a) return;
+    nav.style.setProperty("--px", a.offsetLeft + "px");
+    nav.style.setProperty("--pw", a.offsetWidth + "px");
+  }
+
+  function onScroll() {
+    updateHero();
+    updateManifest();
+    updateDirections();
+    updateNews();
+    updateChrome();
+  }
+
+  function requestTick() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      ticking = false;
+      onScroll();
+    });
+  }
+
+  /* ---------------- Header / меню / мова ---------------- */
+  function bindChrome() {
+    var toggle = document.getElementById("nav-toggle");
+    var mobileNav = document.getElementById("mobile-nav");
+    function setMenu(open) {
+      mobileNav.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) nodes.header.classList.remove("is-hidden");
+    }
+    toggle.addEventListener("click", function () {
+      setMenu(!mobileNav.classList.contains("is-open"));
+    });
+    mobileNav.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () { setMenu(false); });
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && mobileNav.classList.contains("is-open")) setMenu(false);
+    });
+
+    document.querySelectorAll(".lang-switch button").forEach(function (btn) {
+      btn.addEventListener("click", function () { setLang(btn.getAttribute("data-lang")); });
+    });
+
+    nodes.toTop.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    });
+  }
+
+  /* ---------------- Курсор і «магнітні» кнопки ---------------- */
+  function bindCursor() {
+    var cursor = document.getElementById("cursor");
+    if (!finePointer || reduced || !cursor) {
+      if (cursor) cursor.remove();
+      return;
+    }
+    var label = document.getElementById("cursor-label");
+    var tx = -100, ty = -100, cx = -100, cy = -100;
+    window.addEventListener("pointermove", function (e) {
+      tx = e.clientX;
+      ty = e.clientY;
+      cursor.classList.remove("is-hidden");
+    }, { passive: true });
+    document.addEventListener("pointerleave", function () { cursor.classList.add("is-hidden"); });
+    (function loop() {
+      cx += (tx - cx) * 0.2;
+      cy += (ty - cy) * 0.2;
+      cursor.style.setProperty("--cx", cx.toFixed(1) + "px");
+      cursor.style.setProperty("--cy", cy.toFixed(1) + "px");
+      requestAnimationFrame(loop);
+    })();
+    document.addEventListener("pointerover", function (e) {
+      var target = e.target.closest("[data-cursor], a, button, label, input, select, textarea");
+      cursor.classList.remove("is-label", "is-link");
+      if (!target) return;
+      var kind = target.getAttribute("data-cursor");
+      if (kind && !e.target.closest("a, button")) {
+        label.textContent = t("cursor." + kind);
+        cursor.classList.add("is-label");
+      } else if (!target.matches("input, select, textarea")) {
+        cursor.classList.add("is-link");
+      }
+    });
+
+    document.querySelectorAll("[data-magnetic]").forEach(function (b) {
+      b.addEventListener("pointermove", function (e) {
+        var r = b.getBoundingClientRect();
+        b.style.setProperty("--mx", ((e.clientX - r.left - r.width / 2) * 0.25).toFixed(1) + "px");
+        b.style.setProperty("--my", ((e.clientY - r.top - r.height / 2) * 0.35).toFixed(1) + "px");
+      });
+      b.addEventListener("pointerleave", function () {
+        b.style.setProperty("--mx", "0px");
+        b.style.setProperty("--my", "0px");
+      });
+    });
+  }
+
   /* ---------------- Master render ---------------- */
   function renderAll() {
     applyStaticText();
-    renderAbout();
-    renderDirections();
     renderHeroFacts();
+    renderAbout();
+    renderDirectionTabs();
     renderTeam();
     renderJoin();
     renderMedia();
     renderFooter();
     renderContactStatic();
+    requestAnimationFrame(movePill);
   }
 
   /* ---------------- Init ---------------- */
   document.addEventListener("DOMContentLoaded", function () {
     state.lang = detectInitialLang();
     document.documentElement.lang = state.lang === "ua" ? "uk" : "en";
+    if (reduced) document.documentElement.classList.add("reduced-motion");
 
+    nodes = {
+      hero: document.getElementById("hero"),
+      header: document.getElementById("site-header"),
+      manifest: document.getElementById("about-manifest"),
+      directions: document.getElementById("directions"),
+      dirProgress: document.getElementById("directions-progress"),
+      news: document.getElementById("media"),
+      newsTrack: document.getElementById("news-grid"),
+      progress: document.getElementById("scroll-progress"),
+      toTop: document.getElementById("to-top"),
+      nav: document.getElementById("main-nav"),
+      navLinks: Array.prototype.slice.call(document.querySelectorAll("#main-nav a")),
+      activeLink: null,
+    };
+
+    mountTrees();
+    bindTheme();
     bindChrome();
-    bindTeamModal();
+    bindTeam();
+    bindNews();
     bindJoinEvents();
     bindContactForm();
     bindNewsletterForm();
-    bindNewsCarousel();
-    initHeroMedia();
+    initHeroSlides();
 
     renderAll();
-
-    // Reveal any static (non-JS-generated) sections marked with .reveal
     observeReveals(document.body);
-
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    bindCursor();
+    runPreloader();
+
+    window.addEventListener("scroll", requestTick, { passive: true });
+    window.addEventListener("resize", function () {
+      measureNews();
+      movePill();
+      requestTick();
+    });
+    if (mqMobile.addEventListener) mqMobile.addEventListener("change", function () { measureNews(); requestTick(); });
+    // Шрифти змінюють ширину стрічки новин і пунктів меню — перемірюємо після завантаження
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measureNews(); movePill(); requestTick(); });
+    window.addEventListener("load", function () { measureNews(); requestTick(); });
+    onScroll();
   });
 })();

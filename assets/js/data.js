@@ -114,4 +114,16 @@ window.FSF_DATA = {
   },
 
   donorImpact: { small: 2, medium: 20, large: 60 },
+
+  // Фото для кожного напряму в закріпленій сцені «Напрями» (ключ — slug напряму з i18n.js)
+  directionPhotos: {
+    "civic-education": "assets/img/hero/bg/8-team-office",
+    veterans: "assets/img/news/2-wheelchairs",
+    "idp-support": "assets/img/news/6-fishingfest",
+    "local-initiatives": "assets/img/news/5-festival",
+    advocacy: "assets/img/news/1-lawyers",
+    "youth-education": "assets/img/hero/bg/7-team-yard",
+    international: "assets/img/news/3-haidai",
+    volunteering: "assets/img/news/4-exhibition",
+  },
 };
