@@ -117,7 +117,7 @@
     { d: "M100 136 Q78 144 42 148", leaf: false },
   ];
 
-  function treeSVG() {
+  function treeGroups() {
     function half(cls, transform) {
       return (
         '<g class="' + cls + '"' + (transform ? ' transform="' + transform + '"' : "") +
@@ -128,12 +128,52 @@
         "</g>"
       );
     }
+    return half("t-blue") + half("t-yellow", "translate(200 0) scale(-1 1)");
+  }
+
+  function treeSVG() {
+    return '<svg class="tree-svg" viewBox="20 12 160 176" aria-hidden="true" focusable="false">' + treeGroups() + "</svg>";
+  }
+
+  /* Векторний логотип: кільце з назвою по колу + дерево.
+     Кільце й текст мають колір теми (currentColor), дерево — фірмові кольори. */
+  var logoCount = 0;
+  function logoSVG() {
+    var id = "fsf-logo-" + ++logoCount;
     return (
-      '<svg class="tree-svg" viewBox="20 12 160 176" aria-hidden="true" focusable="false">' +
-      half("t-blue") +
-      half("t-yellow", "translate(200 0) scale(-1 1)") +
+      '<svg class="logo-svg" viewBox="0 0 200 200" aria-hidden="true" focusable="false">' +
+      "<defs>" +
+      '<path id="' + id + '-t" d="M27 100a73 73 0 0 1 146 0"/>' +
+      '<path id="' + id + '-b" d="M15 100a85 85 0 0 0 170 0"/>' +
+      "</defs>" +
+      '<circle class="logo-ring" cx="100" cy="100" r="97" fill="none" stroke-width="3"/>' +
+      '<text font-size="13" letter-spacing="0.5"><textPath href="#' + id + '-t" startOffset="50%" text-anchor="middle" textLength="214" lengthAdjust="spacingAndGlyphs">ФУНДАЦІЯ МАЙБУТНЬОГО ДЕРЖАВИ</textPath></text>' +
+      '<text font-size="12.5" letter-spacing="1"><textPath href="#' + id + '-b" startOffset="50%" text-anchor="middle" textLength="196" lengthAdjust="spacingAndGlyphs">FUTURE STATE FOUNDATION</textPath></text>' +
+      '<g class="logo-tree" transform="translate(49 44) scale(0.64) translate(-20 -12)">' + treeGroups() + "</g>" +
       "</svg>"
     );
+  }
+
+  function mountLogos() {
+    document.querySelectorAll("[data-logo]").forEach(function (node) {
+      node.innerHTML = logoSVG();
+    });
+  }
+
+  /* Заголовки секцій: кожне слово в окремій «масці» для появи по черзі */
+  function splitTitles() {
+    document.querySelectorAll(".section-title").forEach(function (h) {
+      var words = h.textContent.trim().split(/\s+/);
+      h.setAttribute("aria-label", h.textContent.trim());
+      h.innerHTML = words
+        .map(function (w, i) {
+          return '<span class="sw" aria-hidden="true"><span style="--w:' + i + '">' + w + "</span></span>";
+        })
+        .join(" ");
+      h.classList.add("split-title");
+      if (h.dataset.shown) h.classList.add("is-visible");
+      else observeReveals(h, true);
+    });
   }
 
   function mountTrees() {
@@ -1058,8 +1098,8 @@
 
   /* ---------------- Scroll reveal ---------------- */
   var revealObserver = null;
-  function observeReveals(container) {
-    var items = container.querySelectorAll(".reveal:not(.is-visible)");
+  function observeReveals(container, self) {
+    var items = self ? [container] : container.querySelectorAll(".reveal:not(.is-visible)");
     if (reduced || !("IntersectionObserver" in window)) {
       items.forEach(function (i) { i.classList.add("is-visible"); });
       return;
@@ -1071,6 +1111,7 @@
             if (entry.isIntersecting) {
               var target = entry.target;
               target.classList.add("is-visible");
+              target.dataset.shown = "1";
               revealObserver.unobserve(target);
               // Після першого «домальовування» іконок прибираємо клас, щоб hover-анімація не конфліктувала
               if (target.classList.contains("is-drawing-icons")) {
@@ -1367,6 +1408,7 @@
   /* ---------------- Master render ---------------- */
   function renderAll() {
     applyStaticText();
+    splitTitles();
     renderHeroFacts();
     renderAbout();
     renderDirections();
@@ -1410,6 +1452,7 @@
     };
 
     mountTrees();
+    mountLogos();
     bindTheme();
     bindChrome();
     bindTeam();
