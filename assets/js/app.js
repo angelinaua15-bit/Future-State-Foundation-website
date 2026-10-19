@@ -96,7 +96,7 @@
   }
 
   function srcset(base) {
-    return base + "@480w.jpg 480w, " + base + "@800w.jpg 800w, " + base + ".jpg 1200w";
+    return base + "@480w.webp 480w, " + base + "@800w.webp 800w, " + base + ".webp 1200w";
   }
 
   /* ---------------- Дерево з логотипу (SVG лініями) ----------------
@@ -186,7 +186,12 @@
   function runPreloader() {
     var pre = document.getElementById("preloader");
     var root = document.documentElement;
-    if (!pre || reduced) {
+    try {
+      window.localStorage.setItem("fsf-seen", String(Date.now()));
+    } catch (e) {
+      /* ignore */
+    }
+    if (!pre || reduced || root.classList.contains("no-preloader")) {
       if (pre) pre.remove();
       root.classList.add("is-loaded");
       return;
@@ -197,7 +202,7 @@
     document.body.style.overflow = "hidden";
 
     var start = null;
-    var DURATION = 1500;
+    var DURATION = 750;
     function tick(ts) {
       if (start === null) start = ts;
       var k = clamp((ts - start) / DURATION, 0, 1);
@@ -216,8 +221,8 @@
         document.body.style.overflow = "";
         setTimeout(function () {
           pre.remove();
-        }, 950);
-      }, 680);
+        }, 700);
+      }, 380);
     }
     requestAnimationFrame(tick);
   }
@@ -430,7 +435,7 @@
         '<div class="dir__icon">' + window.FSF_ICONS.svg(d.icon) + "</div>" +
         '<h3 class="dir__title">' + d.title + "</h3>" +
         '<p class="dir__text">' + d.text + "</p>" +
-        '<img class="dir__thumb" src="' + base + '@480w.jpg" alt="" loading="lazy" decoding="async" />' +
+        '<img class="dir__thumb" src="' + base + '@480w.webp" alt="" loading="lazy" decoding="async" />' +
         '<a class="dir__cta" href="#join" data-direction="' + d.slug + '"><span class="dir__cta-label">' + t("directions.cta") + "</span>" + ARROW_SVG + "</a>";
       list.appendChild(li);
 
@@ -439,7 +444,7 @@
         var img = el("img");
         img.alt = "";
         img.decoding = "async";
-        img.setAttribute("data-src", base + "@480w.jpg");
+        img.setAttribute("data-src", base + "@480w.webp");
         preview.appendChild(img);
       }
     });
@@ -605,12 +610,12 @@
   /* ---------------- News ---------------- */
   var newsFmt = null;
   function newsCardHTML(n, i, clone) {
-    var base = n.image.replace(/\.jpg$/, "");
+    var base = n.image.replace(/\.webp$/, "");
     var date = newsFmt.format(new Date(n.date));
     return (
       '<li class="news-item"' + (clone ? ' aria-hidden="true"' : "") + ">" +
       '<button type="button" class="news-card" data-news="' + i + '" data-cursor="open"' + (clone ? ' tabindex="-1"' : "") + ">" +
-      '<span class="news-card__media"><img src="' + base + '@800w.jpg" srcset="' + base + "@480w.jpg 480w, " + base + "@800w.jpg 800w, " + n.image + ' 1300w" sizes="(max-width: 860px) 76vw, 380px" alt="" loading="lazy" decoding="async" draggable="false" /></span>' +
+      '<span class="news-card__media"><img src="' + base + '@800w.webp" srcset="' + base + "@480w.webp 480w, " + base + "@800w.webp 800w, " + n.image + ' 1300w" sizes="(max-width: 860px) 76vw, 380px" alt="" loading="lazy" decoding="async" draggable="false" /></span>' +
       '<span class="news-card__body">' +
       '<time class="news-card__date" datetime="' + n.date + '">' + date + "</time>" +
       '<span class="news-card__title">' + n.title[state.lang] + "</span>" +
@@ -834,6 +839,17 @@
         card.style.setProperty("--ry", "0deg");
       }
     });
+  }
+
+  /* CSS-анімації (стрічки, біжучий рядок, бейдж) ставимо на паузу, коли їх не видно */
+  function bindOffscreenPause() {
+    if (!("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        en.target.classList.toggle("is-offscreen", !en.isIntersecting);
+      });
+    }, { rootMargin: "80px 0px" });
+    document.querySelectorAll(".ribbons, .marquee, .spin-badge, .hero__hint").forEach(function (n) { io.observe(n); });
   }
 
   /* ---------------- Рухомі стрічки і бейдж ---------------- */
@@ -1413,8 +1429,8 @@
     var sy = geo.sy0 + (1 - geo.sy0) * e;
     var zoom = 1.18 - 0.18 * e;
     setStyle(nodes.heroFrame, "hf", "transform", "scale(" + sx.toFixed(4) + "," + sy.toFixed(4) + ")");
-    var r = 16 * (1 - e);
-    setStyle(nodes.heroFrame, "hr", "borderRadius", (r / sx).toFixed(1) + "px / " + (r / sy).toFixed(1) + "px");
+    // Радіус кутів не перераховуємо щокадру (це перемальовування) — лише перемикаємо в кінці
+    nodes.heroFrame.classList.toggle("is-full", e > 0.97);
     setStyle(nodes.heroMedia, "hm", "transform", "scale(" + (zoom / sx).toFixed(4) + "," + (zoom / sy).toFixed(4) + ")");
     setStyle(nodes.heroShade, "hs", "opacity", (0.2 + c * 0.8).toFixed(3));
 
@@ -1511,7 +1527,19 @@
     updateChrome(y);
   }
 
+  // Поки сторінку гортають, фонові анімації стоять — уся потужність іде на скрол
+  var scrollIdle = null;
+  function markScrolling() {
+    if (!scrollIdle) document.documentElement.classList.add("is-scrolling");
+    clearTimeout(scrollIdle);
+    scrollIdle = setTimeout(function () {
+      scrollIdle = null;
+      document.documentElement.classList.remove("is-scrolling");
+    }, 180);
+  }
+
   function requestTick() {
+    markScrolling();
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () {
@@ -1652,6 +1680,7 @@
     bindTeam();
     newsLoop.init();
     bindTilt();
+    bindOffscreenPause();
     bindDirections();
     bindJoinEvents();
     bindContactForm();

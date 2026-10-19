@@ -38,7 +38,7 @@
   --muted: #4b5a80;
   --line: rgba(7, 26, 69, 0.12);
   --line-strong: rgba(7, 26, 69, 0.3);
-  --glass: rgba(255, 255, 255, 0.72);
+  --glass: rgba(255, 255, 255, 0.9);
   --glass-line: rgba(7, 26, 69, 0.1);
   --accent: #00469b;
   --accent-ink: #ffffff;
@@ -69,7 +69,7 @@
   --muted: #9aa7c9;
   --line: rgba(238, 242, 251, 0.14);
   --line-strong: rgba(238, 242, 251, 0.32);
-  --glass: rgba(10, 26, 69, 0.72);
+  --glass: rgba(10, 26, 69, 0.9);
   --glass-line: rgba(255, 255, 255, 0.14);
   --accent: #fec301;
   --accent-ink: #050f2c;
@@ -341,9 +341,7 @@ ol {
 .btn-glass {
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.12);
 }
 .btn-glass::before {
   background: #fff;
@@ -381,14 +379,14 @@ ol {
 .preloader {
   display: none;
 }
-.js .preloader {
+.js:not(.no-preloader) .preloader {
   display: grid;
   place-items: center;
   position: fixed;
   inset: 0;
   z-index: 1500;
   background: var(--bg);
-  animation: preloader-failsafe 0.01s 6s forwards;
+  animation: preloader-failsafe 0.01s 3.5s forwards;
 }
 .preloader__half {
   position: absolute;
@@ -514,30 +512,32 @@ ol {
   pointer-events: none;
   contain: strict;
 }
+/* Плями малюються маленькими й збільшуються через scale — текстура в 9 разів менша */
 .orb {
   position: absolute;
-  width: 56vmax;
-  height: 56vmax;
+  width: 19vmax;
+  height: 19vmax;
   border-radius: 50%;
   will-change: transform;
+  scale: 3;
 }
 .orb--blue {
-  top: -20vmax;
-  left: -16vmax;
+  top: 0;
+  left: 4vmax;
   background: radial-gradient(circle at center, var(--orb-blue) 0%, transparent 62%);
   animation: orb-a 26s ease-in-out infinite alternate;
 }
 .orb--yellow {
-  bottom: -24vmax;
-  right: -18vmax;
+  bottom: 2vmax;
+  right: 6vmax;
   background: radial-gradient(circle at center, var(--orb-yellow) 0%, transparent 62%);
   animation: orb-b 32s ease-in-out infinite alternate;
 }
 .orb--sky {
   top: 30vh;
   left: 40vw;
-  width: 44vmax;
-  height: 44vmax;
+  width: 15vmax;
+  height: 15vmax;
   background: radial-gradient(circle at center, var(--orb-sky) 0%, transparent 62%);
   animation: orb-c 38s ease-in-out infinite alternate;
 }
@@ -607,6 +607,17 @@ ol {
     transform: translate3d(-30px, -115vh, 0) rotate(320deg);
     opacity: 0;
   }
+}
+
+/* Під час скролу фон завмирає, анімації поза екраном — на паузі */
+.is-scrolling .bg-scene > *,
+.is-scrolling .marquee__track {
+  animation-play-state: paused;
+}
+/* Анімації поза екраном — на паузі */
+.is-offscreen,
+.is-offscreen * {
+  animation-play-state: paused !important;
 }
 
 /* ---------------- Scroll progress + cursor ---------------- */
@@ -780,8 +791,7 @@ ol {
   border-radius: 999px;
   background: var(--glass);
   border: 1px solid var(--glass-line);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 10px 30px -18px rgba(7, 26, 69, 0.35);
 }
 .main-nav a {
   position: relative;
@@ -965,8 +975,8 @@ ol {
    ========================================================================== */
 .hero {
   position: relative;
-  height: 260vh;
-  height: 260svh;
+  height: 200vh;
+  height: 200svh;
 }
 .hero__sticky {
   position: sticky;
@@ -979,10 +989,13 @@ ol {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 44px;
   background: var(--bg-3);
   transform-origin: 50% 50%;
   will-change: transform;
+}
+.hero__frame.is-full {
+  border-radius: 0;
 }
 .js .hero__frame {
   opacity: 0;
@@ -2566,7 +2579,7 @@ body.modal-open {
 
   /* Hero: вікно вужче й вище, слова над і під ним */
   .hero {
-    height: 220svh;
+    height: 170svh;
   }
   .hero__word {
     font-size: clamp(1.2rem, 6.2vw, 2rem);

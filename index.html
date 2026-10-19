@@ -28,15 +28,23 @@
     } catch (e) {}
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.classList.add("js");
+    // Прелоадер показуємо лише при першому заході (повторно — не раніше ніж через 30 хв)
+    try {
+      var seen = +localStorage.getItem("fsf-seen") || 0;
+      if (Date.now() - seen < 30 * 60 * 1000) document.documentElement.classList.add("no-preloader");
+    } catch (e) {}
   })();
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@300;400;500;700&display=swap" />
+<!-- Шрифти вантажаться без блокування першого малювання (поки що — системний шрифт) -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap" media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap" /></noscript>
 <link rel="stylesheet" href="assets/css/style.css" />
 
-<link rel="preload" as="image" fetchpriority="high" href="assets/img/hero/bg/7-team-yard.jpg" imagesrcset="assets/img/hero/bg/7-team-yard@480w.jpg 480w, assets/img/hero/bg/7-team-yard@800w.jpg 800w, assets/img/hero/bg/7-team-yard.jpg 1200w" imagesizes="100vw" />
+<link rel="preload" as="image" fetchpriority="high" href="assets/img/hero/bg/7-team-yard.webp" imagesrcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" imagesizes="100vw" />
 </head>
 <body>
 <!-- Живий фон: м'які кольорові плями, крапкова сітка і листочки з логотипу.
@@ -132,10 +140,10 @@
     <div class="hero__sticky">
       <div class="hero__frame" id="hero-frame" aria-hidden="true">
         <div class="hero__media" id="hero-media">
-          <figure class="hero__slide is-active"><img src="assets/img/hero/bg/7-team-yard.jpg" srcset="assets/img/hero/bg/7-team-yard@480w.jpg 480w, assets/img/hero/bg/7-team-yard@800w.jpg 800w, assets/img/hero/bg/7-team-yard.jpg 1200w" sizes="100vw" alt="" fetchpriority="high" /></figure>
-          <figure class="hero__slide"><img data-src="assets/img/hero/bg/8-team-office.jpg" data-srcset="assets/img/hero/bg/8-team-office@480w.jpg 480w, assets/img/hero/bg/8-team-office@800w.jpg 800w, assets/img/hero/bg/8-team-office.jpg 1200w" sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img data-src="assets/img/hero/bg/2-wheelchairs.jpg" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.jpg 480w, assets/img/hero/bg/2-wheelchairs@800w.jpg 800w, assets/img/hero/bg/2-wheelchairs.jpg 952w" sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img data-src="assets/img/hero/bg/1-lawyers.jpg" data-srcset="assets/img/hero/bg/1-lawyers@480w.jpg 480w, assets/img/hero/bg/1-lawyers@800w.jpg 800w, assets/img/hero/bg/1-lawyers.jpg 952w" sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide is-active"><img src="assets/img/hero/bg/7-team-yard.webp" srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" sizes="100vw" alt="" fetchpriority="high" /></figure>
+          <figure class="hero__slide"><img data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img data-src="assets/img/hero/bg/2-wheelchairs.webp" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.webp 480w, assets/img/hero/bg/2-wheelchairs@800w.webp 800w, assets/img/hero/bg/2-wheelchairs.webp 952w" sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img data-src="assets/img/hero/bg/1-lawyers.webp" data-srcset="assets/img/hero/bg/1-lawyers@480w.webp 480w, assets/img/hero/bg/1-lawyers@800w.webp 800w, assets/img/hero/bg/1-lawyers.webp 952w" sizes="100vw" alt="" /></figure>
         </div>
         <div class="hero__shade" id="hero-shade"></div>
       </div>
@@ -400,9 +408,9 @@
   </div>
 </div>
 
-<script src="assets/js/i18n.js"></script>
-<script src="assets/js/data.js"></script>
-<script src="assets/js/icons.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/i18n.js" defer></script>
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/icons.js" defer></script>
+<script src="assets/js/app.js" defer></script>
 </body>
 </html>
