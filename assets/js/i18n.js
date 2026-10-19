@@ -48,6 +48,8 @@ window.FSF_I18N = {
     },
     about: {
       eyebrow: "Про нас",
+      lead: "Скорочуємо відстань між громадянською позицією та реальною зміною",
+      note: "Громадська організація, заснована 18 серпня 2026 року в Києві: освіта, підтримка місцевих лідерів, захист прав людини й волонтерство.",
       title: "Громадська організація, що з'єднує людей, ідеї та рішення",
       subtitle:
         "Фундація майбутнього держави заснована 18 серпня 2026 року в Києві, щоб скорочувати відстань між активною громадянською позицією та реальною зміною — через освіту, підтримку місцевих лідерів, захист прав людини та мережу волонтерів.",
@@ -61,9 +63,9 @@ window.FSF_I18N = {
         title: "Як ми влаштовані",
         text: "Прозора структура управління за статутом:",
         items: [
-          { title: "Загальні збори", text: "Найвищий орган управління, ухвалює ключові рішення й визначає напрями діяльності." },
-          { title: "Правління", text: "Колегіальний орган управління з дворічним терміном повноважень, керує поточною роботою." },
-          { title: "Голова", text: "Представляє фундацію в зовнішніх відносинах і відповідає за виконання рішень." },
+          { title: "Загальні збори", text: "Ухвалюють ключові рішення" },
+          { title: "Правління", text: "Керує поточною роботою" },
+          { title: "Голова", text: "Представляє фундацію" },
         ],
       },
     },
@@ -313,6 +315,8 @@ window.FSF_I18N = {
     },
     about: {
       eyebrow: "About us",
+      lead: "We close the gap between a civic stance and real change",
+      note: "A civic organization founded on August 18, 2026 in Kyiv: education, support for local leaders, human rights protection and volunteering.",
       title: "A civic organization connecting people, ideas, and decisions",
       subtitle:
         "Future State Foundation was founded on August 18, 2026 in Kyiv to close the gap between an active civic stance and real change — through education, support for local leaders, human rights protection, and a network of volunteers.",
@@ -326,9 +330,9 @@ window.FSF_I18N = {
         title: "How we're organized",
         text: "A transparent governance structure under our charter:",
         items: [
-          { title: "General Assembly", text: "The supreme governing body — makes key decisions and sets the organization's direction." },
-          { title: "Board", text: "The collective governing body, elected for a two-year term, runs day-to-day operations." },
-          { title: "Chair", text: "Represents the foundation externally and is responsible for carrying out decisions." },
+          { title: "General Assembly", text: "Makes the key decisions" },
+          { title: "Board", text: "Runs day-to-day work" },
+          { title: "Chair", text: "Represents the foundation" },
         ],
       },
     },

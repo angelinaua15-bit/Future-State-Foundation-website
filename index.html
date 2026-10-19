@@ -136,7 +136,7 @@
 
 <main id="main-content">
 
-  <!-- ============ HERO: «апертура» розкривається при скролі ============ -->
+  <!-- ============ HERO: фото на весь екран ============ -->
   <section class="hero" id="hero" aria-labelledby="hero-title">
     <div id="top"></div>
     <div class="hero__sticky">
@@ -148,17 +148,6 @@
           <figure class="hero__slide"><img data-src="assets/img/hero/bg/1-lawyers.webp" data-srcset="assets/img/hero/bg/1-lawyers@480w.webp 480w, assets/img/hero/bg/1-lawyers@800w.webp 800w, assets/img/hero/bg/1-lawyers.webp 952w" sizes="100vw" alt="" /></figure>
         </div>
         <div class="hero__shade" id="hero-shade"></div>
-      </div>
-
-      <!-- Іконки 8 напрямів кружляють навколо вікна (CSS: дві синусоїди дають еліпс) -->
-      <div class="hero__orbit" id="hero-orbit" aria-hidden="true"></div>
-
-      <!-- Великий заголовок у дужках, що розходиться при скролі -->
-      <div class="hero__word" aria-hidden="true">
-        <span class="hero__bracket hero__bracket--l"></span>
-        <span class="hero__word-l" data-i18n="hero.wordA">(Фундація)</span>
-        <span class="hero__word-r"><span data-i18n="hero.wordB">майбутнього</span><span data-i18n="hero.wordC">держави</span></span>
-        <span class="hero__bracket hero__bracket--r"></span>
       </div>
 
       <div class="hero__content">
@@ -182,15 +171,14 @@
   <section id="about" class="section about">
     <div class="container">
       <p class="section-tag reveal"><span data-i18n="about.eyebrow">Про нас</span></p>
-      <h2 class="about__manifest" id="about-manifest" data-i18n="about.subtitle">Фундація майбутнього держави…</h2>
+      <h2 class="about__manifest" id="about-manifest" data-i18n="about.lead">Скорочуємо відстань між громадянською позицією та реальною зміною</h2>
+      <p class="about__note reveal" data-i18n="about.note"></p>
 
-      <div class="about__grid">
-        <ul class="values" id="about-values"></ul>
-        <div class="structure reveal">
-          <h3 data-i18n="about.structure.title">Як ми влаштовані</h3>
-          <p data-i18n="about.structure.text">Прозора структура управління за статутом.</p>
-          <ol class="structure__flow" id="about-structure"></ol>
-        </div>
+      <ul class="values" id="about-values"></ul>
+
+      <div class="structure reveal">
+        <h3 class="structure__label" data-i18n="about.structure.title">Як ми влаштовані</h3>
+        <ol class="structure__flow" id="about-structure"></ol>
       </div>
     </div>
   </section>

@@ -160,23 +160,6 @@
     });
   }
 
-  /* Великі слова першого екрана: кожна літера окремо — для «вильоту» при старті */
-  function splitHeroChars() {
-    var n = 0;
-    document.querySelectorAll('.hero__word [data-i18n^="hero.word"]').forEach(function (node) {
-      var text = node.textContent;
-      node.setAttribute("aria-hidden", "true");
-      node.innerHTML = text
-        .split(" ")
-        .map(function (word) {
-          return '<span class="chw">' + word.split("").map(function (ch) {
-            return '<span class="ch" style="--c:' + n++ + '">' + ch + "</span>";
-          }).join("") + "</span>";
-        })
-        .join(" ");
-    });
-  }
-
   /* Слоган першого екрана: слова виїжджають з-під маски, коли вікно розкрилось */
   function splitHeroTitle() {
     var h = document.querySelector(".hero__title");
@@ -186,16 +169,6 @@
     h.innerHTML = text.split(/\s+/).map(function (w, i) {
       return '<span class="sw" aria-hidden="true"><span style="--w:' + i + '">' + w + "</span></span>";
     }).join(" ");
-  }
-
-  /* Орбіта: 8 іконок напрямів навколо вікна */
-  function renderOrbit() {
-    var orbit = document.getElementById("hero-orbit");
-    if (!orbit) return;
-    var items = t("directions.items");
-    orbit.innerHTML = items.map(function (d, i) {
-      return '<span class="orbit-x" style="--o:' + i + '"><span class="orbit-y"><span class="orbit-chip" title="' + d.title + '">' + window.FSF_ICONS.svg(d.icon) + "</span></span></span>";
-    }).join("");
   }
 
   /* Заголовки секцій: кожне слово в окремій «масці» для появи по черзі */
@@ -232,6 +205,7 @@
     if (!pre || reduced || root.classList.contains("no-preloader")) {
       if (pre) pre.remove();
       root.classList.add("is-loaded");
+      startHeroIntro();
       return;
     }
     var tree = pre.querySelector(".tree-svg");
@@ -256,6 +230,7 @@
       setTimeout(function () {
         pre.classList.add("is-done");
         root.classList.add("is-loaded");
+      startHeroIntro();
         document.body.style.overflow = "";
         setTimeout(function () {
           pre.remove();
@@ -415,8 +390,8 @@
   function renderManifest() {
     var node = document.getElementById("about-manifest");
     if (!node) return;
-    var words = t("about.subtitle").split(/\s+/);
-    node.setAttribute("aria-label", t("about.subtitle"));
+    var words = t("about.lead").split(/\s+/);
+    node.setAttribute("aria-label", t("about.lead"));
     node.innerHTML = words
       .map(function (w) {
         return '<span class="w" aria-hidden="true">' + w + "</span>";
@@ -1475,67 +1450,31 @@
     });
   }
 
+  /* Перший екран: фото на весь екран. Під час скролу фото їде повільніше
+     за сторінку (паралакс), а текст і факти м'яко згасають. */
   function updateHero(y) {
     var hero = nodes.hero;
     if (!hero || y > geo.heroBottom + 50) return;
-    var p = reduced ? 1 : clamp((y - geo.heroTop) / geo.heroRange, 0, 1);
-    var e = reduced ? 1 : easeInOut(clamp(p / 0.55, 0, 1));
-    var c = reduced ? 1 : clamp((p - 0.42) / 0.4, 0, 1);
-
-    // Вікно: масштабуємо рамку, а фото всередині — у зворотний бік
-    var sx = geo.sx0 + (1 - geo.sx0) * e;
-    var sy = geo.sy0 + (1 - geo.sy0) * e;
-    var zoom = 1.18 - 0.18 * e;
-    var k = 1 - e; // сила паралаксу згасає, коли вікно розкривається
-    var fx = par.x * 26 * k, fy = par.y * 18 * k;
-    setStyle(nodes.heroFrame, "hf", "transform", "translate3d(" + fx.toFixed(1) + "px," + fy.toFixed(1) + "px,0) scale(" + sx.toFixed(4) + "," + sy.toFixed(4) + ")");
-    if (nodes.orbit) {
-      setStyle(nodes.orbit, "or", "transform", "translate3d(" + (par.x * 40 * k).toFixed(1) + "px," + (par.y * 30 * k).toFixed(1) + "px,0) scale(" + (1 + e * 0.9).toFixed(3) + ")");
-      setStyle(nodes.orbit, "oo", "opacity", clamp(1 - e * 2.2, 0, 1).toFixed(3));
+    var p = clamp((y - geo.heroTop) / geo.vh, 0, 1);
+    if (!reduced) {
+      var px = -par.x * 16, py = -par.y * 10;
+      setStyle(nodes.heroMedia, "hm", "transform", "translate3d(" + px.toFixed(1) + "px," + (p * geo.vh * 0.28 + py).toFixed(1) + "px,0)");
+      var fade = clamp(1 - p * 1.5, 0, 1).toFixed(3);
+      setStyle(nodes.heroContent, "hc", "opacity", fade);
+      setStyle(nodes.heroContent, "hct", "transform", "translate3d(0," + (-p * 70).toFixed(1) + "px,0)");
+      setStyle(nodes.heroStats, "hso", "opacity", fade);
+      setStyle(nodes.heroStats, "hst", "transform", "translate3d(0," + (-p * 40).toFixed(1) + "px,0)");
     }
-    // Радіус кутів не перераховуємо щокадру (це перемальовування) — лише перемикаємо в кінці
-    nodes.heroFrame.classList.toggle("is-full", e > 0.97);
-    setStyle(nodes.heroMedia, "hm", "transform", "scale(" + (zoom / sx).toFixed(4) + "," + (zoom / sy).toFixed(4) + ")");
-    setStyle(nodes.heroShade, "hs", "opacity", (0.2 + c * 0.8).toFixed(3));
-
-    // Слова розлітаються в боки (на телефоні — вгору і вниз)
-    var wo = clamp(1 - e * 1.6, 0, 1).toFixed(3);
-    var d = geo.mobile ? e * geo.vh * 0.3 : e * geo.vw * 0.22;
-    var axis = geo.mobile ? "translate3d(0," : "translate3d(";
-    var tail = geo.mobile ? "px,0)" : "px,0,0)";
-    var wx = -par.x * 14 * k, wy = -par.y * 10 * k;
-    if (geo.mobile) {
-      setStyle(nodes.wordL, "wl", "transform", axis + (-d).toFixed(1) + tail);
-      setStyle(nodes.wordR, "wr", "transform", axis + d.toFixed(1) + tail);
-    } else {
-      setStyle(nodes.wordL, "wl", "transform", "translate3d(" + (-d + wx).toFixed(1) + "px," + wy.toFixed(1) + "px,0)");
-      setStyle(nodes.wordR, "wr", "transform", "translate3d(" + (d + wx).toFixed(1) + "px," + wy.toFixed(1) + "px,0)");
-    }
-    setStyle(nodes.wordWrap, "wo", "opacity", wo);
-    var bd = e * geo.vw * 0.08;
-    setStyle(nodes.brL, "bl", "transform", "translate3d(" + (-bd).toFixed(1) + "px,0,0)");
-    setStyle(nodes.brR, "br", "transform", "translate3d(" + bd.toFixed(1) + "px,0,0)");
-
-    // Слоган і кнопки
-    setStyle(nodes.heroContent, "hc", "opacity", clamp((c - 0.1) * 1.4, 0, 1).toFixed(3));
-    setStyle(nodes.heroContent, "hct", "transform", "translate3d(0," + ((1 - c) * 60).toFixed(1) + "px,0)");
-
-    // Віджети з'являються по черзі
-    for (var i = 0; i < nodes.widgets.length; i++) {
-      var k = clamp((c - i * 0.12) * 1.6, 0, 1);
-      var o = clamp((c - 0.15 - i * 0.12) * 2.4, 0, 1);
-      var off = (1 - k) * (geo.mobile ? -40 : 120);
-      setStyle(nodes.widgets[i], "w" + i, "opacity", o.toFixed(3));
-      setStyle(nodes.widgets[i], "wt" + i, "transform", geo.mobile ? "translate3d(0," + off.toFixed(1) + "px,0)" : "translate3d(" + off.toFixed(1) + "px,0,0)");
-    }
-
-    hero.classList.toggle("is-open", c > 0.5);
     hero.classList.toggle("is-scrolled", p > 0.03);
-    if (c > 0.45 && !heroCountersDone) {
-      heroCountersDone = true;
-      hero.querySelectorAll("[data-counter]").forEach(animateCounter);
-    }
-    nodes.header.classList.toggle("on-photo", e > 0.6 && y < geo.heroBottom - 80);
+    nodes.header.classList.toggle("on-photo", y < geo.heroBottom - 80);
+  }
+
+  function startHeroIntro() {
+    if (heroCountersDone || !nodes.hero) return;
+    heroCountersDone = true;
+    setTimeout(function () {
+      nodes.hero.querySelectorAll("[data-counter]").forEach(animateCounter);
+    }, reduced ? 0 : 1300);
   }
 
   function updateManifest(y) {
@@ -1701,9 +1640,7 @@
   function renderAll() {
     applyStaticText();
     splitTitles();
-    splitHeroChars();
     splitHeroTitle();
-    renderOrbit();
     renderHeroFacts();
     renderAbout();
     renderDirections();
@@ -1737,7 +1674,7 @@
       wordR: document.querySelector(".hero__word-r"),
       brL: document.querySelector(".hero__bracket--l"),
       brR: document.querySelector(".hero__bracket--r"),
-      orbit: document.getElementById("hero-orbit"),
+      heroStats: document.getElementById("hero-stats"),
       widgets: [],
       manifest: document.getElementById("about-manifest"),
       progress: document.getElementById("scroll-progress"),
