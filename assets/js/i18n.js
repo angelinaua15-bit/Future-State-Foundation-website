@@ -145,6 +145,8 @@ window.FSF_I18N = {
       title: "Конструктор участі",
       subtitle: "Три кроки — і ми підкажемо, з чого почати саме вам. Не хочете відповідати на запитання? Оберіть проєкт самостійно.",
       skip: "Пропустити, я сам оберу",
+      badge: "Долучайтеся до фундації ✦ Майбутнє будуємо разом ✦",
+      badgeLabel: "Написати нам",
       back: "Назад",
       restart: "Пройти ще раз",
       step1: {
@@ -207,6 +209,9 @@ window.FSF_I18N = {
       title: "Новини фундації",
       subtitle: "Свіжі новини й перші кроки фундації — від заснування до перших ініціатив.",
       readMore: "Читати",
+      open: "Читати новину",
+      prev: "Попередня новина",
+      next: "Наступна новина",
       note: "Новини адаптовано з офіційної сторінки фундації у Facebook — стежте за оновленнями там і в соцмережах у футері сайту.",
     },
     contact: {
@@ -405,6 +410,8 @@ window.FSF_I18N = {
       title: "Engagement builder",
       subtitle: "Three steps and we'll suggest where to start. Prefer to pick a project yourself? You can skip.",
       skip: "Skip, I'll choose myself",
+      badge: "Join the foundation ✦ Building the future together ✦",
+      badgeLabel: "Write to us",
       back: "Back",
       restart: "Start over",
       step1: {
@@ -467,6 +474,9 @@ window.FSF_I18N = {
       title: "Foundation news",
       subtitle: "Fresh news and the foundation's first steps — from founding to first initiatives.",
       readMore: "Read",
+      open: "Read the story",
+      prev: "Previous story",
+      next: "Next story",
       note: "News adapted from the foundation's official Facebook page — follow along there and via the social links in the footer.",
     },
     contact: {
