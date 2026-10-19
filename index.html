@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="dark">
+<html lang="uk" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Фундація майбутнього держави — Future State Foundation</title>
 <meta name="description" content="Громадська організація, що об'єднує громадянську освіту, підтримку місцевих ініціатив, аналітику й адвокацію реформ та волонтерство." />
-<meta name="theme-color" content="#050f2c" media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#e8edf6" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#f3f6fb" />
 
 <link rel="icon" href="assets/img/favicon.ico" sizes="any" />
 <link rel="icon" href="assets/img/logo-32.png" type="image/png" sizes="32x32" />
@@ -21,11 +20,11 @@
 <!-- Тема ставиться до першого малювання, щоб не було «спалаху» не тієї теми -->
 <script>
   (function () {
-    var theme = "dark";
+    // Основна тема — світла; темна вмикається перемикачем і запам'ятовується
+    var theme = "light";
     try {
       var saved = localStorage.getItem("fsf-theme");
       if (saved === "light" || saved === "dark") theme = saved;
-      else if (window.matchMedia("(prefers-color-scheme: light)").matches) theme = "light";
     } catch (e) {}
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.classList.add("js");
@@ -40,6 +39,21 @@
 <link rel="preload" as="image" fetchpriority="high" href="assets/img/hero/bg/7-team-yard.jpg" imagesrcset="assets/img/hero/bg/7-team-yard@480w.jpg 480w, assets/img/hero/bg/7-team-yard@800w.jpg 800w, assets/img/hero/bg/7-team-yard.jpg 1200w" imagesizes="100vw" />
 </head>
 <body>
+<!-- Живий фон: м'які кольорові плями, крапкова сітка і листочки з логотипу.
+     Лише transform/opacity — анімації йдуть на відеокарті й не гальмують скрол. -->
+<div class="bg-scene" aria-hidden="true">
+  <span class="orb orb--blue"></span>
+  <span class="orb orb--yellow"></span>
+  <span class="orb orb--sky"></span>
+  <span class="bg-grid"></span>
+  <span class="bg-leaf bg-leaf--1"></span>
+  <span class="bg-leaf bg-leaf--2"></span>
+  <span class="bg-leaf bg-leaf--3"></span>
+  <span class="bg-leaf bg-leaf--4"></span>
+  <span class="bg-leaf bg-leaf--5"></span>
+  <span class="bg-leaf bg-leaf--6"></span>
+</div>
+
 <a href="#main-content" class="skip-link">Перейти до вмісту / Skip to content</a>
 
 <!-- ============ PRELOADER ============ -->
@@ -116,12 +130,14 @@
   <section class="hero" id="hero" aria-labelledby="hero-title">
     <div id="top"></div>
     <div class="hero__sticky">
-      <div class="hero__media" id="hero-media" aria-hidden="true">
-        <figure class="hero__slide is-active"><img src="assets/img/hero/bg/7-team-yard.jpg" srcset="assets/img/hero/bg/7-team-yard@480w.jpg 480w, assets/img/hero/bg/7-team-yard@800w.jpg 800w, assets/img/hero/bg/7-team-yard.jpg 1200w" sizes="100vw" alt="" fetchpriority="high" /></figure>
-        <figure class="hero__slide"><img data-src="assets/img/hero/bg/8-team-office.jpg" data-srcset="assets/img/hero/bg/8-team-office@480w.jpg 480w, assets/img/hero/bg/8-team-office@800w.jpg 800w, assets/img/hero/bg/8-team-office.jpg 1200w" sizes="100vw" alt="" /></figure>
-        <figure class="hero__slide"><img data-src="assets/img/hero/bg/2-wheelchairs.jpg" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.jpg 480w, assets/img/hero/bg/2-wheelchairs@800w.jpg 800w, assets/img/hero/bg/2-wheelchairs.jpg 952w" sizes="100vw" alt="" /></figure>
-        <figure class="hero__slide"><img data-src="assets/img/hero/bg/1-lawyers.jpg" data-srcset="assets/img/hero/bg/1-lawyers@480w.jpg 480w, assets/img/hero/bg/1-lawyers@800w.jpg 800w, assets/img/hero/bg/1-lawyers.jpg 952w" sizes="100vw" alt="" /></figure>
-        <div class="hero__shade"></div>
+      <div class="hero__frame" id="hero-frame" aria-hidden="true">
+        <div class="hero__media" id="hero-media">
+          <figure class="hero__slide is-active"><img src="assets/img/hero/bg/7-team-yard.jpg" srcset="assets/img/hero/bg/7-team-yard@480w.jpg 480w, assets/img/hero/bg/7-team-yard@800w.jpg 800w, assets/img/hero/bg/7-team-yard.jpg 1200w" sizes="100vw" alt="" fetchpriority="high" /></figure>
+          <figure class="hero__slide"><img data-src="assets/img/hero/bg/8-team-office.jpg" data-srcset="assets/img/hero/bg/8-team-office@480w.jpg 480w, assets/img/hero/bg/8-team-office@800w.jpg 800w, assets/img/hero/bg/8-team-office.jpg 1200w" sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img data-src="assets/img/hero/bg/2-wheelchairs.jpg" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.jpg 480w, assets/img/hero/bg/2-wheelchairs@800w.jpg 800w, assets/img/hero/bg/2-wheelchairs.jpg 952w" sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img data-src="assets/img/hero/bg/1-lawyers.jpg" data-srcset="assets/img/hero/bg/1-lawyers@480w.jpg 480w, assets/img/hero/bg/1-lawyers@800w.jpg 800w, assets/img/hero/bg/1-lawyers.jpg 952w" sizes="100vw" alt="" /></figure>
+        </div>
+        <div class="hero__shade" id="hero-shade"></div>
       </div>
 
       <!-- Великий заголовок у дужках, що розходиться при скролі -->
@@ -166,32 +182,20 @@
     </div>
   </section>
 
-  <!-- ============ DIRECTIONS: закріплена сцена з вкладками ============ -->
-  <section id="directions" class="directions" aria-labelledby="directions-title">
-    <div class="directions__sticky">
-      <div class="directions__head container">
-        <p class="section-tag"><span data-i18n="directions.eyebrow">Чим ми займаємось</span></p>
-        <h2 id="directions-title" class="directions__title" data-i18n="directions.title">Напрями</h2>
+  <!-- ============ DIRECTIONS: список напрямів з власними іконками ============ -->
+  <section id="directions" class="section directions" aria-labelledby="directions-title">
+    <div class="container">
+      <div class="directions__head reveal">
+        <div class="section-head">
+          <p class="section-tag"><span data-i18n="directions.eyebrow">Чим ми займаємось</span></p>
+          <h2 id="directions-title" class="section-title" data-i18n="directions.title">Напрями</h2>
+        </div>
+        <p class="section-subtitle" data-i18n="directions.subtitle"></p>
       </div>
-
-      <div class="directions__stage container">
-        <span class="frame-bracket frame-bracket--l" aria-hidden="true"></span>
-        <div class="directions__word" aria-hidden="true"><span id="direction-word">ОСВІТА</span></div>
-        <article class="directions__card" id="direction-card" aria-live="polite">
-          <div class="directions__photo" id="direction-photo"></div>
-          <div class="directions__info">
-            <span class="directions__icon" id="direction-icon"></span>
-            <h3 id="direction-name"></h3>
-            <p id="direction-text"></p>
-            <a href="#join" class="btn-text" data-i18n="directions.cta">Долучитися до напряму</a>
-          </div>
-        </article>
-        <span class="frame-bracket frame-bracket--r" aria-hidden="true"></span>
-      </div>
-
-      <div class="directions__tabs container" role="tablist" id="directions-tabs" data-i18n-aria-label="directions.title"></div>
-      <div class="directions__progress" aria-hidden="true"><span id="directions-progress"></span></div>
+      <ul class="dir-list" id="directions-list"></ul>
     </div>
+    <!-- Фото, що пливе за курсором над рядком (лише миша) -->
+    <div class="dir-preview" id="dir-preview" aria-hidden="true"><div class="dir-preview__inner" id="dir-preview-inner"></div></div>
   </section>
 
   <!-- ============ TEAM ============ -->
@@ -380,6 +384,7 @@
 
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/data.js"></script>
+<script src="assets/js/icons.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

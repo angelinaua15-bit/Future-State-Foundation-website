@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <circle cx="24" cy="24" r="17" stroke="#FEC301" stroke-width="2.4"/>
-  <path d="M7 24h34M24 7c4.5 4.7 7 10.6 7 17s-2.5 12.3-7 17c-4.5-4.7-7-10.6-7-17s2.5-12.3 7-17Z" stroke="#FEC301" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <path d="M32 16a16 16 0 1 1 0 32 16 16 0 0 1 0-32z" fill="#D3E2FB"/>
+  <path d="M32 1.5 Q32 5.5 36 5.5 Q32 5.5 32 9.5 Q32 5.5 28 5.5 Q32 5.5 32 1.5Z" fill="#FEC301"/>
+  <path d="M50.7 9.3 Q50.7 13.3 54.7 13.3 Q50.7 13.3 50.7 17.3 Q50.7 13.3 46.7 13.3 Q50.7 13.3 50.7 9.3Z" fill="#FEC301"/>
+  <path d="M58.5 28 Q58.5 32 62.5 32 Q58.5 32 58.5 36 Q58.5 32 54.5 32 Q58.5 32 58.5 28Z" fill="#FEC301"/>
+  <path d="M50.7 46.7 Q50.7 50.7 54.7 50.7 Q50.7 50.7 50.7 54.7 Q50.7 50.7 46.7 50.7 Q50.7 50.7 50.7 46.7Z" fill="#FEC301"/>
+  <path d="M32 54.5 Q32 58.5 36 58.5 Q32 58.5 32 62.5 Q32 58.5 28 58.5 Q32 58.5 32 54.5Z" fill="#FEC301"/>
+  <path d="M13.3 46.7 Q13.3 50.7 17.3 50.7 Q13.3 50.7 13.3 54.7 Q13.3 50.7 9.3 50.7 Q13.3 50.7 13.3 46.7Z" fill="#FEC301"/>
+  <path d="M5.5 28 Q5.5 32 9.5 32 Q5.5 32 5.5 36 Q5.5 32 1.5 32 Q5.5 32 5.5 28Z" fill="#FEC301"/>
+  <path d="M13.3 9.3 Q13.3 13.3 17.3 13.3 Q13.3 13.3 13.3 17.3 Q13.3 13.3 9.3 13.3 Q13.3 13.3 13.3 9.3Z" fill="#FEC301"/>
+  <path d="M32 16a16 16 0 1 1 0 32 16 16 0 0 1 0-32z" stroke="#071A45" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 32h32M32 16c-7 6-7 26 0 32M32 16c7 6 7 26 0 32M19 24h26M19 40h26" stroke="#071A45" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
