@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Зворотний зв'язок — Фундація майбутнього держави</title>
+<meta name="description" content="Форма зворотного зв'язку ГО «Фундація майбутнього держави»: напишіть нам — відповімо протягом 2 робочих днів." />
+<link rel="icon" href="../assets/img/favicon.ico" sizes="any" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@400;500&display=swap" />
+
+<!-- Tailwind CSS (Play CDN) і кольори бренду фундації -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: { DEFAULT: "#00469b", navy: "#01226b", yellow: "#fec301" },
+          ink: "#071a45",
+        },
+        fontFamily: {
+          display: ["Unbounded", "Arial Black", "system-ui", "sans-serif"],
+          body: ["Onest", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        },
+      },
+    },
+  };
+</script>
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body class="min-h-screen bg-slate-50 font-body text-ink antialiased">
+<!-- Усе, крім модального вікна, — у #page: під час показу вікна йому ставиться inert -->
+<div id="page" class="flex min-h-screen flex-col">
+
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <a href="../" class="flex items-center gap-3 rounded-lg text-ink no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/30">
+        <img src="../assets/img/logo-256.png" alt="" width="40" height="40" class="h-10 w-10 rounded-full" />
+        <span class="font-display text-sm leading-tight">Фундація<br />майбутнього держави</span>
+      </a>
+      <a href="../#contact" class="inline-flex min-h-[44px] items-center rounded-full px-4 text-sm font-medium text-brand underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/30">
+        ← На головну
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="flex-1 px-4 py-10 sm:px-6 md:py-16">
+    <div class="mx-auto max-w-2xl">
+      <p class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-yellow/20 px-3 py-1 text-sm font-medium text-brand-navy">
+        <span aria-hidden="true" class="h-2 w-2 rounded-full bg-brand-yellow"></span>
+        Відповідаємо протягом 2 робочих днів
+      </p>
+      <h1 class="font-display text-2xl leading-tight text-brand-navy sm:text-3xl md:text-4xl">Напишіть нам</h1>
+      <p class="mt-3 max-w-xl text-base leading-relaxed text-slate-600">
+        Питання про волонтерство, партнерство чи допомогу — залиште повідомлення, і координатор фундації зв'яжеться з вами.
+        Поля з позначкою <span class="font-semibold text-red-700" aria-hidden="true">*</span><span class="sr-only">зірочка</span> обов'язкові.
+      </p>
+
+      <!-- ФОРМА: novalidate — перевіряє наш JS (validation.js), а не стандартні підказки браузера -->
+      <form id="feedbackForm" class="mt-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8" novalidate>
+
+        <!-- Загальний статус форми: скрінрідер зачитує кількість помилок після спроби надсилання -->
+        <div id="formStatus" role="status" aria-live="polite" hidden class="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"></div>
+
+        <!-- mobile-first: одна колонка; від md ім'я і телефон — у два стовпці -->
+        <div class="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2">
+
+          <div class="field" data-field="name">
+            <label for="name" class="mb-1.5 block text-sm font-semibold text-ink">Ім'я <span class="text-red-700" aria-hidden="true">*</span></label>
+            <div class="field-control">
+              <input id="name" name="name" type="text" autocomplete="name" required
+                     aria-describedby="nameHelp" aria-invalid="false"
+                     class="input" />
+              <span class="field-icon" aria-hidden="true"></span>
+            </div>
+            <p id="nameHelp" class="help">Від 2 до 60 символів: літери, пробіл, дефіс, апостроф.</p>
+            <p id="nameError" class="error" hidden></p>
+          </div>
+
+          <div class="field" data-field="phone">
+            <label for="phone" class="mb-1.5 block text-sm font-semibold text-ink">Телефон <span class="text-red-700" aria-hidden="true">*</span></label>
+            <div class="field-control">
+              <input id="phone" name="phone" type="tel" autocomplete="tel" required
+                     aria-describedby="phoneHelp" aria-invalid="false"
+                     class="input" />
+              <span class="field-icon" aria-hidden="true"></span>
+            </div>
+            <p id="phoneHelp" class="help">Формат +380XXXXXXXXX, наприклад +380501234567.</p>
+            <p id="phoneHint" class="hint" aria-live="polite" hidden></p>
+            <p id="phoneError" class="error" hidden></p>
+          </div>
+
+          <div class="field md:col-span-2" data-field="email">
+            <label for="email" class="mb-1.5 block text-sm font-semibold text-ink">Email <span class="text-red-700" aria-hidden="true">*</span></label>
+            <div class="field-control">
+              <input id="email" name="email" type="email" autocomplete="email" required
+                     aria-describedby="emailHelp" aria-invalid="false"
+                     class="input" />
+              <span class="field-icon" aria-hidden="true"></span>
+            </div>
+            <p id="emailHelp" class="help">Наприклад, name@example.com.</p>
+            <p id="emailError" class="error" hidden></p>
+          </div>
+
+          <div class="field md:col-span-2" data-field="message">
+            <label for="message" class="mb-1.5 block text-sm font-semibold text-ink">Повідомлення <span class="text-red-700" aria-hidden="true">*</span></label>
+            <div class="field-control">
+              <textarea id="message" name="message" rows="5" required
+                        aria-describedby="messageHelp messageCount" aria-invalid="false"
+                        class="input min-h-[140px] resize-y py-3"></textarea>
+              <span class="field-icon field-icon--top" aria-hidden="true"></span>
+            </div>
+            <!-- помилка з'являється на місці підказки, тож поля нижче не «стрибають» -->
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p id="messageHelp" class="help">Мінімум 10 символів.</p>
+                <p id="messageError" class="error" hidden></p>
+              </div>
+              <p id="messageCount" class="help shrink-0 tabular-nums">0 / 1000</p>
+            </div>
+          </div>
+
+          <div class="field md:col-span-2" data-field="agree">
+            <div class="flex items-start gap-3">
+              <!-- 24×24 px: достатня зона натискання на смартфоні (WCAG 2.5.8) -->
+              <input id="agree" name="agree" type="checkbox" required
+                     aria-describedby="agreeError" aria-invalid="false"
+                     class="checkbox mt-0.5 h-6 w-6 shrink-0 cursor-pointer rounded-md border-2 border-slate-400 accent-brand" />
+              <label for="agree" class="cursor-pointer text-sm leading-6 text-slate-700">
+                Погоджуюся з обробкою персональних даних відповідно до політики конфіденційності фундації <span class="text-red-700" aria-hidden="true">*</span>
+              </label>
+            </div>
+            <p id="agreeError" class="error" hidden></p>
+          </div>
+        </div>
+
+        <div class="mt-7 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-xs leading-5 text-slate-500">Демонстраційна форма: дані перевіряються в браузері й нікуди не надсилаються.</p>
+          <button id="submitBtn" type="submit"
+                  class="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-brand px-8 text-base font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-70 sm:w-auto">
+            <span class="spinner hidden" aria-hidden="true"></span>
+            <span id="submitLabel">Надіслати</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-5xl px-4 py-5 text-sm text-slate-500 sm:px-6">
+      © 2026 ГО «Фундація майбутнього держави», Київ
+    </div>
+  </footer>
+</div>
+
+<!-- МОДАЛЬНЕ ВІКНО УСПІХУ: fixed inset-0 перекриває сторінку, оверлей перехоплює кліки -->
+<div id="successModal" class="modal fixed inset-0 z-50 items-center justify-center bg-ink/60 p-4 backdrop-blur-sm"
+     role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText" hidden>
+  <div id="successCard" class="modal-card w-full max-w-md rounded-3xl bg-white p-6 text-center shadow-2xl sm:p-8">
+    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-700" aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+    </div>
+    <h2 id="successTitle" class="font-display text-xl text-brand-navy">Дякуємо за звернення!</h2>
+    <p id="successText" class="mt-3 text-base leading-relaxed text-slate-600">
+      <span id="successName">Усі</span> поля заповнено правильно. Це демонстрація клієнтської валідації: повідомлення перевірено в браузері, але нікуди не надіслано.
+    </p>
+    <button id="successClose" type="button"
+            class="mt-6 inline-flex min-h-[48px] w-full items-center justify-center rounded-full bg-brand px-6 text-base font-semibold text-white transition-colors hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
+      Закрити
+    </button>
+  </div>
+</div>
+
+<script src="assets/js/validation.js" defer></script>
+</body>
+</html>

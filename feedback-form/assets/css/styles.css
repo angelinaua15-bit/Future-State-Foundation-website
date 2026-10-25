@@ -1,0 +1,130 @@
+/* =====================================================================
+   Лаб. 9 — форма зворотного зв'язку.
+   Компонування — утиліти Tailwind у index.html. Тут лише те, що
+   зручніше описати один раз: спільний вигляд полів і 4 UI-стани
+   (normal / focus / error / success), які JS вмикає атрибутом data-state.
+   ===================================================================== */
+:root {
+  --c-brand: #00469b;
+  --c-ink: #071a45;
+  --c-border: #94a3b8;        /* slate-400: контраст межі з білим ≥ 3:1 (WCAG 1.4.11) */
+  --c-border-hover: #64748b;  /* slate-500 */
+  --c-error: #dc2626;         /* red-600 — рамка */
+  --c-error-text: #b91c1c;    /* red-700 — текст, 6.5:1 */
+  --c-success: #16a34a;       /* green-600 — рамка */
+  --c-success-text: #15803d;  /* green-700 */
+  --radius-field: 14px;
+}
+
+/* ---------- normal ---------- */
+.input {
+  display: block;
+  width: 100%;
+  min-height: 48px;                 /* зручна зона натискання на смартфоні */
+  padding: 0 44px 0 14px;           /* праворуч — місце для іконки стану */
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-field);
+  background: #fff;
+  color: var(--c-ink);
+  font-size: 16px;                  /* < 16 px — iOS масштабує сторінку при фокусі */
+  line-height: 1.4;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+textarea.input { padding-top: 12px; padding-bottom: 12px; }
+
+.input:hover { border-color: var(--c-border-hover); }
+
+/* ---------- focus (лише з клавіатури або при введенні) ---------- */
+.input:focus { outline: none; }
+.input:focus-visible,
+.input:focus {
+  border-color: var(--c-brand);
+  box-shadow: 0 0 0 4px rgba(0, 70, 155, 0.18);
+}
+
+/* ---------- error ---------- */
+.field[data-state="error"] .input,
+.input.border-red-500 {
+  border-color: var(--c-error);
+  background: #fef2f2;
+}
+.field[data-state="error"] .input:focus {
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.18);
+}
+
+/* ---------- success ---------- */
+.field[data-state="success"] .input,
+.input.border-green-500 {
+  border-color: var(--c-success);
+}
+.field[data-state="success"] .input:focus {
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.18);
+}
+
+/* Іконка стану праворуч у полі: ✓ або ! (дублює колір — не лише колір передає стан) */
+.field-control { position: relative; }
+.field-icon {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.15s, transform 0.15s;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px;
+}
+.field-icon--top { top: 14px; margin-top: 0; }
+.field[data-state="success"] .field-icon {
+  opacity: 1; transform: none;
+  background-color: var(--c-success);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+}
+.field[data-state="error"] .field-icon {
+  opacity: 1; transform: none;
+  background-color: var(--c-error);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M12 6v7M12 17.5v.5'/%3E%3C/svg%3E");
+}
+
+/* Підказка, помилка, повідомлення про автоформат */
+/* Підказка й помилка — однакового розміру і в тому самому місці: помилка замінює підказку,
+   висота поля не змінюється, і елементи нижче не зсуваються під курсором (інакше клік,
+   що почався на checkbox під час blur попереднього поля, «промахується») */
+.help { margin-top: 6px; font-size: 14px; line-height: 20px; color: #64748b; }
+.error { margin-top: 6px; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--c-error-text); }
+.error::before { content: "⚠ "; }
+.hint { margin-top: 6px; font-size: 14px; line-height: 20px; color: var(--c-brand); }
+.field[data-state="error"] .help:not(#messageCount) { display: none; } /* поки є помилка — показуємо лише її */
+
+/* Checkbox: помилка — червона рамка навколо квадратика */
+#messageCount.is-over { color: var(--c-error-text); font-weight: 600; }
+
+.field[data-state="error"] .checkbox { outline: 2px solid var(--c-error); outline-offset: 2px; }
+.checkbox:focus-visible { outline: 3px solid var(--c-brand); outline-offset: 3px; }
+
+/* Кнопка: індикатор «надсилання» (імітація) */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Модальне вікно: показується атрибутом hidden (а не класом), щоб не конфліктувати з Tailwind */
+.modal:not([hidden]) { display: flex; }
+.modal:not([hidden]) .modal-card { animation: pop 0.18s ease-out; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+
+body.modal-open { overflow: hidden; }
+
+/* Користувачі, що вимкнули анімації в системі */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
