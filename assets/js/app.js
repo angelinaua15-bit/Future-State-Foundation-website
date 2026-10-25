@@ -332,6 +332,8 @@
     var timer = null;
 
     function ready(slide) {
+      // Лаб. 7: відео-слайд має постер, тож його можна показувати одразу
+      if (slide.querySelector("video")) return true;
       var img = slide.querySelector("img");
       return img && img.getAttribute("src") && img.complete && img.naturalWidth > 0;
     }
