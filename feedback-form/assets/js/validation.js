@@ -102,6 +102,7 @@
     const el = FIELDS[id].el;
     const base = (el.dataset.baseDescribedby ||= el.getAttribute("aria-describedby") || "");
     const parts = base.split(" ").filter((x) => x && x !== id + "Error");
+    if (id === "phone" && !phoneHint.hidden) parts.push("phoneHint"); // скрінрідер чує і підказку автоформату
     if (withError) parts.push(id + "Error");
     if (parts.length) el.setAttribute("aria-describedby", parts.join(" "));
   }
@@ -176,10 +177,13 @@
       el.value = v;
       phoneHint.textContent = note;
       phoneHint.hidden = false;
-    } else if (!raw) {
+      phoneHint.dataset.for = v; // підказка стосується саме цього значення
+    } else if (!phoneHint.hidden && phoneHint.dataset.for !== raw) {
+      // номер змінили вручну — стара підказка («перетворено …») вже неправдива
       phoneHint.hidden = true;
       phoneHint.textContent = "";
     }
+    setDescribedBy("phone", wrap("phone").dataset.state === "error");
   }
 
   function updateCounter() {
@@ -276,11 +280,11 @@
   });
 
   function resetStates() {
+    phoneHint.hidden = true;
     ORDER.forEach(clearError);
     touched.clear();
     submitted = false;
     statusBox.hidden = true;
-    phoneHint.hidden = true;
     updateCounter();
   }
 
@@ -290,12 +294,10 @@
   const card = document.getElementById("successCard");
   const closeBtn = document.getElementById("successClose");
   const page = document.getElementById("page");
-  let lastFocus = null;
 
   function openModal(firstName) {
     // textContent, а не innerHTML: введене ім'я ніколи не виконується як HTML
     document.getElementById("successName").textContent = firstName ? firstName + ", усі" : "Усі";
-    lastFocus = document.activeElement;
     modal.hidden = false;
     page.inert = true;                       // сторінка під вікном недоступна для кліків, Tab і скрінрідера
     document.body.classList.add("modal-open");
@@ -308,7 +310,10 @@
     page.inert = false;
     document.body.classList.remove("modal-open");
     document.removeEventListener("keydown", onKeydown);
-    (FIELDS.name.el || lastFocus).focus(); // повертаємо фокус на початок порожньої форми
+    // Кнопка «Надіслати», з якої відкрили вікно, лежить після порожньої форми, тому фокус —
+    // на перше поле: користувач одразу може писати нове повідомлення (WAI-ARIA APG дозволяє
+    // повертати фокус на логічно наступний елемент, якщо попередній втратив сенс)
+    FIELDS.name.el.focus();
   }
 
   function onKeydown(event) {
