@@ -1,0 +1,17 @@
+# Системні файли macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Редактори
+.vscode/
+.idea/
+*.swp
+
+# Залежності й локальні збірки (у проєкті їх немає, але щоб випадково не потрапили)
+node_modules/
+.vercel/
+.netlify/
+
+# Локальні змінні середовища (токени Telegram для api/lead.js)
+.env
+.env.*
