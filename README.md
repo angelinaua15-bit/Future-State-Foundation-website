@@ -1,6 +1,6 @@
 # Фундація майбутнього держави — сайт (HTML/CSS/JS)
 
-Односторінковий адаптивний сайт на **чистому HTML, CSS та JavaScript — без збірки, без фреймворків, без npm**. Відкривається напряму в браузері і публікується на GitHub Pages без жодних build-кроків. Живі версії: [GitHub Pages](https://angelinaua15-bit.github.io/Future-State-Foundation-website/) і [Vercel](https://future-state-foundation-website.vercel.app).
+Односторінковий адаптивний сайт на **чистому HTML, CSS та JavaScript — без збірки й без npm**; медіаблоки лаб. 7 (відео, інформер, карта) зверстано Tailwind CSS через Play CDN. Відкривається напряму в браузері і публікується на GitHub Pages без жодних build-кроків. Живі версії: [GitHub Pages](https://angelinaua15-bit.github.io/Future-State-Foundation-website/) і [Vercel](https://future-state-foundation-website.vercel.app).
 
 ## Як подивитись локально
 
@@ -33,6 +33,21 @@ npx serve .
    - Через 1–2 хвилини сайт буде доступний на `https://<ваш-акаунт>.github.io/<назва-репо>/`.
 
 Ніякого build-кроку тут немає, тому не буде повторення історії з v0/Vercel — GitHub Pages просто роздає файли як є.
+
+## Лаб. 7: медіаблоки лендингу
+
+| Блок | Де | Як зроблено |
+|---|---|---|
+| Відео-фон Hero | перший слайд `#hero-media` | `<video autoplay loop muted playsinline poster>`, WebM + MP4 (`assets/media/`) |
+| Відео YouTube | секція `#video` | `<figure>` + iframe у контейнері `tw-aspect-video`, `loading="lazy"`, `title` |
+| Інформер «Корисне сьогодні» | після новин | `<aside>` з 3 `<section>`: курс НБУ, погода (Open-Meteo), Telegram; `assets/js/lab7-media.js` (defer) |
+| Google-карта | контакти | iframe у контейнері `tw-aspect-[4/3] sm:tw-aspect-video min-[861px]:tw-aspect-[4/3]` |
+
+Нові блоки зверстано утилітами Tailwind CSS (Play CDN) з `prefix: "tw-"` і `preflight: false`, щоб не конфліктувати з `style.css`; спільні значення — CSS-змінні в `assets/css/media.css`, тексти UA/EN — `assets/js/i18n-lab7.js`.
+
+## Лаб. 8: робота з Git
+
+Гілка `feature/lab7-media` → коміти за Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`) → `git pull` → `git merge` у `main` (з розв'язанням конфлікту в README) → `git push` → автоматичний деплой на GitHub Pages і Vercel.
 
 ## Структура проєкту
 

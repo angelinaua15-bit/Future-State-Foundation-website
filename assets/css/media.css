@@ -1,0 +1,53 @@
+/* =====================================================================
+   Лаб. 7 — медіаблоки лендингу (відео-фон Hero, YouTube, карта, інформер).
+   Компонування — утиліти Tailwind з префіксом tw- (preflight вимкнено, щоб не
+   ламати основний style.css). Тут лише спільні значення — CSS-змінні (DRY).
+   ===================================================================== */
+:root {
+  /* Медіа (YouTube, карта): одна ширина й радіус для всіх iframe */
+  --media-max-w: 960px;
+  --media-radius: var(--radius-m);
+
+  /* Інформер */
+  --informer-gap: 16px;
+  --informer-pad: 22px;
+  --informer-radius: var(--radius-m);
+}
+
+/* Обгортка iframe: ширина обмежена змінною, на 320 px не виходить за екран */
+.media-frame {
+  width: 100%;
+  max-width: var(--media-max-w);
+  margin: 0;
+}
+
+.media-frame iframe {
+  display: block;
+  border: 0; /* радіус дає контейнер: overflow-hidden + tw-rounded-[var(--media-radius)] */
+}
+
+/* Нативне відео — перший «слайд» Hero (поводиться як фото: на весь кадр) */
+.hero__slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* Інформер: відстані — змінна; :where() дає нульову специфічність,
+   тож утиліти Tailwind (tw-bg-brand тощо) можуть перевизначити картку */
+.informer {
+  gap: var(--informer-gap);
+}
+
+:where(.informer-card) {
+  padding: var(--informer-pad);
+  border: 1px solid var(--line);
+  border-radius: var(--informer-radius);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+.media-frame--map {
+  max-width: none;
+}

@@ -332,8 +332,11 @@
     var timer = null;
 
     function ready(slide) {
+      // Лаб. 7: відео-слайд має постер, тож його можна показувати одразу
+      if (slide.querySelector("video")) return true;
       var img = slide.querySelector("img");
-      return img && img.getAttribute("src") && img.complete && img.naturalWidth > 0;
+      // data-src ще не підставлено — у src лише прозорий піксель-заглушка (валідний HTML)
+      return img && !img.hasAttribute("data-src") && img.complete && img.naturalWidth > 1;
     }
 
     dotsWrap.innerHTML = "";
@@ -374,10 +377,12 @@
     // Решта фото підвантажуються після повного завантаження сторінки
     function loadDeferred() {
       document.querySelectorAll("#hero-media img[data-src]").forEach(function (img) {
+        if (img.dataset.sizes) img.sizes = img.dataset.sizes;
         img.srcset = img.dataset.srcset;
         img.src = img.dataset.src;
         img.removeAttribute("data-src");
         img.removeAttribute("data-srcset");
+        img.removeAttribute("data-sizes");
       });
     }
     if (document.readyState === "complete") setTimeout(loadDeferred, 300);
@@ -890,6 +895,8 @@
       '<circle cx="100" cy="100" r="46" class="spin-badge__core"/>' +
       '<path d="M84 116l32-32M92 84h24v24" class="spin-badge__arrow" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>' +
       "</svg>";
+    // Лаб. 7 (аудит axe, WCAG 2.5.3 «Label in Name»): доступна назва починається з видимого тексту на кільці
+    badge.setAttribute("aria-label", t("join.badge").replace(/\s*✦\s*/g, ", ").replace(/,\s*$/, "") + ". " + t("join.badgeLabel"));
   }
 
   /* ---------------- Footer ---------------- */
