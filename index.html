@@ -318,6 +318,33 @@
     <div class="news__viewport" id="news-viewport">
       <ul class="news__track" id="news-grid"></ul>
     </div>
+
+    <!-- МЕДІА / ІНФОРМЕР (лаб. 7): <aside> — додатковий контент поруч з основним; дані підтягує
+         assets/js/lab7-media.js (defer) з відкритих API НБУ й Open-Meteo -->
+    <div class="container tw-mt-10">
+      <aside class="informer tw-grid sm:tw-grid-cols-3" aria-labelledby="informer-title" data-informer>
+        <h2 id="informer-title" class="sr-only" data-i18n="lab7.informerTitle">Корисне сьогодні</h2>
+        <section class="informer-card" aria-labelledby="rates-title">
+          <h3 id="rates-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-muted" data-i18n="lab7.rates">Курс НБУ</h3>
+          <dl class="tw-mb-0 tw-mt-3 tw-space-y-2" data-rates aria-live="polite">
+            <div class="tw-flex tw-items-baseline tw-justify-between"><dt class="tw-font-medium">USD</dt><dd class="tw-m-0 tw-font-display tw-text-xl" data-rate="USD">—</dd></div>
+            <div class="tw-flex tw-items-baseline tw-justify-between"><dt class="tw-font-medium">EUR</dt><dd class="tw-m-0 tw-font-display tw-text-xl" data-rate="EUR">—</dd></div>
+          </dl>
+          <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-muted" data-rates-note>Завантаження…</p>
+        </section>
+        <section class="informer-card" aria-labelledby="weather-title">
+          <h3 id="weather-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-muted" data-i18n="lab7.weather">Погода в Києві</h3>
+          <p class="tw-mb-0 tw-mt-3 tw-font-display tw-text-4xl" data-weather-temp aria-live="polite">—</p>
+          <p class="tw-mb-0 tw-mt-1 tw-text-sm" data-weather-desc>Завантаження…</p>
+          <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-muted" data-i18n="lab7.weatherSource">Дані: Open-Meteo</p>
+        </section>
+        <section class="informer-card tw-bg-brand tw-text-white" aria-labelledby="tg-title">
+          <h3 id="tg-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-white/80" data-i18n="lab7.tgTitle">Ми в Telegram</h3>
+          <p class="tw-mb-0 tw-mt-3 tw-text-sm tw-text-white/90" data-i18n="lab7.tgText">Анонси подій і збори — першими в каналі фундації.</p>
+          <a href="https://t.me/futurestatefoundation" class="tw-mt-4 tw-inline-block tw-text-sm tw-text-white tw-underline" rel="noopener" data-i18n="lab7.tgCta">Підписатися</a>
+        </section>
+      </aside>
+    </div>
   </section>
 
   <!-- ============ JOIN CONSTRUCTOR ============ -->
@@ -482,5 +509,6 @@
 <script src="assets/js/data.js" defer></script>
 <script src="assets/js/icons.js" defer></script>
 <script src="assets/js/app.js" defer></script>
+<script src="assets/js/lab7-media.js" defer></script>
 </body>
 </html>
