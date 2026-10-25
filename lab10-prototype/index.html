@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Прототип галереї — лаб. 10 (StackBlitz)</title>
+  <!-- 1. CSS плагінів — у <head>, до рендерингу -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css" />
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f4f6fb; color: #071a45; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 48px 16px; }
+    h2 { font-size: clamp(28px, 4vw, 44px); margin: 0 0 8px; }
+    .typed-line { font-size: 22px; color: #4b5a80; min-height: 1.4em; margin: 0 0 28px; }
+    #typed-text { color: #00469b; }
+    .card { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid #dde3ef; height: 100%; }
+    .card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+    .card p { margin: 0; padding: 14px 16px 18px; }
+    .card time { display: block; font-size: 13px; font-weight: 600; color: #00469b; margin-bottom: 4px; }
+    .swiper { padding-bottom: 40px; }
+    .swiper-slide { height: auto; }
+  </style>
+</head>
+<body>
+  <section class="wrap">
+    <h2>Наші справи у фото</h2>
+    <!-- 3. Typed.js: порожній span, який заповнює бібліотека -->
+    <p class="typed-line">Фундація — це <span id="typed-text"></span></p>
+
+    <!-- 2. Структурна розмітка Swiper: .swiper > .swiper-wrapper > .swiper-slide -->
+    <div class="swiper gallery-swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><a class="card" href="../assets/img/news/1-lawyers.webp" data-fancybox="fsf-gallery" data-caption="29.09.2026 — Крок до системної правової підтримки"><img src="../assets/img/news/1-lawyers@800w.webp" alt="" loading="lazy" /><p><time>29.09.2026</time>Крок до системної правової підтримки</p></a></div>
+        <div class="swiper-slide"><a class="card" href="../assets/img/news/2-wheelchairs.webp" data-fancybox="fsf-gallery" data-caption="05.09.2026 — Три інвалідні візки для наших захисників"><img src="../assets/img/news/2-wheelchairs@800w.webp" alt="" loading="lazy" /><p><time>05.09.2026</time>Три інвалідні візки для наших захисників</p></a></div>
+        <div class="swiper-slide"><a class="card" href="../assets/img/news/3-haidai.webp" data-fancybox="fsf-gallery" data-caption="07.08.2026 — Нові партнерства заради спільних справ"><img src="../assets/img/news/3-haidai@800w.webp" alt="" loading="lazy" /><p><time>07.08.2026</time>Нові партнерства заради спільних справ</p></a></div>
+        <div class="swiper-slide"><a class="card" href="../assets/img/news/4-exhibition.webp" data-fancybox="fsf-gallery" data-caption="04.08.2026 — «Пам'ять в обличчях»: історії киян-героїв"><img src="../assets/img/news/4-exhibition@800w.webp" alt="" loading="lazy" /><p><time>04.08.2026</time>«Пам'ять в обличчях»: історії киян-героїв</p></a></div>
+        <div class="swiper-slide"><a class="card" href="../assets/img/news/5-festival.webp" data-fancybox="fsf-gallery" data-caption="04.08.2026 — Фестиваль «Липневі Перці»"><img src="../assets/img/news/5-festival@800w.webp" alt="" loading="lazy" /><p><time>04.08.2026</time>Фестиваль «Липневі Перці»: спорт, спілкування, єдність</p></a></div>
+        <div class="swiper-slide"><a class="card" href="../assets/img/news/6-fishingfest.webp" data-fancybox="fsf-gallery" data-caption="28.07.2026 — Family Fishing Fest"><img src="../assets/img/news/6-fishingfest@800w.webp" alt="" loading="lazy" /><p><time>28.07.2026</time>Family Fishing Fest: день для ветеранів і їхніх родин</p></a></div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </section>
+
+  <!-- 3. JS бібліотек — перед </body> -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js"></script>
+  <!-- 4. Ініціалізація — після бібліотек, у DOMContentLoaded -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      new Swiper(".gallery-swiper", {
+        loop: true,
+        spaceBetween: 16,
+        autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        breakpoints: { 0: { slidesPerView: 1 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } },
+      });
+
+      Fancybox.bind('[data-fancybox="fsf-gallery"]', {
+        Carousel: { transition: "fade" },
+        Images: { zoom: true, Panzoom: { maxScale: 3 } },
+        Thumbs: { type: "classic" },
+      });
+
+      new Typed("#typed-text", {
+        strings: ["правова підтримка", "допомога захисникам", "нові партнерства"],
+        typeSpeed: 50,
+        backSpeed: 30,
+        backDelay: 1500,
+        loop: true,
+      });
+    });
+  </script>
+</body>
+</html>
