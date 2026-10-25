@@ -51,6 +51,10 @@ npx serve .
 
 Історія змін — у [CHANGELOG.md](CHANGELOG.md).
 
+## Лаб. 9: форма зворотного зв'язку
+
+Окрема сторінка [`feedback-form/`](feedback-form/) — адаптивна форма (Tailwind CSS) з клієнтською валідацією на Vanilla JS: регулярні вирази для телефону `+380XXXXXXXXX` та email, динамічна перевірка (`input` / `blur` / `submit`), стани normal / focus / error / success, доступне модальне вікно успіху. Жива версія: [Vercel](https://future-state-foundation-website.vercel.app/feedback-form/). Деталі — у [feedback-form/README.md](feedback-form/README.md).
+
 ## Структура проєкту
 
 ```

@@ -2,6 +2,11 @@
 
 Формат — [Keep a Changelog](https://keepachangelog.com/uk/1.1.0/), повідомлення комітів — [Conventional Commits](https://www.conventionalcommits.org/uk/v1.0.0/).
 
+## 2026-10-25 — лаб. 9
+
+### Додано
+- Сторінка `feedback-form/`: форма зворотного зв'язку з валідацією (RegEx), автоформатом телефону `0XXXXXXXXX → +380XXXXXXXXX` і модальним вікном успіху.
+
 ## 2026-10-25 — лаб. 7–8
 
 ### Додано
