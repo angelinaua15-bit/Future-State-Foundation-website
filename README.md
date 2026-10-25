@@ -1,6 +1,6 @@
 # Фундація майбутнього держави — сайт (HTML/CSS/JS)
 
-Односторінковий адаптивний сайт на **чистому HTML, CSS та JavaScript — без збірки, без фреймворків, без npm**. Відкривається напряму в браузері і публікується на GitHub Pages без жодних build-кроків.
+Односторінковий адаптивний сайт на **чистому HTML, CSS та JavaScript — без збірки, без фреймворків, без npm**. Відкривається напряму в браузері і публікується на GitHub Pages без жодних build-кроків. Живі версії: [GitHub Pages](https://angelinaua15-bit.github.io/Future-State-Foundation-website/) і [Vercel](https://future-state-foundation-website.vercel.app).
 
 ## Як подивитись локально
 
