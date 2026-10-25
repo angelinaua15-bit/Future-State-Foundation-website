@@ -177,9 +177,9 @@
                playsinline — iPhone не відкриває відео на весь екран, poster — кадр до завантаження -->
           <figure class="hero__slide is-active"><video autoplay loop muted playsinline preload="metadata" poster="assets/media/hero-poster.webp" aria-hidden="true" data-hero-video><source src="assets/media/hero-loop.webm" type="video/webm" /><source src="assets/media/hero-loop.mp4" type="video/mp4" /></video></figure>
           <figure class="hero__slide"><img src="assets/img/hero/bg/7-team-yard.webp" srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" sizes="100vw" alt="" fetchpriority="high" /></figure>
-          <figure class="hero__slide"><img data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img data-src="assets/img/hero/bg/2-wheelchairs.webp" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.webp 480w, assets/img/hero/bg/2-wheelchairs@800w.webp 800w, assets/img/hero/bg/2-wheelchairs.webp 952w" sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img data-src="assets/img/hero/bg/1-lawyers.webp" data-srcset="assets/img/hero/bg/1-lawyers@480w.webp 480w, assets/img/hero/bg/1-lawyers@800w.webp 800w, assets/img/hero/bg/1-lawyers.webp 952w" sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" data-sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/2-wheelchairs.webp" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.webp 480w, assets/img/hero/bg/2-wheelchairs@800w.webp 800w, assets/img/hero/bg/2-wheelchairs.webp 952w" data-sizes="100vw" alt="" /></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/1-lawyers.webp" data-srcset="assets/img/hero/bg/1-lawyers@480w.webp 480w, assets/img/hero/bg/1-lawyers@800w.webp 800w, assets/img/hero/bg/1-lawyers.webp 952w" data-sizes="100vw" alt="" /></figure>
         </div>
         <div class="hero__shade" id="hero-shade"></div>
       </div>
@@ -322,7 +322,7 @@
     <!-- МЕДІА / ІНФОРМЕР (лаб. 7): <aside> — додатковий контент поруч з основним; дані підтягує
          assets/js/lab7-media.js (defer) з відкритих API НБУ й Open-Meteo -->
     <div class="container tw-mt-10">
-      <aside class="informer tw-grid sm:tw-grid-cols-3" aria-labelledby="informer-title" data-informer>
+      <aside class="informer tw-grid tw-grid-cols-1 sm:tw-grid-cols-3" aria-labelledby="informer-title" data-informer>
         <h2 id="informer-title" class="sr-only" data-i18n="lab7.informerTitle">Корисне сьогодні</h2>
         <section class="informer-card" aria-labelledby="rates-title">
           <h3 id="rates-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-muted" data-i18n="lab7.rates">Курс НБУ</h3>
@@ -384,9 +384,9 @@
 
         <h3 class="contact__h" data-i18n="lab7.mapTitle">Де нас знайти</h3>
         <!-- МЕДІА: Google Maps iframe у <figure>. Висота — через aspect-ratio контейнера,
-             радіус — та сама змінна --media-radius, що й у відео (DRY) -->
+             радіус — та сама CSS-змінна media-radius, що й у відео (DRY) -->
         <figure class="media-frame media-frame--map">
-          <div class="tw-aspect-[4/3] tw-w-full tw-overflow-hidden tw-rounded-[var(--media-radius)] tw-border tw-border-solid tw-border-line sm:tw-aspect-video lg:tw-aspect-[4/3]">
+          <div class="tw-aspect-[4/3] tw-w-full tw-overflow-hidden tw-rounded-[var(--media-radius)] tw-border tw-border-solid tw-border-line sm:tw-aspect-video min-[861px]:tw-aspect-[4/3]">
             <iframe
               class="tw-h-full tw-w-full"
               src="https://www.google.com/maps?q=%D0%9A%D0%B8%D1%97%D0%B2%2C+%D0%B2%D1%83%D0%BB.+%D0%84%D0%B2%D0%B3%D0%B5%D0%BD%D0%B0+%D0%A1%D0%B2%D0%B5%D1%80%D1%81%D1%82%D1%8E%D0%BA%D0%B0%2C+19&amp;hl=uk&amp;z=16&amp;output=embed"
@@ -505,7 +505,7 @@
 <!-- Team bio modal -->
 <div class="modal-backdrop" id="team-modal">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-name">
-    <div class="modal__media"><img id="team-modal-img" src="" alt="" /></div>
+    <div class="modal__media"><img id="team-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" /></div>
     <div class="modal__content">
       <div class="modal__head">
         <div>

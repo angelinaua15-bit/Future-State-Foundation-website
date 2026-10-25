@@ -23,8 +23,7 @@
 
 .media-frame iframe {
   display: block;
-  border: 0;
-  border-radius: var(--media-radius);
+  border: 0; /* радіус дає контейнер: overflow-hidden + tw-rounded-[var(--media-radius)] */
 }
 
 /* Нативне відео — перший «слайд» Hero (поводиться як фото: на весь кадр) */
