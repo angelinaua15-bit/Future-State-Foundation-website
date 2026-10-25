@@ -49,6 +49,8 @@ npx serve .
 
 Гілка `feature/lab7-media` → коміти за Conventional Commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`) → `git pull` → `git merge` у `main` (з розв'язанням конфлікту в README) → `git push` → автоматичний деплой на GitHub Pages і Vercel.
 
+Історія змін — у [CHANGELOG.md](CHANGELOG.md).
+
 ## Структура проєкту
 
 ```
