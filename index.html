@@ -47,6 +47,11 @@
 <link rel="stylesheet" href="assets/css/style.css" />
 <!-- Лаб. 7: CSS-змінні медіаблоків (iframe, інформер) -->
 <link rel="stylesheet" href="assets/css/media.css" />
+<!-- Лаб. 10: CSS плагінів через CDN — у <head>, щоб стилі були до першого рендерингу (без FOUC).
+     Версії зафіксовано, integrity (SRI) не дасть виконати підмінений файл -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css" integrity="sha384-gAPqlBuTCdtVcYt9ocMOYWrnBZ4XSL6q+4eXqwNycOr4iFczhNKtnYhF3NEXJM51" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css" integrity="sha384-qlUhevqmCF5AxtnfkF0zXJClBzA6GJuX/UrLejCfE61bBGt+zo/My0AJ+ojVmUSb" crossorigin="anonymous" />
+<link rel="stylesheet" href="assets/css/lab10-gallery.css" />
 
 <!-- Лаб. 7: Tailwind CSS (Play CDN) для нових медіаблоків.
      prefix "tw-" і preflight: false — утиліти не конфліктують з основним style.css;
@@ -122,6 +127,7 @@
     <a href="#team" data-i18n="nav.team">Команда</a>
     <a href="#video" data-i18n="nav.video">Відео</a>
     <a href="#media" data-i18n="nav.news">Новини</a>
+    <a href="#gallery" data-i18n="nav.gallery">Галерея</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
   </nav>
 
@@ -154,6 +160,7 @@
     <a href="#video" data-i18n="nav.video">Відео</a>
     <a href="#join" data-i18n="nav.cta">Долучитися</a>
     <a href="#media" data-i18n="nav.news">Новини</a>
+    <a href="#gallery" data-i18n="nav.gallery">Галерея</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
     <div class="mobile-nav__footer">
       <div class="lang-switch" role="group" aria-label="Мова / Language">
@@ -347,6 +354,96 @@
     </div>
   </section>
 
+  <!-- ============ ГАЛЕРЕЯ (лаб. 10): Swiper.js + Fancybox v5 + Typed.js, підключені через CDN ============ -->
+  <section id="gallery" class="section gallery" aria-labelledby="gallery-title">
+    <div class="container head-split">
+      <div>
+        <p class="section-tag"><span data-i18n="lab10.eyebrow">Галерея</span></p>
+        <h2 id="gallery-title" class="section-title" data-i18n="lab10.title">Наші справи у фото</h2>
+        <!-- Typed.js друкує слова в #typed-text; для скрінрідера — той самий зміст статичним текстом -->
+        <p class="gallery__typed"><span data-i18n="lab10.typedLead">Фундація — це</span> <span class="gallery__typed-words" id="typed-text" aria-hidden="true"></span><span class="sr-only" data-i18n="lab10.typedSr">правова підтримка, допомога захисникам, нові партнерства, пам'ять про героїв, спорт, що об'єднує громаду</span></p>
+      </div>
+      <div>
+        <p class="section-subtitle" data-i18n="lab10.subtitle">Події 2026 року, у яких брала участь фундація. Натисніть на фото, щоб відкрити альбом на весь екран.</p>
+        <div class="gallery__controls">
+          <button type="button" class="round-btn" id="gallery-prev" data-i18n-aria-label="lab10.prev" aria-label="Попереднє фото">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="round-btn" id="gallery-next" data-i18n-aria-label="lab10.next" aria-label="Наступне фото">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="round-btn gallery__pause" id="gallery-pause" aria-pressed="false" aria-label="Зупинити автопрокрутку">
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6v12M15 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Розмітка, яку вимагає Swiper: .swiper > .swiper-wrapper > .swiper-slide -->
+      <div class="swiper gallery-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/1-lawyers.webp" data-fancybox="fsf-gallery" data-index="0" data-caption="29 вересня 2026 р. — Крок до системної правової підтримки" aria-label="Відкрити фото на весь екран: 29 вересня 2026 р. — Крок до системної правової підтримки">
+                <img src="assets/img/news/1-lawyers@800w.webp" srcset="assets/img/news/1-lawyers@480w.webp 480w, assets/img/news/1-lawyers@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-09-29">29 вересня 2026 р.</time><span class="gallery-card__title">Крок до системної правової підтримки</span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/2-wheelchairs.webp" data-fancybox="fsf-gallery" data-index="1" data-caption="5 вересня 2026 р. — Три інвалідні візки для наших захисників" aria-label="Відкрити фото на весь екран: 5 вересня 2026 р. — Три інвалідні візки для наших захисників">
+                <img src="assets/img/news/2-wheelchairs@800w.webp" srcset="assets/img/news/2-wheelchairs@480w.webp 480w, assets/img/news/2-wheelchairs@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-09-05">5 вересня 2026 р.</time><span class="gallery-card__title">Три інвалідні візки для наших захисників</span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/3-haidai.webp" data-fancybox="fsf-gallery" data-index="2" data-caption="7 серпня 2026 р. — Нові партнерства заради спільних справ" aria-label="Відкрити фото на весь екран: 7 серпня 2026 р. — Нові партнерства заради спільних справ">
+                <img src="assets/img/news/3-haidai@800w.webp" srcset="assets/img/news/3-haidai@480w.webp 480w, assets/img/news/3-haidai@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-08-07">7 серпня 2026 р.</time><span class="gallery-card__title">Нові партнерства заради спільних справ</span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/4-exhibition.webp" data-fancybox="fsf-gallery" data-index="3" data-caption="4 серпня 2026 р. — «Пам'ять в обличчях»: історії киян-героїв" aria-label="Відкрити фото на весь екран: 4 серпня 2026 р. — «Пам'ять в обличчях»: історії киян-героїв">
+                <img src="assets/img/news/4-exhibition@800w.webp" srcset="assets/img/news/4-exhibition@480w.webp 480w, assets/img/news/4-exhibition@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-08-04">4 серпня 2026 р.</time><span class="gallery-card__title">«Пам'ять в обличчях»: історії киян-героїв</span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/5-festival.webp" data-fancybox="fsf-gallery" data-index="4" data-caption="4 серпня 2026 р. — Фестиваль «Липневі Перці»: спорт, спілкування, єдність" aria-label="Відкрити фото на весь екран: 4 серпня 2026 р. — Фестиваль «Липневі Перці»: спорт, спілкування, єдність">
+                <img src="assets/img/news/5-festival@800w.webp" srcset="assets/img/news/5-festival@480w.webp 480w, assets/img/news/5-festival@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-08-04">4 серпня 2026 р.</time><span class="gallery-card__title">Фестиваль «Липневі Перці»: спорт, спілкування, єдність</span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/6-fishingfest.webp" data-fancybox="fsf-gallery" data-index="5" data-caption="28 липня 2026 р. — Family Fishing Fest: день для ветеранів і їхніх родин" aria-label="Відкрити фото на весь екран: 28 липня 2026 р. — Family Fishing Fest: день для ветеранів і їхніх родин">
+                <img src="assets/img/news/6-fishingfest@800w.webp" srcset="assets/img/news/6-fishingfest@480w.webp 480w, assets/img/news/6-fishingfest@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-07-28">28 липня 2026 р.</time><span class="gallery-card__title">Family Fishing Fest: день для ветеранів і їхніх родин</span></figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ JOIN CONSTRUCTOR ============ -->
   <section id="join" class="section join" aria-labelledby="join-title">
     <div class="container">
@@ -527,5 +624,11 @@
 <script src="assets/js/icons.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/lab7-media.js" defer></script>
+<!-- Лаб. 10: бібліотеки через CDN перед </body>; defer — не блокують розбір HTML і виконуються по черзі,
+     тож ініціалізація (lab10-gallery.js) завжди стоїть після самих бібліотек -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.js" integrity="sha384-2UI1PfnXFjVMQ7/ZDEF70CR943oH3v6uZrFQGGqJYlvhh4g6z6uVktxYbOlAczav" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js" integrity="sha384-BodKYo5iRmFaqEaP1o8AAu9hCHqLvNhSWEg12QF1IjPnl1SgsrwQMSMKUB4POJ18" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" integrity="sha384-NMn9+T8zIKnDUstqb5le7vdLNSyAgSU9DtEPT/b7ks9NJQpPk4Dc9b1tI8oyzimc" crossorigin="anonymous" defer></script>
+<script src="assets/js/lab10-gallery.js" defer></script>
 </body>
 </html>

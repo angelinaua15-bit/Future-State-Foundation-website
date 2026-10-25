@@ -2,6 +2,11 @@
 
 Формат — [Keep a Changelog](https://keepachangelog.com/uk/1.1.0/), повідомлення комітів — [Conventional Commits](https://www.conventionalcommits.org/uk/v1.0.0/).
 
+## 2026-10-25 — лаб. 10
+
+### Додано
+- Секція «Галерея»: слайдер Swiper 11, альбом Fancybox 5, друкований рядок Typed.js (CDN jsDelivr + SRI), пункт меню «Галерея».
+
 ## 2026-10-25 — лаб. 9
 
 ### Додано
