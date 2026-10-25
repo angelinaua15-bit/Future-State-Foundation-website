@@ -892,6 +892,8 @@
       '<circle cx="100" cy="100" r="46" class="spin-badge__core"/>' +
       '<path d="M84 116l32-32M92 84h24v24" class="spin-badge__arrow" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>' +
       "</svg>";
+    // Лаб. 7 (аудит axe, WCAG 2.5.3 «Label in Name»): доступна назва починається з видимого тексту на кільці
+    badge.setAttribute("aria-label", t("join.badge").replace(/\s*✦\s*/g, ", ").replace(/,\s*$/, "") + ". " + t("join.badgeLabel"));
   }
 
   /* ---------------- Footer ---------------- */

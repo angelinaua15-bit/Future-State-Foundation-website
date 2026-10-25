@@ -110,9 +110,9 @@
 
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="site-header">
-  <a href="#top" class="brand" aria-label="Фундація майбутнього держави — на головну">
+  <a href="#top" class="brand">
     <span class="brand__logo" data-logo><img src="assets/img/logo-256.png" alt="" width="44" height="44" /></span>
-    <span class="brand__name">Фундація<br />майбутнього держави</span>
+    <span class="brand__name">Фундація <br />майбутнього держави</span><span class="sr-only"> — на головну</span>
   </a>
 
   <nav class="main-nav" id="main-nav" aria-label="Основна навігація">
@@ -202,7 +202,7 @@
   </section>
 
   <!-- ============ ABOUT ============ -->
-  <section id="about" class="section about">
+  <section id="about" class="section about" aria-labelledby="about-manifest">
     <div class="container">
       <p class="section-tag reveal"><span data-i18n="about.eyebrow">Про нас</span></p>
       <h2 class="about__manifest" id="about-manifest" data-i18n="about.lead">Скорочуємо відстань між громадянською позицією та реальною зміною</h2>
@@ -253,12 +253,12 @@
   </div>
 
   <!-- ============ TEAM ============ -->
-  <section id="team" class="section team">
+  <section id="team" class="section team" aria-labelledby="team-title">
     <div class="container">
       <div class="head-split reveal">
         <div>
           <p class="section-tag"><span data-i18n="team.eyebrow">Команда</span></p>
-          <h2 class="section-title" data-i18n="team.title">Люди, які втілюють місію</h2>
+          <h2 id="team-title" class="section-title" data-i18n="team.title">Люди, які втілюють місію</h2>
         </div>
         <p class="section-subtitle" data-i18n="team.subtitle"></p>
       </div>
@@ -348,14 +348,14 @@
   </section>
 
   <!-- ============ JOIN CONSTRUCTOR ============ -->
-  <section id="join" class="section join">
+  <section id="join" class="section join" aria-labelledby="join-title">
     <div class="container">
       <div class="head-split reveal">
         <div>
           <p class="section-tag"><span data-i18n="join.eyebrow">Долучитися</span></p>
-          <h2 class="section-title" data-i18n="join.title">Конструктор участі</h2>
+          <h2 id="join-title" class="section-title" data-i18n="join.title">Конструктор участі</h2>
         </div>
-        <a href="#contact" class="spin-badge" id="spin-badge" data-i18n-aria-label="join.badgeLabel"></a>
+        <a href="#contact" class="spin-badge" id="spin-badge"></a>
         <div>
           <p class="section-subtitle" data-i18n="join.subtitle"></p>
           <button type="button" class="btn-text join__skip" id="join-skip" data-i18n="join.skip">Пропустити, я сам оберу</button>
@@ -367,11 +367,11 @@
 
 
   <!-- ============ CONTACT ============ -->
-  <section id="contact" class="section contact">
+  <section id="contact" class="section contact" aria-labelledby="contact-title">
     <div class="container contact__grid">
       <div class="reveal">
         <p class="section-tag"><span data-i18n="contact.eyebrow">Контакти</span></p>
-        <h2 class="section-title" data-i18n="contact.title">Напишіть нам</h2>
+        <h2 id="contact-title" class="section-title" data-i18n="contact.title">Напишіть нам</h2>
         <p class="section-subtitle" data-i18n="contact.subtitle"></p>
 
         <div class="contact__info">
