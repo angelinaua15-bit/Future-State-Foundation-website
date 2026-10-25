@@ -4,7 +4,22 @@
    ламати основний style.css). Тут лише спільні значення — CSS-змінні (DRY).
    ===================================================================== */
 :root {
+  /* Медіа (YouTube, карта): одна ширина й радіус для всіх iframe */
+  --media-max-w: 960px;
   --media-radius: var(--radius-m);
+}
+
+/* Обгортка iframe: ширина обмежена змінною, на 320 px не виходить за екран */
+.media-frame {
+  width: 100%;
+  max-width: var(--media-max-w);
+  margin: 0;
+}
+
+.media-frame iframe {
+  display: block;
+  border: 0;
+  border-radius: var(--media-radius);
 }
 
 /* Нативне відео — перший «слайд» Hero (поводиться як фото: на весь кадр) */

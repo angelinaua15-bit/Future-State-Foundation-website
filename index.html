@@ -48,6 +48,32 @@
 <!-- Лаб. 7: CSS-змінні медіаблоків (iframe, інформер) -->
 <link rel="stylesheet" href="assets/css/media.css" />
 
+<!-- Лаб. 7: Tailwind CSS (Play CDN) для нових медіаблоків.
+     prefix "tw-" і preflight: false — утиліти не конфліктують з основним style.css;
+     кольори беруть CSS-змінні сайту, тому світла/темна тема працює автоматично -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    prefix: "tw-",
+    corePlugins: { preflight: false },
+    darkMode: ["selector", '[data-theme="dark"]'],
+    theme: {
+      extend: {
+        colors: {
+          brand: "#00469b",
+          "brand-dark": "#01226b",
+          yellow: "#fec301",
+          ink: "var(--ink)",
+          muted: "var(--muted)",
+          line: "var(--line)",
+          surface: "var(--surface-strong)",
+        },
+        fontFamily: { display: "var(--font-display)" },
+      },
+    },
+  };
+</script>
+
 <!-- Перший кадр Hero — постер відео: вантажимо найпершим (LCP) -->
 <link rel="preload" as="image" fetchpriority="high" href="assets/media/hero-poster.webp" />
 </head>
@@ -94,6 +120,7 @@
     <a href="#about" data-i18n="nav.about">Про нас</a>
     <a href="#directions" data-i18n="nav.directions">Напрями</a>
     <a href="#team" data-i18n="nav.team">Команда</a>
+    <a href="#video" data-i18n="nav.video">Відео</a>
     <a href="#media" data-i18n="nav.news">Новини</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
   </nav>
@@ -124,6 +151,7 @@
     <a href="#about" data-i18n="nav.about">Про нас</a>
     <a href="#directions" data-i18n="nav.directions">Напрями</a>
     <a href="#team" data-i18n="nav.team">Команда</a>
+    <a href="#video" data-i18n="nav.video">Відео</a>
     <a href="#join" data-i18n="nav.cta">Долучитися</a>
     <a href="#media" data-i18n="nav.news">Новини</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
@@ -235,6 +263,34 @@
         <p class="section-subtitle" data-i18n="team.subtitle"></p>
       </div>
       <ul class="team__strip reveal" id="team-grid"></ul>
+    </div>
+  </section>
+
+  <!-- ============ ВІДЕО (лаб. 7): YouTube-ембед ============ -->
+  <section id="video" class="section" aria-labelledby="video-title">
+    <div class="container tw-grid tw-items-center tw-gap-8 lg:tw-grid-cols-[1fr_1.4fr] lg:tw-gap-14">
+      <div class="reveal">
+        <p class="section-tag"><span data-i18n="lab7.videoEyebrow">Громадянська освіта</span></p>
+        <h2 id="video-title" class="section-title" data-i18n="lab7.videoTitle">Чому активна громадянська позиція — це про кожного</h2>
+        <p class="section-subtitle" data-i18n="lab7.videoText">Коротке пояснення, що таке громадянська участь і як одна людина може впливати на рішення громади. З цього починається наш напрям громадянської освіти.</p>
+        <a href="#join" class="btn btn-primary tw-mt-6" data-magnetic data-i18n="lab7.videoCta">Хочу долучитися</a>
+      </div>
+      <!-- МЕДІА: YouTube iframe. Розміри задає контейнер (aspect-ratio 16/9 + max-width зі змінної :root),
+           а не width/height від YouTube; title — для скрінрідерів; loading="lazy" — плеєр вантажиться лише біля екрана -->
+      <figure class="media-frame reveal">
+        <div class="tw-aspect-video tw-w-full tw-overflow-hidden tw-rounded-[var(--media-radius)] tw-shadow-[var(--shadow)]">
+          <iframe
+            class="tw-h-full tw-w-full"
+            src="https://www.youtube-nocookie.com/embed/9QwxRIw0N4Q?rel=0"
+            title="Відео: Громадянська участь у житті суспільства. Активна громадянська позиція"
+            loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <figcaption class="tw-mt-3 tw-text-sm tw-text-muted" data-i18n="lab7.videoCaption">Відео: «Громадянська участь у житті суспільства» — канал Костянтина Голобородова, YouTube.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -422,6 +478,7 @@
 </div>
 
 <script src="assets/js/i18n.js" defer></script>
+<script src="assets/js/i18n-lab7.js" defer></script>
 <script src="assets/js/data.js" defer></script>
 <script src="assets/js/icons.js" defer></script>
 <script src="assets/js/app.js" defer></script>
