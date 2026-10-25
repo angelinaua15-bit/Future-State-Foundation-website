@@ -55,6 +55,18 @@ npx serve .
 
 Окрема сторінка [`feedback-form/`](feedback-form/) — адаптивна форма (Tailwind CSS) з клієнтською валідацією на Vanilla JS: регулярні вирази для телефону `+380XXXXXXXXX` та email, динамічна перевірка (`input` / `blur` / `submit`), стани normal / focus / error / success, доступне модальне вікно успіху. Жива версія: [Vercel](https://future-state-foundation-website.vercel.app/feedback-form/). Деталі — у [feedback-form/README.md](feedback-form/README.md).
 
+## Лаб. 10: галерея на JS-бібліотеках
+
+Секція [«Галерея»](https://future-state-foundation-website.vercel.app/#gallery) з фото подій фундації 2026 року. Три бібліотеки на чистому JavaScript підключено через CDN jsDelivr із зафіксованими версіями та перевіркою цілісності (SRI):
+
+| Бібліотека | Версія | Що робить |
+|---|---|---|
+| [Swiper](https://swiperjs.com/) | 11.2.10 | слайдер: 1 / 2 / 3 фото на смартфоні / планшеті / десктопі, автопрокрутка 3,5 с з паузою при наведенні й кнопкою «пауза», стрілки, пагінація, свайп |
+| [Fancybox](https://fancyapps.com/fancybox/) | 5.0.36 | альбом на весь екран: перехід fade, зум до 300 %, мініатюри, підписи UA / EN |
+| [Typed.js](https://github.com/mattboldt/typed.js) | 2.0.12 | рядок «Фундація — це …», що друкується; для скрінрідера — статичний текст |
+
+CSS бібліотек — у `<head>` (без FOUC), скрипти — перед `</body>` з `defer`, ініціалізація — `assets/js/lab10-gallery.js` у `DOMContentLoaded`. При `prefers-reduced-motion` автопрокрутка й друкування вимкнені.
+
 ## Структура проєкту
 
 ```
