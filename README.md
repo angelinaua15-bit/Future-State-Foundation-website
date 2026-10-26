@@ -77,6 +77,20 @@ CSS бібліотек — у `<head>` (без FOUC), скрипти — пер�
 - Тексти UA / EN, світла й темна теми, адаптивність 320–1440 px.
 - QA: 21 тест-кейс, стрес-тест на 2000 подій, регресійні прогони після кожного виправлення.
 
+## Лаб. 12: аудит, оптимізація і CI/CD
+
+Аудит Lighthouse 13.5 (PageSpeed Insights, Mobile) до оптимізації: Performance 60, Accessibility 97, Best Practices 100, SEO 100 (FCP 4,5 с, LCP 7,7 с). Що змінено:
+
+- **CSS:** Tailwind зібрано заздалегідь (`tailwind.config.js` + `src/tailwind.css` → `assets/css/tailwind.css`, 9 КБ) замість Play CDN (124 КБ JS у `<head>`). Перезбірка: `npx tailwindcss@3.4.17 -c tailwind.config.js -i src/tailwind.css -o assets/css/tailwind.css --minify`.
+- **Шрифти:** Onest і Unbounded з власного домену (`assets/fonts`, SIL OFL), `font-display: swap`, `unicode-range`, preload двох основних файлів.
+- **Сторонні бібліотеки:** Swiper, Fancybox, Typed.js і їхні CSS підключає `lab10-gallery.js`, коли галерея наближається до екрана; YouTube — «фасад» (обкладинка + кнопка), плеєр вантажиться після кліку.
+- **Медіа:** відео Hero стартує після завантаження сторінки (до того — постер), на смартфоні — версія 640×360 (463 КБ замість 1,3 МБ); перестиснуті WebP, логотип 96 px WebP замість PNG 256 px.
+- **Перший екран:** без прелоадера на смартфоні; Hero видно одразу, а не після виконання всього JavaScript; калькулятор ініціалізується біля екрана.
+- **Доступність:** контраст «незапалених» слів маніфесту (WCAG AA), зона дотику посилань футера ≥ 44 px.
+- **SEO:** canonical, Open Graph з абсолютними URL, JSON-LD (NGO), `robots.txt`, `sitemap.xml`.
+- **Безпека:** `vercel.json` — CSP (з SHA-256 інлайн-скрипта), COOP, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy; кешування шрифтів і медіа.
+- **CI/CD:** `.github/workflows/deploy.yml` — перевірки якості (актуальність Tailwind-збірки, синтаксис JS, CSP-хеш, robots/sitemap), Lighthouse CI з порогом 0.9 (`lighthouserc.json`), деплой на Vercel.
+
 ## Структура проєкту
 
 ```
@@ -88,6 +102,8 @@ assets/
   js/app.js                  — вся логіка: рендер, i18n і тема, прелоадер, сцени скролу
                                 (hero, напрями, новини), конструктор участі, форми, модалка
   js/widget.js             — віджет «Калькулятор волонтерського часу» (лаб. 11)
+  css/tailwind.css         — зібраний Tailwind (лаб. 12; джерело — src/tailwind.css)
+  fonts/                   — шрифти Onest і Unbounded (лаб. 12)
   img/                       — логотип (кілька розмірів + favicon), фото команди, зображення-заглушки
 ```
 

@@ -2,6 +2,22 @@
 
 Формат — [Keep a Changelog](https://keepachangelog.com/uk/1.1.0/), повідомлення комітів — [Conventional Commits](https://www.conventionalcommits.org/uk/v1.0.0/).
 
+## 2026-10-27 — лаб. 12
+
+### Змінено (продуктивність)
+- Tailwind CSS збирається заздалегідь замість Play CDN; шрифти — з власного домену (`font-display: swap`).
+- Swiper, Fancybox, Typed.js і їхні стилі вантажаться, коли галерея наближається до екрана; YouTube — «фасад» до натискання.
+- Відео Hero — після події `load`, на смартфоні 640×360; перестиснуті зображення, логотип WebP 96 px.
+- Без прелоадера на смартфоні; Hero не чекає на JavaScript; калькулятор ініціалізується біля екрана.
+
+### Виправлено
+- Контраст слів маніфесту (WCAG AA для великого тексту), зона дотику посилань футера на смартфоні.
+
+### Додано
+- SEO: canonical, Open Graph, JSON-LD, `robots.txt`, `sitemap.xml`.
+- Заголовки безпеки й кешування у `vercel.json`.
+- GitHub Actions: перевірки якості, Lighthouse CI, деплой.
+
 ## 2026-10-26 — лаб. 11
 
 ### Додано
