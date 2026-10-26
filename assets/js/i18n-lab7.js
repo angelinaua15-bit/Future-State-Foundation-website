@@ -10,6 +10,7 @@
     videoText:
       "Коротке пояснення, що таке громадянська участь і як одна людина може впливати на рішення громади. З цього починається наш напрям громадянської освіти.",
     videoCta: "Хочу долучитися",
+    videoPlay: "Відтворити відео «Громадянська участь у житті суспільства»",
     videoCaption: "Відео: «Громадянська участь у житті суспільства» — канал Костянтина Голобородова, YouTube.",
     informerTitle: "Корисне сьогодні",
     rates: "Курс НБУ",
@@ -27,6 +28,7 @@
     videoText:
       "A short explainer on civic participation and how one person can influence community decisions. This is where our civic education work begins.",
     videoCta: "I want to join",
+    videoPlay: "Play the video “Civic participation in public life”",
     videoCaption: "Video: “Civic participation in public life” — Kostiantyn Holoborodov, YouTube (in Ukrainian).",
     informerTitle: "Useful today",
     rates: "NBU exchange rate",

@@ -213,10 +213,15 @@
     if (tree) tree.classList.add("is-drawing");
     document.body.style.overflow = "hidden";
 
-    var start = null;
+    // Лаб. 12: відлік іде від початку завантаження сторінки, а не від DOMContentLoaded.
+    // Раніше 750 мс лічильника + 380 мс закриття додавались ПІСЛЯ завантаження скриптів
+    // (на повільному мобільному — до 2,3 с затримки LCP). Тепер прелоадер лише заповнює
+    // час, який сторінка і так вантажилась: якщо 750 мс уже минуло — одразу закривається.
     var DURATION = 750;
+    var elapsed = window.performance && performance.now ? performance.now() : 0;
+    var start = null;
     function tick(ts) {
-      if (start === null) start = ts;
+      if (start === null) start = ts - Math.min(elapsed, DURATION);
       var k = clamp((ts - start) / DURATION, 0, 1);
       count.textContent = String(Math.round(easeInOut(k) * 100)).padStart(3, "0");
       if (k < 1) {

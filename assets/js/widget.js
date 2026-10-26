@@ -283,6 +283,16 @@
     }
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
+  // Лаб. 12: калькулятор далеко від першого екрана — запускаємо його, коли секція наближається
+  // (за 600 px). Lighthouse показував init як тривале завдання (~150 мс) під час завантаження
+  function initWhenNear() {
+    var first = document.querySelector("[data-volunteer-calc]");
+    if (!first || !("IntersectionObserver" in window)) return init();
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); init(); }
+    }, { rootMargin: "600px 0px" });
+    io.observe(first);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWhenNear);
+  else initWhenNear();
 })();

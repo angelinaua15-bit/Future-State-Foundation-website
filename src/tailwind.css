@@ -1,0 +1,4 @@
+/* Вхідний файл Tailwind (лаб. 12). preflight вимкнено в конфігурації — base дає лише змінні tw-* */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
