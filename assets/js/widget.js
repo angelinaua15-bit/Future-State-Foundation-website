@@ -40,17 +40,15 @@
 
   function formatNumber(value) {
     const num = Number(value);
-    if (!Number.isFinite(num)) {
-      return "—";
-    }
+    if (Object.is(num, -0)) return "0";
+    if (!Number.isFinite(num)) return "—";
     return numberFormatter.format(num);
   }
 
   function formatOneDecimal(value) {
     const num = Number(value);
-    if (!Number.isFinite(num)) {
-      return "—";
-    }
+    if (Object.is(num, -0)) return "0";
+    if (!Number.isFinite(num)) return "—";
     return oneDecimalFormatter.format(num);
   }
 
@@ -80,17 +78,20 @@
   }
 
   function normalizeHoursValue(rawValue) {
-    const trimmed = String(rawValue || "").trim();
+    const trimmed = String(rawValue ?? "").trim();
 
-    if (trimmed === "") {
+    // Користувач ввів "e" / badInput: value="" але invalid для type=number
+    const badInput = document.getElementById("vc-hours")?.validity?.badInput === true;
+    if (trimmed === "" || badInput) {
       return {
         valid: false,
-        reason: "Поле обов’язкове. Введіть кількість годин на тиждень.",
+        reason: "Некоректне значення. Введіть число від 1 до 40.",
         value: null
       };
     }
 
     const numeric = Number(trimmed);
+
     if (Number.isNaN(numeric) || !Number.isFinite(numeric)) {
       return {
         valid: false,
@@ -99,21 +100,30 @@
       };
     }
 
-    const rounded = Math.round(numeric);
-
-    if (!Number.isInteger(numeric)) {
-      return {
-        valid: true,
-        reason: `Значення округлено до ${rounded}.`,
-        value: rounded
-      };
-    }
-
+    // Спочатку перевіряємо діапазон, і тільки потім округлення
     if (numeric < 1 || numeric > 40) {
       return {
         valid: false,
         reason: "Введіть значення від 1 до 40 годин на тиждень.",
         value: null
+      };
+    }
+
+    if (!Number.isInteger(numeric)) {
+      const rounded = Math.round(numeric);
+
+      if (rounded < 1 || rounded > 40) {
+        return {
+          valid: false,
+          reason: "Введіть значення від 1 до 40 годин на тиждень.",
+          value: null
+        };
+      }
+
+      return {
+        valid: true,
+        reason: `Значення округлено до ${rounded}.`,
+        value: rounded
       };
     }
 
@@ -227,6 +237,13 @@
     elements.friends.addEventListener("change", () => {
       updateFriendsOutput();
       render();
+    });
+  }
+
+  const calculatorForm = document.querySelector("#calculator form");
+  if (calculatorForm) {
+    calculatorForm.addEventListener("submit", (event) => {
+      event.preventDefault();
     });
   }
 
