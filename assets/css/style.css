@@ -1263,8 +1263,11 @@ ol {
   max-width: 19ch;
   text-wrap: balance;
 }
+/* Лаб. 12: «незапалені» слова — 0.55 замість 0.16. Lighthouse (axe): контраст 1,4:1;
+   тепер ≥ 3,8:1 у світлій і ≥ 5,6:1 у темній темі — це WCAG AA для великого тексту (≥ 24 px),
+   а ефект «загоряння» (0.55 → 1) лишається помітним. Колір не хардкодимо — працюють обидві теми */
 .about__manifest .w {
-  opacity: 0.16;
+  opacity: 0.55;
   transition: opacity 0.35s ease, color 0.35s;
 }
 .about__manifest .w.is-lit {
@@ -2450,6 +2453,19 @@ ol {
 }
 .footer-links a:hover {
   color: var(--accent);
+}
+/* Лаб. 12: на сенсорних екранах посилання футера — зона дотику ≥ 44 px заввишки
+   (було 21 px: легко влучити в сусіднє посилання пальцем) */
+@media (pointer: coarse), (max-width: 860px) {
+  .footer-links {
+    gap: 0;
+  }
+  .footer-links a,
+  .footer-bottom-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 .footer-bottom {
   display: flex;
