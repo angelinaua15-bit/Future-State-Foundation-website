@@ -2454,8 +2454,9 @@ ol {
 .footer-links a:hover {
   color: var(--accent);
 }
-/* Лаб. 12: на сенсорних екранах посилання футера — зона дотику ≥ 44 px заввишки
-   (було 21 px: легко влучити в сусіднє посилання пальцем) */
+/* Лаб. 12: на сенсорних екранах кожна зона дотику — не менше 48 × 48 px
+   (рекомендація Google / Material; було 21–44 px, легко влучити в сусідній елемент).
+   Для текстових кнопок зону збільшено полями, а підкреслення лишається під текстом. */
 @media (pointer: coarse), (max-width: 860px) {
   .footer-links {
     gap: 0;
@@ -2464,7 +2465,46 @@ ol {
   .footer-bottom-links a {
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+  }
+  .theme-toggle,
+  .nav-toggle,
+  .social-row--sm .social-btn {
+    width: 48px;
+    height: 48px;
+  }
+  .brand,
+  .skip-link {
+    min-height: 48px;
+  }
+  .hero__dots {
+    gap: 0;
+  }
+  .hero__dots button {
+    width: 48px;
+    height: 48px;
+  }
+  .dir__cta,
+  .dir.is-active .dir__cta {
+    align-items: center;
+    min-height: 48px;
+  }
+  .btn-text,
+  .contact__big {
+    padding-block: 12px;
+    background-origin: content-box;
+    background-clip: content-box;
+  }
+  .consent-row label {
+    min-height: 48px;
+  }
+  [data-volunteer-calc] input[type="range"] {
+    height: 48px;
+  }
+  a.tw-min-h-\[44px\] {
+    min-height: 48px;
   }
 }
 .footer-bottom {
