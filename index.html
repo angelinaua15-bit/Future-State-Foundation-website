@@ -15,7 +15,39 @@
 <meta property="og:title" content="Фундація майбутнього держави — Future State Foundation" />
 <meta property="og:description" content="Об'єднуємо активних людей, локальні ініціативи та експертну аналітику, щоб реформи ставали реальністю." />
 <meta property="og:type" content="website" />
-<meta property="og:image" content="assets/img/logo-512.png" />
+<!-- Лаб. 12 (SEO): канонічна адреса — продакшн на Vercel (дзеркало на GitHub Pages — дублікат),
+     Open Graph з абсолютними URL (відносний og:image соцмережі не відкривають), структуровані дані -->
+<link rel="canonical" href="https://future-state-foundation-website.vercel.app/" />
+<meta property="og:url" content="https://future-state-foundation-website.vercel.app/" />
+<meta property="og:site_name" content="Фундація майбутнього держави" />
+<meta property="og:locale" content="uk_UA" />
+<meta property="og:locale:alternate" content="en_GB" />
+<meta property="og:image" content="https://future-state-foundation-website.vercel.app/assets/img/logo-512.png" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+<meta property="og:image:alt" content="Емблема ГО «Фундація майбутнього держави»: синьо-жовте дерево з корінням у колі з назвою фундації" />
+<meta name="twitter:card" content="summary" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  "name": "Фундація майбутнього держави",
+  "alternateName": "Future State Foundation",
+  "url": "https://future-state-foundation-website.vercel.app/",
+  "logo": "https://future-state-foundation-website.vercel.app/assets/img/logo-512.png",
+  "foundingDate": "2026-08-18",
+  "email": "fundatsiyamd@gmail.com",
+  "telephone": "+380500867586",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "вул. Євгена Сверстюка, 19, офіс 209",
+    "addressLocality": "Київ",
+    "postalCode": "02002",
+    "addressCountry": "UA"
+  },
+  "sameAs": ["https://t.me/futurestatefoundation"]
+}
+</script>
 
 <!-- Тема ставиться до першого малювання, щоб не було «спалаху» не тієї теми -->
 <script>
@@ -30,54 +62,31 @@
     document.documentElement.classList.add("js");
     // Завжди відкриваємо сайт зверху (iOS Safari інакше відновлює стару позицію й «кидає» вниз)
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    // Прелоадер показуємо лише при першому заході (повторно — не раніше ніж через 30 хв)
+    // Прелоадер показуємо лише при першому заході (повторно — не раніше ніж через 30 хв).
+    // Лаб. 12: і лише на великих екранах — на смартфоні з мобільним інтернетом він тільки
+    // додавав очікування перед першим екраном (Lighthouse: затримка LCP до 2,3 с)
     try {
       var seen = +localStorage.getItem("fsf-seen") || 0;
       if (Date.now() - seen < 30 * 60 * 1000) document.documentElement.classList.add("no-preloader");
     } catch (e) {}
+    if (window.matchMedia && window.matchMedia("(max-width: 860px)").matches) document.documentElement.classList.add("no-preloader");
   })();
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<!-- Шрифти вантажаться без блокування першого малювання (поки що — системний шрифт) -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap" />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap" media="print" onload="this.media='all'" />
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@300;400;500&display=swap" /></noscript>
+<!-- Лаб. 12: шрифти — з власного домену (@font-face у style.css, font-display: swap).
+     Попередньо вантажимо лише латинські піднабори основних накреслень: вони потрібні
+     будь-якою мовою (цифри, пробіли, розділові знаки), кириличні підтягнуться за unicode-range -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/unbounded-latin-400-normal.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/onest-latin-400-normal.woff2" crossorigin />
 <link rel="stylesheet" href="assets/css/style.css" />
 <!-- Лаб. 7: CSS-змінні медіаблоків (iframe, інформер) -->
 <link rel="stylesheet" href="assets/css/media.css" />
-<!-- Лаб. 10: CSS плагінів через CDN — у <head>, щоб стилі були до першого рендерингу (без FOUC).
-     Версії зафіксовано, integrity (SRI) не дасть виконати підмінений файл -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css" integrity="sha384-gAPqlBuTCdtVcYt9ocMOYWrnBZ4XSL6q+4eXqwNycOr4iFczhNKtnYhF3NEXJM51" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css" integrity="sha384-qlUhevqmCF5AxtnfkF0zXJClBzA6GJuX/UrLejCfE61bBGt+zo/My0AJ+ojVmUSb" crossorigin="anonymous" />
-<link rel="stylesheet" href="assets/css/lab10-gallery.css" />
-
-<!-- Лаб. 7: Tailwind CSS (Play CDN) для нових медіаблоків.
-     prefix "tw-" і preflight: false — утиліти не конфліктують з основним style.css;
-     кольори беруть CSS-змінні сайту, тому світла/темна тема працює автоматично -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    prefix: "tw-",
-    corePlugins: { preflight: false },
-    darkMode: ["selector", '[data-theme="dark"]'],
-    theme: {
-      extend: {
-        colors: {
-          brand: "#00469b",
-          "brand-dark": "#01226b",
-          yellow: "#fec301",
-          ink: "var(--ink)",
-          muted: "var(--muted)",
-          line: "var(--line)",
-          surface: "var(--surface-strong)",
-        },
-        fontFamily: { display: "var(--font-display)" },
-      },
-    },
-  };
-</script>
+<!-- Лаб. 10–12: стилі галереї (lab10-gallery.css) і CSS Swiper/Fancybox підключає lab10-gallery.js —
+     галерея далеко від першого екрана, тож ці стилі не блокують перше малювання -->
+<!-- Лаб. 12: Tailwind зібрано заздалегідь (tailwind.config.js → assets/css/tailwind.css, 9 КБ)
+     замість Play CDN, який генерував стилі в браузері (124 КБ JS, що блокував рендеринг).
+     Останнім, як і раніше: утиліти tw-* мають перевагу над стилями компонентів -->
+<link rel="stylesheet" href="assets/css/tailwind.css" />
 
 <!-- Перший кадр Hero — постер відео: вантажимо найпершим (LCP) -->
 <link rel="preload" as="image" fetchpriority="high" href="assets/media/hero-poster.webp" />
@@ -116,7 +125,7 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header" id="site-header">
   <a href="#top" class="brand">
-    <span class="brand__logo" data-logo><img src="assets/img/logo-256.png" alt="" width="44" height="44" /></span>
+    <span class="brand__logo" data-logo><img src="assets/img/logo-96.webp" alt="" width="44" height="44" /></span>
     <span class="brand__name">Фундація <br />майбутнього держави</span><span class="sr-only"> — на головну</span>
   </a>
 
@@ -182,8 +191,13 @@
         <div class="hero__media" id="hero-media">
           <!-- МЕДІА (лаб. 7): нативне відео — перший кадр Hero. muted обов'язковий для автозапуску,
                playsinline — iPhone не відкриває відео на весь екран, poster — кадр до завантаження -->
-          <figure class="hero__slide is-active"><video autoplay loop muted playsinline preload="metadata" poster="assets/media/hero-poster.webp" aria-hidden="true" data-hero-video><source src="assets/media/hero-loop.webm" type="video/webm" /><source src="assets/media/hero-loop.mp4" type="video/mp4" /></video></figure>
-          <figure class="hero__slide"><img src="assets/img/hero/bg/7-team-yard.webp" srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" sizes="100vw" alt="" fetchpriority="high" /></figure>
+          <!-- Лаб. 12: відео стартує з JS після події load (lab7-media.js): до того видно постер — це LCP,
+               і 0,5–1,3 МБ відео більше не конкурують за канал із CSS, шрифтами й скриптами першого екрана.
+               На смартфоні — версія 640×360 (463 КБ замість 1,3 МБ): атрибут media у <source>.
+               Друге фото (7-team-yard) більше не вантажиться з fetchpriority="high" — воно з'являється
+               лише через 5 с і конкурувало з постером відео (LCP); тепер — як решта слайдів, після load -->
+          <figure class="hero__slide is-active"><video loop muted playsinline preload="none" poster="assets/media/hero-poster.webp" width="1280" height="720" aria-hidden="true" data-hero-video><source src="assets/media/hero-loop-640.webm" type="video/webm" media="(max-width: 767px)" /><source src="assets/media/hero-loop-640.mp4" type="video/mp4" media="(max-width: 767px)" /><source src="assets/media/hero-loop.webm" type="video/webm" /><source src="assets/media/hero-loop.mp4" type="video/mp4" /></video></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/7-team-yard.webp" data-srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" data-sizes="100vw" alt="" /></figure>
           <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" data-sizes="100vw" alt="" /></figure>
           <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/2-wheelchairs.webp" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.webp 480w, assets/img/hero/bg/2-wheelchairs@800w.webp 800w, assets/img/hero/bg/2-wheelchairs.webp 952w" data-sizes="100vw" alt="" /></figure>
           <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/1-lawyers.webp" data-srcset="assets/img/hero/bg/1-lawyers@480w.webp 480w, assets/img/hero/bg/1-lawyers@800w.webp 800w, assets/img/hero/bg/1-lawyers.webp 952w" data-sizes="100vw" alt="" /></figure>
@@ -282,19 +296,20 @@
         <p class="section-subtitle" data-i18n="lab7.videoText">Коротке пояснення, що таке громадянська участь і як одна людина може впливати на рішення громади. З цього починається наш напрям громадянської освіти.</p>
         <a href="#join" class="btn btn-primary tw-mt-6" data-magnetic data-i18n="lab7.videoCta">Хочу долучитися</a>
       </div>
-      <!-- МЕДІА: YouTube iframe. Розміри задає контейнер (aspect-ratio 16/9 + max-width зі змінної :root),
-           а не width/height від YouTube; title — для скрінрідерів; loading="lazy" — плеєр вантажиться лише біля екрана -->
+      <!-- МЕДІА: YouTube. Розміри задає контейнер (aspect-ratio 16/9 + max-width зі змінної :root).
+           Лаб. 12: «фасад» замість iframe — до натискання показуємо лише кнопку з обкладинкою
+           (≈20 КБ), а плеєр YouTube (≈960 КБ JS, cookie сторонього домену) вантажимо після кліку.
+           Без JS кнопка є посиланням на відео на YouTube -->
       <figure class="media-frame reveal">
         <div class="tw-aspect-video tw-w-full tw-overflow-hidden tw-rounded-[var(--media-radius)] tw-shadow-[var(--shadow)]">
-          <iframe
-            class="tw-h-full tw-w-full"
-            src="https://www.youtube-nocookie.com/embed/9QwxRIw0N4Q?rel=0"
-            title="Відео: Громадянська участь у житті суспільства. Активна громадянська позиція"
-            loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
+          <a class="yt-facade" href="https://www.youtube.com/watch?v=9QwxRIw0N4Q" data-yt-id="9QwxRIw0N4Q"
+             data-yt-title="Відео: Громадянська участь у житті суспільства. Активна громадянська позиція"
+             aria-label="Відтворити відео «Громадянська участь у житті суспільства»" data-i18n-aria-label="lab7.videoPlay">
+            <img src="https://i.ytimg.com/vi/9QwxRIw0N4Q/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async" />
+            <span class="yt-facade__play" aria-hidden="true">
+              <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7a8.5 8.5 0 0 0-6-6C55.2.4 34 .4 34 .4s-21.2 0-26.5 1.3a8.5 8.5 0 0 0-6 6C.2 13 .2 24 .2 24s0 11 1.3 16.3a8.5 8.5 0 0 0 6 6C12.8 47.6 34 47.6 34 47.6s21.2 0 26.5-1.3a8.5 8.5 0 0 0 6-6C67.8 35 67.8 24 67.8 24s0-11-1.3-16.3z" fill="#e00"/><path d="M45 24 27 14v20z" fill="#fff"/></svg>
+            </span>
+          </a>
         </div>
         <figcaption class="tw-mt-3 tw-text-sm tw-text-muted" data-i18n="lab7.videoCaption">Відео: «Громадянська участь у житті суспільства» — канал Костянтина Голобородова, YouTube.</figcaption>
       </figure>
@@ -713,11 +728,7 @@
 <script src="assets/js/icons.js" defer></script>
 <script src="assets/js/app.js" defer></script>
 <script src="assets/js/lab7-media.js" defer></script>
-<!-- Лаб. 10: бібліотеки через CDN перед </body>; defer — не блокують розбір HTML і виконуються по черзі,
-     тож ініціалізація (lab10-gallery.js) завжди стоїть після самих бібліотек -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.js" integrity="sha384-2UI1PfnXFjVMQ7/ZDEF70CR943oH3v6uZrFQGGqJYlvhh4g6z6uVktxYbOlAczav" crossorigin="anonymous" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js" integrity="sha384-BodKYo5iRmFaqEaP1o8AAu9hCHqLvNhSWEg12QF1IjPnl1SgsrwQMSMKUB4POJ18" crossorigin="anonymous" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" integrity="sha384-NMn9+T8zIKnDUstqb5le7vdLNSyAgSU9DtEPT/b7ks9NJQpPk4Dc9b1tI8oyzimc" crossorigin="anonymous" defer></script>
+<!-- Лаб. 10–12: Swiper, Fancybox і Typed.js підключає lab10-gallery.js, коли галерея наближається до екрана -->
 <script src="assets/js/lab10-gallery.js" defer></script>
 <script src="assets/js/widget.js" defer></script>
 </body>

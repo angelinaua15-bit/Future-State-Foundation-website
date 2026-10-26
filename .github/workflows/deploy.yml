@@ -1,0 +1,97 @@
+# Лаб. 12: CI/CD-конвеєр. Кожен push і pull request у main проходить перевірки якості;
+# зміна, що їх не пройшла, позначається червоним хрестиком і не потрапляє в main через PR.
+# Деплой: Vercel Git Integration публікує main автоматично (Continuous Deployment).
+# Якщо в Settings → Secrets додати VERCEL_TOKEN, VERCEL_ORG_ID і VERCEL_PROJECT_ID,
+# job «deploy» публікуватиме сайт сам — лише після зелених перевірок (тоді в vercel.json
+# варто вимкнути автодеплой гілки main: "git": { "deploymentEnabled": { "main": false } }).
+name: CI/CD Production Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Tailwind CSS зібрано з актуального коду
+        run: |
+          npx --yes tailwindcss@3.4.17 -c tailwind.config.js -i src/tailwind.css -o assets/css/tailwind.css --minify
+          git diff --exit-code -- assets/css/tailwind.css \
+            || (echo "::error file=assets/css/tailwind.css::Перезберіть Tailwind (команда в tailwind.config.js) і закомітьте файл" && exit 1)
+
+      - name: Синтаксис JavaScript
+        run: for f in assets/js/*.js api/*.js; do node --check "$f" || exit 1; done
+
+      - name: vercel.json і CSP-хеш інлайн-скрипта
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('vercel.json','utf8')); console.log('vercel.json — валідний JSON')"
+          node .github/scripts/check-csp.mjs
+
+      - name: robots.txt і sitemap.xml на місці
+        run: test -s robots.txt && test -s sitemap.xml && grep -q "<loc>" sitemap.xml
+
+  lighthouse:
+    name: Lighthouse CI
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lighthouse (3 прогони, пороги 0.9)
+        run: npx --yes @lhci/cli@0.15.1 autorun
+      - name: Звіти Lighthouse як артефакт
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci
+          retention-days: 14
+
+  deploy:
+    name: Deploy to Vercel (production)
+    needs: [quality, lighthouse]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Деплой через Vercel CLI
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          npm install --global vercel@latest
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+
+      - name: Деплой через Vercel Git Integration
+        if: env.VERCEL_TOKEN == ''
+        run: |
+          echo "::notice::Секрет VERCEL_TOKEN не задано — production публікує Vercel Git Integration для цього ж коміту."
+          echo "Перевірки якості пройдено, коміт ${GITHUB_SHA::7} готовий до продакшну." >> "$GITHUB_STEP_SUMMARY"

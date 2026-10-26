@@ -15,3 +15,6 @@ node_modules/
 # Локальні змінні середовища (токени Telegram для api/lead.js)
 .env
 .env.*
+
+# Lighthouse CI (локальні звіти)
+.lighthouseci/

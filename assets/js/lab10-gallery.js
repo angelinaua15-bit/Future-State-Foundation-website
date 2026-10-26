@@ -1,8 +1,7 @@
 /* =====================================================================
    Лаб. 10 — ініціалізація плагінів секції «Галерея».
-   Бібліотеки підключені через CDN перед </body> (defer) у такому порядку:
-   Swiper 11 → Fancybox 5 → Typed.js 2 → цей файл. Тому до DOMContentLoaded
-   глобальні Swiper, Fancybox і Typed уже існують.
+   Бібліотеки Swiper 11, Fancybox 5, Typed.js 2 (CDN jsDelivr + SRI) з лаб. 12
+   підключає цей файл сам, коли галерея наближається до екрана (див. loadVendors).
    ===================================================================== */
 (function () {
   "use strict";
@@ -104,7 +103,64 @@
     },
   };
 
+  /* Лаб. 12: бібліотеки галереї вантажаться «ліниво». Раніше їхні CSS стояли в <head>
+     і блокували перше малювання, а три скрипти з defer (≈100 КБ) затримували
+     DOMContentLoaded, тобто й появу першого екрана. Тепер CSS і JS Swiper, Fancybox,
+     Typed.js (ті самі версії й SRI-хеші) підключаються, коли секція наближається
+     до екрана (за 800 px); до того картки тримають FOUC-правила lab10-gallery.css */
+  var CDN = "https://cdn.jsdelivr.net/npm/";
+  var VENDOR_CSS = [
+    [CDN + "swiper@11.2.10/swiper-bundle.min.css", "sha384-gAPqlBuTCdtVcYt9ocMOYWrnBZ4XSL6q+4eXqwNycOr4iFczhNKtnYhF3NEXJM51"],
+    [CDN + "@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css", "sha384-qlUhevqmCF5AxtnfkF0zXJClBzA6GJuX/UrLejCfE61bBGt+zo/My0AJ+ojVmUSb"],
+  ];
+  var VENDOR_JS = [
+    [CDN + "swiper@11.2.10/swiper-bundle.min.js", "sha384-2UI1PfnXFjVMQ7/ZDEF70CR943oH3v6uZrFQGGqJYlvhh4g6z6uVktxYbOlAczav"],
+    [CDN + "@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js", "sha384-BodKYo5iRmFaqEaP1o8AAu9hCHqLvNhSWEg12QF1IjPnl1SgsrwQMSMKUB4POJ18"],
+    [CDN + "typed.js@2.0.12/lib/typed.min.js", "sha384-NMn9+T8zIKnDUstqb5le7vdLNSyAgSU9DtEPT/b7ks9NJQpPk4Dc9b1tI8oyzimc"],
+  ];
+  // Власні стилі галереї (FOUC-правила для слайдера до ініціалізації) — одразу, без очікування
+  var ownCss = document.createElement("link");
+  ownCss.rel = "stylesheet";
+  ownCss.href = "assets/css/lab10-gallery.css";
+  document.head.appendChild(ownCss);
+
+  function attach(tag, url, integrity) {
+    return new Promise(function (resolve) {
+      var node = document.createElement(tag);
+      if (tag === "link") { node.rel = "stylesheet"; node.href = url; }
+      else { node.src = url; node.async = false; } // async=false — виконуються в порядку додавання
+      node.integrity = integrity;
+      node.crossOrigin = "anonymous";
+      node.onload = node.onerror = resolve; // і без бібліотеки (CDN недоступний) сторінка не ламається
+      // CSS бібліотек — перед lab10-gallery.css, щоб наші правила (пагінація тощо) їх перевизначали
+      if (tag === "link") document.head.insertBefore(node, ownCss);
+      else document.body.appendChild(node);
+    });
+  }
+  function loadVendors() {
+    return Promise.all(
+      VENDOR_CSS.map(function (v) { return attach("link", v[0], v[1]); })
+        .concat(VENDOR_JS.map(function (v) { return attach("script", v[0], v[1]); }))
+    );
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    var section = document.getElementById("gallery");
+    if (!section) return;
+    var started = false;
+    function start() {
+      if (started) return;
+      started = true;
+      loadVendors().then(initGallery);
+    }
+    if (!("IntersectionObserver" in window)) return start();
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); start(); }
+    }, { rootMargin: "800px 0px" });
+    io.observe(section);
+  });
+
+  function initGallery() {
     var section = document.getElementById("gallery");
     if (!section) return;
 
@@ -249,5 +305,5 @@
     renderLang();
     // app.js змінює <html lang> під час перемикання UA / EN — слухаємо цю зміну
     new MutationObserver(renderLang).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
-  });
+  }
 })();
