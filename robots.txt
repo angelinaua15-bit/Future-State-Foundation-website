@@ -1,0 +1,6 @@
+# Лаб. 12: дозволяємо індексацію сайту; службова serverless-функція форми — не для пошуку
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://future-state-foundation-website.vercel.app/sitemap.xml
