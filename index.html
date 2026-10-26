@@ -463,179 +463,91 @@
   </section>
 
 
-  <!-- ============ VOLUNTEER CALCULATOR (Лаб. 11) ============ -->
-  <section id="calculator" class="section">
-    <div class="head-split tw-flex tw-flex-col tw-gap-4 md:tw-flex-row md:tw-items-end md:tw-justify-between">
-      <div>
-        <p class="section-tag tw-mb-2 tw-text-xs tw-font-semibold tw-uppercase tw-tracking-[0.2em] tw-text-[var(--color-brand)]">Волонтерство</p>
-        <h2 class="section-title tw-font-display tw-text-3xl tw-font-bold tw-leading-tight tw-text-[var(--color-ink)] md:tw-text-4xl">Калькулятор волонтерського часу</h2>
+  <!-- ============ VOLUNTEER CALCULATOR (Лаб. 11) ============
+       Віджет «Калькулятор волонтерського часу». Логіка — assets/js/widget.js.
+       Корінь [data-volunteer-calc]: скрипт шукає частини віджета через data-vc всередині кореня,
+       тому на сторінці може бути кілька незалежних екземплярів (id потрібні лише для label/aria). -->
+  <section id="calculator" class="section calculator" aria-labelledby="calculator-title">
+    <div class="container">
+      <div class="head-split reveal">
+        <div>
+          <p class="section-tag"><span data-i18n="lab11.eyebrow">Волонтерство</span></p>
+          <h2 id="calculator-title" class="section-title max-[379px]:tw-text-[1.85rem]" data-i18n="lab11.title">Калькулятор волонтерського часу</h2>
+        </div>
+        <p class="section-subtitle" data-i18n="lab11.subtitle">Оберіть, скільки часу готові приділяти, — і побачите, скільки годин допомоги це дасть фундації.</p>
       </div>
-      <p class="section-subtitle tw-max-w-xl tw-text-sm tw-leading-6 tw-text-[var(--color-muted)] md:tw-text-base">
-        Розрахуйте, скільки часу ви зможете віддати фундації за обраний період.
-      </p>
-    </div>
 
-    <div class="tw-mt-8 tw-grid tw-grid-cols-1 lg:tw-grid-cols-[1.35fr_0.85fr] tw-gap-6">
-      <form class="tw-rounded-2xl tw-border tw-border-[var(--color-line)] tw-bg-[var(--color-surface)] tw-p-4 sm:tw-p-5 lg:tw-p-6">
-        <div class="tw-space-y-6">
-          <div class="tw-space-y-2">
-            <label for="vc-hours" class="tw-flex tw-items-center tw-justify-between tw-text-sm tw-font-medium tw-text-[var(--color-ink)]">
-              <span>Годин на тиждень</span>
-              <span class="tw-text-[var(--color-muted)]">1–40</span>
-            </label>
-            <input
-              id="vc-hours"
-              name="vc-hours"
-              type="number"
-              min="1"
-              max="40"
-              step="1"
-              value="2"
-              required
-              aria-describedby="vc-hours-help vc-error-hours"
-              class="tw-min-h-[44px] tw-w-full tw-rounded-xl tw-border tw-border-[var(--color-line)] tw-bg-transparent tw-px-3 tw-py-2 tw-text-base tw-text-[var(--color-ink)] tw-outline-none tw-transition-colors focus:tw-border-[var(--color-brand)] focus:tw-ring-2 focus:tw-ring-[var(--color-brand)]/20"
-            >
-            <p id="vc-hours-help" class="tw-text-sm tw-leading-5 tw-text-[var(--color-muted)]">
-              Введіть кількість годин, які ви можете виділяти щотижня.
-            </p>
-            <p id="vc-error-hours" class="tw-min-h-[1.25rem] tw-text-sm tw-leading-5 tw-text-[var(--color-error)]" aria-live="polite"></p>
-          </div>
-
-          <div class="tw-space-y-2">
-            <label for="vc-duration" class="tw-block tw-text-sm tw-font-medium tw-text-[var(--color-ink)]">
-              Тривалість участі
-            </label>
-            <select
-              id="vc-duration"
-              name="vc-duration"
-              aria-describedby="vc-duration-help"
-              class="tw-min-h-[44px] tw-w-full tw-rounded-xl tw-border tw-border-[var(--color-line)] tw-bg-transparent tw-px-3 tw-py-2 tw-text-base tw-text-[var(--color-ink)] tw-outline-none tw-transition-colors focus:tw-border-[var(--color-brand)] focus:tw-ring-2 focus:tw-ring-[var(--color-brand)]/20"
-            >
-              <option value="1">1 місяць</option>
-              <option value="3" selected>3 місяці</option>
-              <option value="6">6 місяців</option>
-              <option value="12">12 місяців</option>
-            </select>
-            <p id="vc-duration-help" class="tw-text-sm tw-leading-5 tw-text-[var(--color-muted)]">
-              Оберіть період участі у проєкті.
-            </p>
-          </div>
-
-          <div class="tw-space-y-3">
-            <label class="tw-flex tw-min-h-[44px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-xl tw-border tw-border-[var(--color-line)] tw-bg-transparent tw-px-3 tw-py-2">
-              <input
-                id="vc-events"
-                name="vc-events"
-                type="checkbox"
-                aria-describedby="vc-events-help"
-                class="tw-h-5 tw-w-5 tw-rounded tw-border-[var(--color-line)] tw-bg-transparent tw-text-[var(--color-brand)] focus:tw-ring-[var(--color-brand)]"
-              >
-              <span class="tw-flex-1 tw-text-sm tw-font-medium tw-text-[var(--color-ink)]">
-                Беру участь у подіях фундації
-              </span>
-            </label>
-            <p id="vc-events-help" class="tw-text-sm tw-leading-5 tw-text-[var(--color-muted)]">
-              Додає +4 години на місяць.
-            </p>
-          </div>
-
-          <div class="tw-space-y-3">
-            <label class="tw-flex tw-min-h-[44px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-xl tw-border tw-border-[var(--color-line)] tw-bg-transparent tw-px-3 tw-py-2">
-              <input
-                id="vc-briefing"
-                name="vc-briefing"
-                type="checkbox"
-                aria-describedby="vc-briefing-help"
-                class="tw-h-5 tw-w-5 tw-rounded tw-border-[var(--color-line)] tw-bg-transparent tw-text-[var(--color-brand)] focus:tw-ring-[var(--color-brand)]"
-              >
-              <span class="tw-flex-1 tw-text-sm tw-font-medium tw-text-[var(--color-ink)]">
-                Пройду вступний інструктаж
-              </span>
-            </label>
-            <p id="vc-briefing-help" class="tw-text-sm tw-leading-5 tw-text-[var(--color-muted)]">
-              Додає +2 години одноразово.
-            </p>
-          </div>
-
-          <div class="tw-space-y-3">
-            <div class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-              <label for="vc-friends" class="tw-text-sm tw-font-medium tw-text-[var(--color-ink)]">
-                Скільки друзів приведу
+      <div class="tw-mt-10 tw-grid tw-grid-cols-1 tw-gap-5 lg:tw-grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:tw-gap-6" data-volunteer-calc>
+        <!-- novalidate: замість системних «бульбашок» браузера — власні повідомлення під полем -->
+        <form class="tw-rounded-[var(--radius-l)] tw-border tw-border-solid tw-border-line tw-bg-surface tw-p-5 sm:tw-p-8" data-vc="form" novalidate>
+          <div class="tw-grid tw-gap-6">
+            <div class="tw-grid tw-gap-2">
+              <label for="vc-hours" class="tw-flex tw-items-baseline tw-justify-between tw-gap-3 tw-text-sm tw-font-semibold tw-text-ink">
+                <span data-i18n="lab11.hours">Годин на тиждень</span>
+                <span class="tw-text-xs tw-font-medium tw-text-muted" data-i18n="lab11.hoursRange">від 1 до 40</span>
               </label>
-              <output id="vc-friends-out" for="vc-friends" class="tw-text-sm tw-font-semibold tw-text-[var(--color-brand)]">0</output>
+              <input id="vc-hours" name="hours" type="number" inputmode="numeric" min="1" max="40" step="1" value="2" required
+                     aria-describedby="vc-hours-help vc-error-hours" data-vc="hours"
+                     class="tw-min-h-[52px] tw-w-full tw-rounded-[14px] tw-border tw-border-solid tw-border-[color:var(--line-strong)] tw-bg-surface tw-px-4 tw-font-display tw-text-lg tw-text-ink tw-transition-[border-color,box-shadow] tw-duration-300 focus:tw-border-[color:var(--accent)] focus:tw-outline-none focus:tw-shadow-[0_0_0_4px_rgba(0,70,155,0.18)]" />
+              <p id="vc-hours-help" class="tw-m-0 tw-text-sm tw-text-muted" data-i18n="lab11.hoursHelp">Ціле число: стільки годин на тиждень ви готові допомагати.</p>
+              <p id="vc-error-hours" class="tw-m-0 tw-hidden tw-text-sm tw-font-medium" data-vc="error" aria-live="polite"></p>
             </div>
-            <input
-              id="vc-friends"
-              name="vc-friends"
-              type="range"
-              min="0"
-              max="5"
-              step="1"
-              value="0"
-              aria-describedby="vc-friends-help vc-friends-out"
-              class="tw-min-h-[44px] tw-w-full tw-accent-[var(--color-brand)]"
-            >
-            <div class="tw-flex tw-items-center tw-justify-between tw-text-xs tw-text-[var(--color-muted)]">
-              <span>0</span>
-              <span>1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>4</span>
-              <span>5</span>
+
+            <div class="tw-grid tw-gap-2">
+              <label for="vc-duration" class="tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.duration">Тривалість участі</label>
+              <select id="vc-duration" name="duration" data-vc="duration"
+                      class="tw-min-h-[52px] tw-w-full tw-rounded-[14px] tw-border tw-border-solid tw-border-[color:var(--line-strong)] tw-bg-surface tw-px-4 tw-text-base tw-text-ink focus:tw-border-[color:var(--accent)] focus:tw-outline-none focus:tw-shadow-[0_0_0_4px_rgba(0,70,155,0.18)]">
+                <option value="1" data-i18n="lab11.m1">1 місяць</option>
+                <option value="3" selected data-i18n="lab11.m3">3 місяці</option>
+                <option value="6" data-i18n="lab11.m6">6 місяців</option>
+                <option value="12" data-i18n="lab11.m12">12 місяців</option>
+              </select>
             </div>
-            <p id="vc-friends-help" class="tw-text-sm tw-leading-5 tw-text-[var(--color-muted)]">
-              Кожен друг додає стільки ж часу, скільки ви вносите самі.
-            </p>
+
+            <fieldset class="tw-m-0 tw-grid tw-gap-3 tw-border-0 tw-p-0">
+              <legend class="tw-mb-2 tw-p-0 tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.extra">Додатково</legend>
+              <label for="vc-events" class="tw-flex tw-min-h-[52px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-[14px] tw-border tw-border-solid tw-border-line tw-px-4 tw-py-2 tw-transition-colors hover:tw-border-[color:var(--accent)]">
+                <input id="vc-events" name="events" type="checkbox" data-vc="events" aria-describedby="vc-events-help" class="tw-h-5 tw-w-5 tw-shrink-0 tw-accent-[var(--accent)]" />
+                <span class="tw-grid">
+                  <span class="tw-text-sm tw-font-medium tw-text-ink" data-i18n="lab11.events">Беру участь у подіях фундації</span>
+                  <span id="vc-events-help" class="tw-text-xs tw-text-muted" data-i18n="lab11.eventsHelp">+4 год щомісяця</span>
+                </span>
+              </label>
+              <label for="vc-briefing" class="tw-flex tw-min-h-[52px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-[14px] tw-border tw-border-solid tw-border-line tw-px-4 tw-py-2 tw-transition-colors hover:tw-border-[color:var(--accent)]">
+                <input id="vc-briefing" name="briefing" type="checkbox" data-vc="briefing" aria-describedby="vc-briefing-help" class="tw-h-5 tw-w-5 tw-shrink-0 tw-accent-[var(--accent)]" />
+                <span class="tw-grid">
+                  <span class="tw-text-sm tw-font-medium tw-text-ink" data-i18n="lab11.briefing">Пройду вступний інструктаж</span>
+                  <span id="vc-briefing-help" class="tw-text-xs tw-text-muted" data-i18n="lab11.briefingHelp">+2 год одноразово</span>
+                </span>
+              </label>
+            </fieldset>
+
+            <div class="tw-grid tw-gap-2">
+              <div class="tw-flex tw-items-baseline tw-justify-between tw-gap-3">
+                <label for="vc-friends" class="tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.friends">Скільки друзів приведу</label>
+                <output id="vc-friends-out" for="vc-friends" class="tw-font-display tw-text-lg tw-text-ink" data-vc="friends-out">0</output>
+              </div>
+              <input id="vc-friends" name="friends" type="range" min="0" max="5" step="1" value="0" data-vc="friends"
+                     aria-describedby="vc-friends-help" class="tw-h-11 tw-w-full tw-cursor-pointer tw-accent-[var(--accent)]" />
+              <p id="vc-friends-help" class="tw-m-0 tw-text-sm tw-text-muted" data-i18n="lab11.friendsHelp">Кожен друг, що долучиться з таким самим графіком, додає ще стільки ж основних годин.</p>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
 
-      <aside class="tw-rounded-2xl tw-border tw-border-[var(--color-line)] tw-bg-[var(--color-surface)] tw-p-4 sm:tw-p-5 lg:tw-p-6">
-        <div class="tw-flex tw-items-center tw-justify-between tw-gap-4">
-          <p class="tw-text-sm tw-font-medium tw-uppercase tw-tracking-[0.16em] tw-text-[var(--color-muted)]">Підсумок</p>
-          <span class="tw-rounded-full tw-bg-[var(--color-brand)]/10 tw-px-2.5 tw-py-1 tw-text-[11px] tw-font-semibold tw-text-[var(--color-brand)]">Понад</span>
-        </div>
-
-        <div class="tw-mt-5 tw-border-b tw-border-[var(--color-line)] tw-pb-4">
-          <p class="tw-text-sm tw-text-[var(--color-muted)]">Загальний внесок</p>
-          <p
-            id="vc-total"
-            aria-live="polite"
-            class="tw-mt-2 tw-font-display tw-text-4xl tw-font-bold tw-leading-none tw-text-[var(--color-ink)]"
-          >
-            ≈ 26 год
-          </p>
-        </div>
-
-        <div class="tw-mt-5">
-          <p class="tw-text-sm tw-font-medium tw-text-[var(--color-ink)]">Розбивка</p>
-          <ul id="vc-breakdown" class="tw-mt-3 tw-space-y-2 tw-text-sm tw-leading-6 tw-text-[var(--color-muted)]">
-            <li class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-              <span>Основний внесок</span>
-              <span class="tw-font-medium tw-text-[var(--color-ink)]">26 год</span>
-            </li>
-            <li class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-              <span>Події фундації</span>
-              <span class="tw-font-medium tw-text-[var(--color-ink)]">0 год</span>
-            </li>
-            <li class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-              <span>Вступний інструктаж</span>
-              <span class="tw-font-medium tw-text-[var(--color-ink)]">0 год</span>
-            </li>
-            <li class="tw-flex tw-items-center tw-justify-between tw-gap-3">
-              <span>Друзі</span>
-              <span class="tw-font-medium tw-text-[var(--color-ink)]">0 год</span>
-            </li>
+        <aside class="tw-flex tw-flex-col tw-rounded-[var(--radius-l)] tw-bg-brand tw-p-5 tw-text-white sm:tw-p-8" aria-labelledby="vc-summary-title">
+          <h3 id="vc-summary-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-white/80" data-i18n="lab11.summary">Ваш внесок</h3>
+          <p class="tw-m-0 tw-mt-4 tw-font-display tw-text-5xl tw-leading-none tw-text-yellow tw-transition-opacity tw-duration-300 sm:tw-text-6xl" id="vc-total" data-vc="total" aria-live="polite" aria-atomic="true">26 год</p>
+          <p class="tw-m-0 tw-mt-3 tw-text-sm tw-text-white/85"><span data-i18n="lab11.avg">У середньому на місяць:</span> <strong id="vc-month-avg" data-vc="avg">8,7 год</strong></p>
+          <ul id="vc-breakdown" class="tw-m-0 tw-mt-6 tw-grid tw-list-none tw-gap-2 tw-border-0 tw-border-t tw-border-solid tw-border-white/20 tw-p-0 tw-pt-5 tw-text-sm" data-vc="breakdown">
+            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partBase">Основні години</span><span class="tw-font-semibold" data-vc-part="base">26 год</span></li>
+            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partEvents">Події фундації</span><span class="tw-font-semibold" data-vc-part="events">0 год</span></li>
+            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partBriefing">Інструктаж</span><span class="tw-font-semibold" data-vc-part="briefing">0 год</span></li>
+            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partFriends">Друзі</span><span class="tw-font-semibold" data-vc-part="friends">0 год</span></li>
           </ul>
-        </div>
-
-        <div class="tw-mt-6 tw-rounded-xl tw-bg-[var(--color-brand)] tw-p-4 tw-text-white">
-          <p class="tw-text-sm tw-font-medium tw-text-white/80">Середній внесок на місяць</p>
-          <p id="vc-month-avg" class="tw-mt-2 tw-font-display tw-text-2xl tw-font-bold tw-leading-none">
-            ≈ 8.7 год/міс.
-          </p>
-        </div>
-      </aside>
+          <p class="tw-m-0 tw-mt-auto tw-pt-6 tw-text-xs tw-leading-relaxed tw-text-white/70" data-i18n="lab11.note">Розрахунок орієнтовний: місяць ≈ 4,33 тижня (1 міс. — 4 тиж., 3 — 13, 6 — 26, 12 — 52). Точний графік погоджуємо з координатором.</p>
+          <a href="#contact" class="tw-mt-5 tw-inline-flex tw-min-h-[48px] tw-items-center tw-justify-center tw-self-start tw-rounded-full tw-bg-white tw-px-6 tw-text-sm tw-font-semibold tw-text-brand tw-no-underline tw-transition-colors tw-duration-200 hover:tw-bg-yellow hover:tw-text-[#071a45] focus-visible:tw-outline-none focus-visible:tw-ring-4 focus-visible:tw-ring-yellow focus-visible:tw-ring-offset-2 focus-visible:tw-ring-offset-brand" data-i18n="lab11.cta">Записатися волонтером</a>
+        </aside>
+      </div>
     </div>
   </section>
 
