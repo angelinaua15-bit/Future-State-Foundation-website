@@ -14,7 +14,7 @@
     {
       "source": "/",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'sha256-uZrBtyatXrraj3394xd5CVRFsKjw1BX6R7hly9I3V38='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://i.ytimg.com; font-src 'self' data:; media-src 'self'; connect-src 'self' https://future-state-foundation-website.vercel.app https://bank.gov.ua https://api.open-meteo.com; frame-src https://www.youtube-nocookie.com https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'sha256-uZrBtyatXrraj3394xd5CVRFsKjw1BX6R7hly9I3V38='; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: blob: https://i.ytimg.com; font-src 'self' data:; media-src 'self'; connect-src 'self' https://future-state-foundation-website.vercel.app; frame-src https://www.youtube-nocookie.com https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" }
       ]
     },
     {

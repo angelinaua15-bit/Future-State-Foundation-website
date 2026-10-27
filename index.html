@@ -422,36 +422,6 @@
         <div class="swiper-pagination"></div>
       </div>
     </div>
-    <div class="container">
-      <p class="gallery__note" data-i18n="media.note"></p>
-    </div>
-
-    <!-- МЕДІА / ІНФОРМЕР (лаб. 7): <aside> — додатковий контент поруч з основним; дані підтягує
-         assets/js/lab7-media.js (defer) з відкритих API НБУ й Open-Meteo -->
-    <div class="container tw-mt-10">
-      <aside class="informer tw-grid tw-grid-cols-1 sm:tw-grid-cols-3" aria-labelledby="informer-title" data-informer>
-        <h2 id="informer-title" class="sr-only" data-i18n="lab7.informerTitle">Корисне сьогодні</h2>
-        <section class="informer-card" aria-labelledby="rates-title">
-          <h3 id="rates-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-muted" data-i18n="lab7.rates">Курс НБУ</h3>
-          <dl class="tw-mb-0 tw-mt-3 tw-space-y-2" data-rates aria-live="polite">
-            <div class="tw-flex tw-items-baseline tw-justify-between"><dt class="tw-font-medium">USD</dt><dd class="tw-m-0 tw-font-display tw-text-xl" data-rate="USD">—</dd></div>
-            <div class="tw-flex tw-items-baseline tw-justify-between"><dt class="tw-font-medium">EUR</dt><dd class="tw-m-0 tw-font-display tw-text-xl" data-rate="EUR">—</dd></div>
-          </dl>
-          <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-muted" data-rates-note>Завантаження…</p>
-        </section>
-        <section class="informer-card" aria-labelledby="weather-title">
-          <h3 id="weather-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-muted" data-i18n="lab7.weather">Погода в Києві</h3>
-          <p class="tw-mb-0 tw-mt-3 tw-font-display tw-text-4xl" data-weather-temp aria-live="polite">—</p>
-          <p class="tw-mb-0 tw-mt-1 tw-text-sm" data-weather-desc>Завантаження…</p>
-          <p class="tw-mb-0 tw-mt-3 tw-text-xs tw-text-muted" data-i18n="lab7.weatherSource">Дані: Open-Meteo</p>
-        </section>
-        <section class="informer-card tw-bg-brand tw-text-white" aria-labelledby="tg-title">
-          <h3 id="tg-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-white/80" data-i18n="lab7.tgTitle">Ми в Telegram</h3>
-          <p class="tw-mb-0 tw-mt-3 tw-text-sm tw-text-white/90" data-i18n="lab7.tgText">Анонси подій і збори — першими в каналі фундації.</p>
-          <a href="https://t.me/futurestatefoundation" class="tw-mt-4 tw-inline-flex tw-items-center tw-justify-center tw-min-h-[44px] tw-rounded-full tw-bg-white tw-px-5 tw-text-sm tw-font-semibold tw-text-brand tw-no-underline tw-transition-colors tw-duration-200 hover:tw-bg-yellow hover:tw-text-[#071a45] focus-visible:tw-outline-none focus-visible:tw-ring-4 focus-visible:tw-ring-yellow focus-visible:tw-ring-offset-2 focus-visible:tw-ring-offset-brand" rel="noopener noreferrer" data-i18n="lab7.tgCta">Підписатися</a>
-        </section>
-      </aside>
-    </div>
   </section>
 
   <!-- ============ JOIN CONSTRUCTOR ============ -->
@@ -555,46 +525,54 @@
 
 
 
-  <!-- ============ CONTACT ============ -->
-  <section id="contact" class="section contact" aria-labelledby="contact-title">
-    <div class="container contact__grid">
-      <div class="reveal">
-        <p class="section-tag"><span data-i18n="contact.eyebrow">Контакти</span></p>
-        <h2 id="contact-title" class="section-title" data-i18n="contact.title">Напишіть нам</h2>
-        <p class="section-subtitle" data-i18n="contact.subtitle"></p>
+</main>
 
-        <div class="contact__info">
-          <a href="#" id="contact-email" class="contact__big"></a>
-          <a href="#" id="contact-phone" class="contact__big"></a>
-        </div>
+<!-- ============ КОНТАКТИ + ФУТЕР: один суцільний блок наприкінці сторінки ============ -->
+<footer class="site-footer" id="contact" aria-labelledby="contact-title">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marquee-track"></div>
+  </div>
 
-        <h3 class="contact__h" data-i18n="contact.social">Ми в соцмережах</h3>
-        <div class="social-row" id="social-row"></div>
+  <div class="container contact__grid">
+    <div class="reveal">
+      <p class="section-tag"><span data-i18n="contact.eyebrow">Контакти</span></p>
+      <h2 id="contact-title" class="section-title" data-i18n="contact.title">Напишіть нам</h2>
+      <p class="section-subtitle" data-i18n="contact.subtitle"></p>
 
-        <h3 class="contact__h" data-i18n="lab7.mapTitle">Де нас знайти</h3>
-        <!-- МЕДІА: Google Maps iframe у <figure>. Висота — через aspect-ratio контейнера,
-             радіус — та сама CSS-змінна media-radius, що й у відео (DRY) -->
-        <figure class="media-frame media-frame--map">
-          <div class="tw-aspect-[4/3] tw-w-full tw-overflow-hidden tw-rounded-[var(--media-radius)] tw-border tw-border-solid tw-border-line sm:tw-aspect-video min-[861px]:tw-aspect-[4/3]">
-            <iframe
-              class="tw-h-full tw-w-full"
-              src="https://www.google.com/maps?q=%D0%9A%D0%B8%D1%97%D0%B2%2C+%D0%B2%D1%83%D0%BB.+%D0%84%D0%B2%D0%B3%D0%B5%D0%BD%D0%B0+%D0%A1%D0%B2%D0%B5%D1%80%D1%81%D1%82%D1%8E%D0%BA%D0%B0%2C+19&amp;hl=uk&amp;z=16&amp;output=embed"
-              title="Карта: Київ, вул. Євгена Сверстюка, 19 — юридична адреса фундації"
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </figure>
-
-        <div class="legal-box">
-          <h3 data-i18n="contact.legalTitle">Юридичні реквізити</h3>
-          <p data-i18n="contact.legalName"></p>
-          <p data-i18n="contact.legalEdrpou"></p>
-          <p data-i18n="contact.legalAddress"></p>
-        </div>
+      <div class="contact__info">
+        <a href="#" id="contact-email" class="contact__big"></a>
+        <a href="#" id="contact-phone" class="contact__big"></a>
       </div>
 
+      <h3 class="contact__h" data-i18n="contact.social">Ми в соцмережах</h3>
+      <div class="social-row" id="social-row"></div>
+
+      <h3 class="contact__h" data-i18n="lab7.mapTitle">Де нас знайти</h3>
+      <!-- МЕДІА: Google Maps iframe у <figure>. Висота — через aspect-ratio контейнера,
+           радіус — та сама CSS-змінна media-radius, що й у відео (DRY) -->
+      <figure class="media-frame media-frame--map">
+        <div class="tw-aspect-[4/3] tw-w-full tw-overflow-hidden tw-rounded-[var(--media-radius)] tw-border tw-border-solid tw-border-line sm:tw-aspect-video">
+          <iframe
+            class="tw-h-full tw-w-full"
+            src="https://www.google.com/maps?q=%D0%9A%D0%B8%D1%97%D0%B2%2C+%D0%B2%D1%83%D0%BB.+%D0%84%D0%B2%D0%B3%D0%B5%D0%BD%D0%B0+%D0%A1%D0%B2%D0%B5%D1%80%D1%81%D1%82%D1%8E%D0%BA%D0%B0%2C+19&amp;hl=uk&amp;z=16&amp;output=embed"
+            title="Карта: Київ, вул. Євгена Сверстюка, 19 — юридична адреса фундації"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </figure>
+
+      <div class="legal-box">
+        <h3 data-i18n="contact.legalTitle">Юридичні реквізити</h3>
+        <p data-i18n="contact.legalName"></p>
+        <p data-i18n="contact.legalEdrpou"></p>
+        <p data-i18n="contact.legalAddress"></p>
+      </div>
+    </div>
+
+    <!-- Права колонка: форма закріплюється, поки гортається ліва колонка з контактами й картою -->
+    <div class="contact__side">
       <form class="form reveal" id="contact-form" novalidate>
         <div class="honeypot" aria-hidden="true">
           <label for="field-website">Website</label>
@@ -637,19 +615,13 @@
         <button type="submit" class="btn btn-primary btn-block" data-i18n="contact.form.submit">Надіслати</button>
         <p class="form-status" id="contact-status" role="status" aria-live="polite"></p>
       </form>
+
     </div>
-  </section>
-
-</main>
-
-<!-- ============ FOOTER ============ -->
-<footer class="site-footer">
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee__track" id="marquee-track"></div>
   </div>
 
-  <div class="container footer-grid">
-    <div>
+  <!-- Нижня смуга того самого блоку: логотип, підписка, розділи -->
+  <div class="container footer-bar">
+    <div class="footer-bar__brand">
       <div class="footer-brand">
         <span class="footer-logo" data-logo></span>
         <span>Фундація майбутнього держави<small>Future State Foundation</small></span>
@@ -664,11 +636,10 @@
       </form>
       <p class="form-status" id="newsletter-status" role="status" aria-live="polite"></p>
     </div>
-
-    <div>
-      <h3 class="footer-h" data-i18n="footer.linksTitle">Розділи</h3>
+    <nav class="footer-bar__links" aria-labelledby="footer-links-title">
+      <h3 class="footer-h" id="footer-links-title" data-i18n="footer.linksTitle">Розділи</h3>
       <ul class="footer-links" id="footer-links"></ul>
-    </div>
+    </nav>
   </div>
 
   <div class="container footer-bottom">

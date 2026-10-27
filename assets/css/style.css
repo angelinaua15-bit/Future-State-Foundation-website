@@ -2336,15 +2336,25 @@ ol {
 /* ==========================================================================
    FOOTER
    ========================================================================== */
+/* Контакти й футер — один суцільний блок: спільна «підкладка» із заокругленим верхом,
+   біжучий рядок угорі, далі контакти з формою, логотип/підписка/розділи і копірайт */
 .site-footer {
   position: relative;
+  margin-top: clamp(24px, 3vw, 48px);
   padding-bottom: 30px;
   overflow: hidden;
+  overflow: clip; /* clip, а не hidden: hidden ламає position: sticky форми всередині */
+  border-radius: clamp(28px, 4vw, 56px) clamp(28px, 4vw, 56px) 0 0;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -30px 80px -60px rgba(7, 26, 69, 0.35);
 }
 .marquee {
-  padding-block: clamp(28px, 4vw, 56px);
-  border-bottom: 1px solid var(--line);
+  padding-block: clamp(24px, 3.4vw, 48px) clamp(12px, 2vw, 24px);
   overflow: hidden;
+}
+.site-footer .contact__grid {
+  padding-block: clamp(24px, 3vw, 40px) clamp(40px, 5vw, 64px);
 }
 .marquee__track {
   display: flex;
@@ -2388,11 +2398,17 @@ ol {
     transform: rotate(360deg);
   }
 }
-.footer-grid {
+.footer-bar {
   display: grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
   gap: 40px;
-  padding-block: clamp(40px, 5vw, 64px) 32px;
+  padding-block: clamp(28px, 3.5vw, 44px) 28px;
+  border-top: 1px solid var(--line);
+}
+/* Розділи — двома колонками, щоб смуга була невисокою */
+.footer-bar__links .footer-links {
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  column-gap: 40px;
 }
 .footer-brand {
   display: flex;
@@ -2415,7 +2431,7 @@ ol {
   font-size: 0.95rem;
   font-weight: 600;
 }
-.footer-grid > div:not(:first-child) .footer-h {
+.footer-bar__links .footer-h {
   margin-top: 0;
 }
 .footer-p {
@@ -2885,7 +2901,7 @@ body.modal-open {
   .option-list--2col,
   .form-row,
   .contact__grid,
-  .footer-grid {
+  .footer-bar {
     grid-template-columns: 1fr;
   }
 
@@ -2961,4 +2977,20 @@ body.modal-open {
 /* Атрибут hidden має перемагати display компонентів (напр. .btn-text — inline-flex) */
 .join__skip[hidden] {
   display: none;
+}
+
+/* Форма всередині футера — на білій картці, щоб виділялась на спільній підкладці */
+.site-footer .form {
+  background: var(--surface-strong);
+}
+
+@media (min-width: 861px) {
+  /* Колонка тягнеться на всю висоту рядка, а форма в ній «їде» разом з екраном */
+  .contact__side {
+    align-self: stretch;
+  }
+  .contact__side .form {
+    position: sticky;
+    top: calc(var(--header-h) + 20px);
+  }
 }
