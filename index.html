@@ -134,9 +134,7 @@
     <a href="#about" data-i18n="nav.about">Про нас</a>
     <a href="#directions" data-i18n="nav.directions">Напрями</a>
     <a href="#team" data-i18n="nav.team">Команда</a>
-    <a href="#video" data-i18n="nav.video">Відео</a>
-    <a href="#media" data-i18n="nav.news">Новини</a>
-    <a href="#gallery" data-i18n="nav.gallery">Галерея</a>
+    <a href="#gallery" data-i18n="nav.news">Новини</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
   </nav>
 
@@ -166,10 +164,8 @@
     <a href="#about" data-i18n="nav.about">Про нас</a>
     <a href="#directions" data-i18n="nav.directions">Напрями</a>
     <a href="#team" data-i18n="nav.team">Команда</a>
-    <a href="#video" data-i18n="nav.video">Відео</a>
+    <a href="#gallery" data-i18n="nav.news">Новини</a>
     <a href="#join" data-i18n="nav.cta">Долучитися</a>
-    <a href="#media" data-i18n="nav.news">Новини</a>
-    <a href="#gallery" data-i18n="nav.gallery">Галерея</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
     <div class="mobile-nav__footer">
       <div class="lang-switch" role="group" aria-label="Мова / Language">
@@ -264,14 +260,7 @@
         </aside>
       </div>
     </div>
-    <!-- Фото, що пливе за курсором над рядком (лише миша) -->
   </section>
-
-  <!-- Дві перехресні стрічки в кольорах прапора: напрями й цінності біжать назустріч -->
-  <div class="ribbons" aria-hidden="true">
-    <div class="ribbon ribbon--blue"><div class="ribbon__track" id="ribbon-a"></div></div>
-    <div class="ribbon ribbon--yellow"><div class="ribbon__track ribbon__track--rev" id="ribbon-b"></div></div>
-  </div>
 
   <!-- ============ TEAM ============ -->
   <section id="team" class="section team" aria-labelledby="team-title">
@@ -316,29 +305,98 @@
     </div>
   </section>
 
-  <!-- ============ MEDIA / NEWS ============ -->
-  <section id="media" class="section news" aria-labelledby="news-title">
-    <div class="container head-split news__head">
+  <!-- ============ НОВИНИ (галерея лаб. 10): Swiper.js + Fancybox v5 + Typed.js, підключені через CDN ============
+       Раніше ті самі 6 подій показувались двічі — стрічкою «Новини» і тут. Тепер одна секція:
+       картка = фото, дата, заголовок і початок новини; клік відкриває альбом з повним текстом -->
+  <section id="gallery" class="section gallery" aria-labelledby="gallery-title">
+    <div class="container head-split">
       <div>
-        <p class="section-tag"><span data-i18n="media.eyebrow">Медіа</span></p>
-        <h2 id="news-title" class="section-title" data-i18n="media.title">Новини фундації</h2>
+        <p class="section-tag"><span data-i18n="lab10.eyebrow">Новини</span></p>
+        <h2 id="gallery-title" class="section-title" data-i18n="lab10.title">Новини фундації</h2>
+        <!-- Typed.js друкує слова в #typed-text; для скрінрідера — той самий зміст статичним текстом -->
+        <p class="gallery__typed"><span data-i18n="lab10.typedLead">Фундація — це</span> <span class="gallery__typed-words" id="typed-text" aria-hidden="true"></span><span class="sr-only" data-i18n="lab10.typedSr">правова підтримка, допомога захисникам, нові партнерства, пам'ять про героїв, спорт, що об'єднує громаду</span></p>
       </div>
       <div>
-        <p class="section-subtitle" data-i18n="media.subtitle"></p>
-        <div class="news__controls">
-          <button type="button" class="round-btn" id="news-prev" data-i18n-aria-label="media.prev">
+        <p class="section-subtitle" data-i18n="lab10.subtitle">Події 2026 року, у яких брала участь фундація. Натисніть на картку, щоб прочитати новину й переглянути фото на весь екран.</p>
+        <div class="gallery__controls">
+          <button type="button" class="round-btn" id="gallery-prev" data-i18n-aria-label="lab10.prev" aria-label="Попереднє фото">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <button type="button" class="round-btn" id="news-next" data-i18n-aria-label="media.next">
+          <button type="button" class="round-btn" id="gallery-next" data-i18n-aria-label="lab10.next" aria-label="Наступне фото">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <p class="news__note" data-i18n="media.note"></p>
+          <button type="button" class="round-btn gallery__pause" id="gallery-pause" aria-pressed="false" aria-label="Зупинити автопрокрутку">
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6v12M15 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <svg class="icon-play" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+          </button>
         </div>
       </div>
     </div>
-    <!-- Стрічка новин пливе сама; її можна тягнути мишкою чи пальцем -->
-    <div class="news__viewport" id="news-viewport">
-      <ul class="news__track" id="news-grid"></ul>
+
+    <div class="container">
+      <!-- Розмітка, яку вимагає Swiper: .swiper > .swiper-wrapper > .swiper-slide -->
+      <div class="swiper gallery-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/1-lawyers.webp" data-fancybox="fsf-gallery" data-index="0" data-caption="29 вересня 2026 р. — Крок до системної правової підтримки" aria-label="Відкрити фото на весь екран: 29 вересня 2026 р. — Крок до системної правової підтримки">
+                <img src="assets/img/news/1-lawyers@800w.webp" srcset="assets/img/news/1-lawyers@480w.webp 480w, assets/img/news/1-lawyers@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-09-29">29 вересня 2026 р.</time><span class="gallery-card__title">Крок до системної правової підтримки</span><span class="gallery-card__text"></span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/2-wheelchairs.webp" data-fancybox="fsf-gallery" data-index="1" data-caption="5 вересня 2026 р. — Три інвалідні візки для наших захисників" aria-label="Відкрити фото на весь екран: 5 вересня 2026 р. — Три інвалідні візки для наших захисників">
+                <img src="assets/img/news/2-wheelchairs@800w.webp" srcset="assets/img/news/2-wheelchairs@480w.webp 480w, assets/img/news/2-wheelchairs@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-09-05">5 вересня 2026 р.</time><span class="gallery-card__title">Три інвалідні візки для наших захисників</span><span class="gallery-card__text"></span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/3-haidai.webp" data-fancybox="fsf-gallery" data-index="2" data-caption="7 серпня 2026 р. — Нові партнерства заради спільних справ" aria-label="Відкрити фото на весь екран: 7 серпня 2026 р. — Нові партнерства заради спільних справ">
+                <img src="assets/img/news/3-haidai@800w.webp" srcset="assets/img/news/3-haidai@480w.webp 480w, assets/img/news/3-haidai@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-08-07">7 серпня 2026 р.</time><span class="gallery-card__title">Нові партнерства заради спільних справ</span><span class="gallery-card__text"></span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/4-exhibition.webp" data-fancybox="fsf-gallery" data-index="3" data-caption="4 серпня 2026 р. — «Пам'ять в обличчях»: історії киян-героїв" aria-label="Відкрити фото на весь екран: 4 серпня 2026 р. — «Пам'ять в обличчях»: історії киян-героїв">
+                <img src="assets/img/news/4-exhibition@800w.webp" srcset="assets/img/news/4-exhibition@480w.webp 480w, assets/img/news/4-exhibition@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-08-04">4 серпня 2026 р.</time><span class="gallery-card__title">«Пам'ять в обличчях»: історії киян-героїв</span><span class="gallery-card__text"></span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/5-festival.webp" data-fancybox="fsf-gallery" data-index="4" data-caption="4 серпня 2026 р. — Фестиваль «Липневі Перці»: спорт, спілкування, єдність" aria-label="Відкрити фото на весь екран: 4 серпня 2026 р. — Фестиваль «Липневі Перці»: спорт, спілкування, єдність">
+                <img src="assets/img/news/5-festival@800w.webp" srcset="assets/img/news/5-festival@480w.webp 480w, assets/img/news/5-festival@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-08-04">4 серпня 2026 р.</time><span class="gallery-card__title">Фестиваль «Липневі Перці»: спорт, спілкування, єдність</span><span class="gallery-card__text"></span></figcaption>
+            </figure>
+          </div>
+          <div class="swiper-slide">
+            <figure class="gallery-card">
+              <a class="gallery-card__link" href="assets/img/news/6-fishingfest.webp" data-fancybox="fsf-gallery" data-index="5" data-caption="28 липня 2026 р. — Family Fishing Fest: день для ветеранів і їхніх родин" aria-label="Відкрити фото на весь екран: 28 липня 2026 р. — Family Fishing Fest: день для ветеранів і їхніх родин">
+                <img src="assets/img/news/6-fishingfest@800w.webp" srcset="assets/img/news/6-fishingfest@480w.webp 480w, assets/img/news/6-fishingfest@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
+                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              </a>
+              <figcaption><time datetime="2026-07-28">28 липня 2026 р.</time><span class="gallery-card__title">Family Fishing Fest: день для ветеранів і їхніх родин</span><span class="gallery-card__text"></span></figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+    <div class="container">
+      <p class="gallery__note" data-i18n="media.note"></p>
     </div>
 
     <!-- МЕДІА / ІНФОРМЕР (лаб. 7): <aside> — додатковий контент поруч з основним; дані підтягує
@@ -369,96 +427,6 @@
     </div>
   </section>
 
-  <!-- ============ ГАЛЕРЕЯ (лаб. 10): Swiper.js + Fancybox v5 + Typed.js, підключені через CDN ============ -->
-  <section id="gallery" class="section gallery" aria-labelledby="gallery-title">
-    <div class="container head-split">
-      <div>
-        <p class="section-tag"><span data-i18n="lab10.eyebrow">Галерея</span></p>
-        <h2 id="gallery-title" class="section-title" data-i18n="lab10.title">Наші справи у фото</h2>
-        <!-- Typed.js друкує слова в #typed-text; для скрінрідера — той самий зміст статичним текстом -->
-        <p class="gallery__typed"><span data-i18n="lab10.typedLead">Фундація — це</span> <span class="gallery__typed-words" id="typed-text" aria-hidden="true"></span><span class="sr-only" data-i18n="lab10.typedSr">правова підтримка, допомога захисникам, нові партнерства, пам'ять про героїв, спорт, що об'єднує громаду</span></p>
-      </div>
-      <div>
-        <p class="section-subtitle" data-i18n="lab10.subtitle">Події 2026 року, у яких брала участь фундація. Натисніть на фото, щоб відкрити альбом на весь екран.</p>
-        <div class="gallery__controls">
-          <button type="button" class="round-btn" id="gallery-prev" data-i18n-aria-label="lab10.prev" aria-label="Попереднє фото">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button type="button" class="round-btn" id="gallery-next" data-i18n-aria-label="lab10.next" aria-label="Наступне фото">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button type="button" class="round-btn gallery__pause" id="gallery-pause" aria-pressed="false" aria-label="Зупинити автопрокрутку">
-            <svg class="icon-pause" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6v12M15 6v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            <svg class="icon-play" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <!-- Розмітка, яку вимагає Swiper: .swiper > .swiper-wrapper > .swiper-slide -->
-      <div class="swiper gallery-swiper">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <figure class="gallery-card">
-              <a class="gallery-card__link" href="assets/img/news/1-lawyers.webp" data-fancybox="fsf-gallery" data-index="0" data-caption="29 вересня 2026 р. — Крок до системної правової підтримки" aria-label="Відкрити фото на весь екран: 29 вересня 2026 р. — Крок до системної правової підтримки">
-                <img src="assets/img/news/1-lawyers@800w.webp" srcset="assets/img/news/1-lawyers@480w.webp 480w, assets/img/news/1-lawyers@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
-                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-              </a>
-              <figcaption><time datetime="2026-09-29">29 вересня 2026 р.</time><span class="gallery-card__title">Крок до системної правової підтримки</span></figcaption>
-            </figure>
-          </div>
-          <div class="swiper-slide">
-            <figure class="gallery-card">
-              <a class="gallery-card__link" href="assets/img/news/2-wheelchairs.webp" data-fancybox="fsf-gallery" data-index="1" data-caption="5 вересня 2026 р. — Три інвалідні візки для наших захисників" aria-label="Відкрити фото на весь екран: 5 вересня 2026 р. — Три інвалідні візки для наших захисників">
-                <img src="assets/img/news/2-wheelchairs@800w.webp" srcset="assets/img/news/2-wheelchairs@480w.webp 480w, assets/img/news/2-wheelchairs@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
-                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-              </a>
-              <figcaption><time datetime="2026-09-05">5 вересня 2026 р.</time><span class="gallery-card__title">Три інвалідні візки для наших захисників</span></figcaption>
-            </figure>
-          </div>
-          <div class="swiper-slide">
-            <figure class="gallery-card">
-              <a class="gallery-card__link" href="assets/img/news/3-haidai.webp" data-fancybox="fsf-gallery" data-index="2" data-caption="7 серпня 2026 р. — Нові партнерства заради спільних справ" aria-label="Відкрити фото на весь екран: 7 серпня 2026 р. — Нові партнерства заради спільних справ">
-                <img src="assets/img/news/3-haidai@800w.webp" srcset="assets/img/news/3-haidai@480w.webp 480w, assets/img/news/3-haidai@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
-                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-              </a>
-              <figcaption><time datetime="2026-08-07">7 серпня 2026 р.</time><span class="gallery-card__title">Нові партнерства заради спільних справ</span></figcaption>
-            </figure>
-          </div>
-          <div class="swiper-slide">
-            <figure class="gallery-card">
-              <a class="gallery-card__link" href="assets/img/news/4-exhibition.webp" data-fancybox="fsf-gallery" data-index="3" data-caption="4 серпня 2026 р. — «Пам'ять в обличчях»: історії киян-героїв" aria-label="Відкрити фото на весь екран: 4 серпня 2026 р. — «Пам'ять в обличчях»: історії киян-героїв">
-                <img src="assets/img/news/4-exhibition@800w.webp" srcset="assets/img/news/4-exhibition@480w.webp 480w, assets/img/news/4-exhibition@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
-                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-              </a>
-              <figcaption><time datetime="2026-08-04">4 серпня 2026 р.</time><span class="gallery-card__title">«Пам'ять в обличчях»: історії киян-героїв</span></figcaption>
-            </figure>
-          </div>
-          <div class="swiper-slide">
-            <figure class="gallery-card">
-              <a class="gallery-card__link" href="assets/img/news/5-festival.webp" data-fancybox="fsf-gallery" data-index="4" data-caption="4 серпня 2026 р. — Фестиваль «Липневі Перці»: спорт, спілкування, єдність" aria-label="Відкрити фото на весь екран: 4 серпня 2026 р. — Фестиваль «Липневі Перці»: спорт, спілкування, єдність">
-                <img src="assets/img/news/5-festival@800w.webp" srcset="assets/img/news/5-festival@480w.webp 480w, assets/img/news/5-festival@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
-                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-              </a>
-              <figcaption><time datetime="2026-08-04">4 серпня 2026 р.</time><span class="gallery-card__title">Фестиваль «Липневі Перці»: спорт, спілкування, єдність</span></figcaption>
-            </figure>
-          </div>
-          <div class="swiper-slide">
-            <figure class="gallery-card">
-              <a class="gallery-card__link" href="assets/img/news/6-fishingfest.webp" data-fancybox="fsf-gallery" data-index="5" data-caption="28 липня 2026 р. — Family Fishing Fest: день для ветеранів і їхніх родин" aria-label="Відкрити фото на весь екран: 28 липня 2026 р. — Family Fishing Fest: день для ветеранів і їхніх родин">
-                <img src="assets/img/news/6-fishingfest@800w.webp" srcset="assets/img/news/6-fishingfest@480w.webp 480w, assets/img/news/6-fishingfest@800w.webp 800w" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" width="800" height="500" loading="lazy" decoding="async" alt="" />
-                <span class="gallery-card__zoom" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5M11 8.5v5M8.5 11h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-              </a>
-              <figcaption><time datetime="2026-07-28">28 липня 2026 р.</time><span class="gallery-card__title">Family Fishing Fest: день для ветеранів і їхніх родин</span></figcaption>
-            </figure>
-          </div>
-        </div>
-        <div class="swiper-pagination"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ JOIN CONSTRUCTOR ============ -->
   <section id="join" class="section join" aria-labelledby="join-title">
     <div class="container">
@@ -467,104 +435,97 @@
           <p class="section-tag"><span data-i18n="join.eyebrow">Долучитися</span></p>
           <h2 id="join-title" class="section-title" data-i18n="join.title">Конструктор участі</h2>
         </div>
-        <a href="#contact" class="spin-badge" id="spin-badge"></a>
         <div>
           <p class="section-subtitle" data-i18n="join.subtitle"></p>
           <button type="button" class="btn-text join__skip" id="join-skip" data-i18n="join.skip">Пропустити, я сам оберу</button>
         </div>
       </div>
-      <div class="join-panel reveal" id="join-panel"></div>
-    </div>
-  </section>
-
-
-  <!-- ============ VOLUNTEER CALCULATOR (Лаб. 11) ============
-       Віджет «Калькулятор волонтерського часу». Логіка — assets/js/widget.js.
-       Корінь [data-volunteer-calc]: скрипт шукає частини віджета через data-vc всередині кореня,
-       тому на сторінці може бути кілька незалежних екземплярів (id потрібні лише для label/aria). -->
-  <section id="calculator" class="section calculator" aria-labelledby="calculator-title">
-    <div class="container">
-      <div class="head-split reveal">
-        <div>
-          <p class="section-tag"><span data-i18n="lab11.eyebrow">Волонтерство</span></p>
-          <h2 id="calculator-title" class="section-title max-[379px]:tw-text-[1.85rem]" data-i18n="lab11.title">Калькулятор волонтерського часу</h2>
-        </div>
-        <p class="section-subtitle" data-i18n="lab11.subtitle">Оберіть, скільки часу готові приділяти, — і побачите, скільки годин допомоги це дасть фундації.</p>
+      <!-- Дві вкладки замість двох сусідніх секцій про участь -->
+      <div class="join-tabs" role="tablist" data-i18n-aria-label="join.tabsLabel">
+        <button type="button" class="join-tab" role="tab" id="tab-builder" aria-controls="panel-builder" aria-selected="true" data-i18n="join.tabBuilder">Підібрати напрям</button>
+        <button type="button" class="join-tab" role="tab" id="tab-calc" aria-controls="calculator" aria-selected="false" tabindex="-1" data-i18n="join.tabCalc">Порахувати свій час</button>
       </div>
-
-      <div class="tw-mt-10 tw-grid tw-grid-cols-1 tw-gap-5 lg:tw-grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:tw-gap-6" data-volunteer-calc>
-        <!-- novalidate: замість системних «бульбашок» браузера — власні повідомлення під полем -->
-        <form class="tw-rounded-[var(--radius-l)] tw-border tw-border-solid tw-border-line tw-bg-surface tw-p-5 sm:tw-p-8" data-vc="form" novalidate>
-          <div class="tw-grid tw-gap-6">
-            <div class="tw-grid tw-gap-2">
-              <label for="vc-hours" class="tw-flex tw-items-baseline tw-justify-between tw-gap-3 tw-text-sm tw-font-semibold tw-text-ink">
-                <span data-i18n="lab11.hours">Годин на тиждень</span>
-                <span class="tw-text-xs tw-font-medium tw-text-muted" data-i18n="lab11.hoursRange">від 1 до 40</span>
-              </label>
-              <input id="vc-hours" name="hours" type="number" inputmode="numeric" min="1" max="40" step="1" value="2" required
-                     aria-describedby="vc-hours-help vc-error-hours" data-vc="hours"
-                     class="tw-min-h-[52px] tw-w-full tw-rounded-[14px] tw-border tw-border-solid tw-border-[color:var(--line-strong)] tw-bg-surface tw-px-4 tw-font-display tw-text-lg tw-text-ink tw-transition-[border-color,box-shadow] tw-duration-300 focus:tw-border-[color:var(--accent)] focus:tw-outline-none focus:tw-shadow-[0_0_0_4px_rgba(0,70,155,0.18)]" />
-              <p id="vc-hours-help" class="tw-m-0 tw-text-sm tw-text-muted" data-i18n="lab11.hoursHelp">Ціле число: стільки годин на тиждень ви готові допомагати.</p>
-              <p id="vc-error-hours" class="tw-m-0 tw-hidden tw-text-sm tw-font-medium" data-vc="error" aria-live="polite"></p>
-            </div>
-
-            <div class="tw-grid tw-gap-2">
-              <label for="vc-duration" class="tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.duration">Тривалість участі</label>
-              <select id="vc-duration" name="duration" data-vc="duration"
-                      class="tw-min-h-[52px] tw-w-full tw-rounded-[14px] tw-border tw-border-solid tw-border-[color:var(--line-strong)] tw-bg-surface tw-px-4 tw-text-base tw-text-ink focus:tw-border-[color:var(--accent)] focus:tw-outline-none focus:tw-shadow-[0_0_0_4px_rgba(0,70,155,0.18)]">
-                <option value="1" data-i18n="lab11.m1">1 місяць</option>
-                <option value="3" selected data-i18n="lab11.m3">3 місяці</option>
-                <option value="6" data-i18n="lab11.m6">6 місяців</option>
-                <option value="12" data-i18n="lab11.m12">12 місяців</option>
-              </select>
-            </div>
-
-            <fieldset class="tw-m-0 tw-grid tw-gap-3 tw-border-0 tw-p-0">
-              <legend class="tw-mb-2 tw-p-0 tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.extra">Додатково</legend>
-              <label for="vc-events" class="tw-flex tw-min-h-[52px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-[14px] tw-border tw-border-solid tw-border-line tw-px-4 tw-py-2 tw-transition-colors hover:tw-border-[color:var(--accent)]">
-                <input id="vc-events" name="events" type="checkbox" data-vc="events" aria-describedby="vc-events-help" class="tw-h-5 tw-w-5 tw-shrink-0 tw-accent-[var(--accent)]" />
-                <span class="tw-grid">
-                  <span class="tw-text-sm tw-font-medium tw-text-ink" data-i18n="lab11.events">Беру участь у подіях фундації</span>
-                  <span id="vc-events-help" class="tw-text-xs tw-text-muted" data-i18n="lab11.eventsHelp">+4 год щомісяця</span>
-                </span>
-              </label>
-              <label for="vc-briefing" class="tw-flex tw-min-h-[52px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-[14px] tw-border tw-border-solid tw-border-line tw-px-4 tw-py-2 tw-transition-colors hover:tw-border-[color:var(--accent)]">
-                <input id="vc-briefing" name="briefing" type="checkbox" data-vc="briefing" aria-describedby="vc-briefing-help" class="tw-h-5 tw-w-5 tw-shrink-0 tw-accent-[var(--accent)]" />
-                <span class="tw-grid">
-                  <span class="tw-text-sm tw-font-medium tw-text-ink" data-i18n="lab11.briefing">Пройду вступний інструктаж</span>
-                  <span id="vc-briefing-help" class="tw-text-xs tw-text-muted" data-i18n="lab11.briefingHelp">+2 год одноразово</span>
-                </span>
-              </label>
-            </fieldset>
-
-            <div class="tw-grid tw-gap-2">
-              <div class="tw-flex tw-items-baseline tw-justify-between tw-gap-3">
-                <label for="vc-friends" class="tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.friends">Скільки друзів приведу</label>
-                <output id="vc-friends-out" for="vc-friends" class="tw-font-display tw-text-lg tw-text-ink" data-vc="friends-out">0</output>
+      <div class="join-panel reveal" id="panel-builder" role="tabpanel" aria-labelledby="tab-builder"><div id="join-panel"></div></div>
+      <!-- ============ VOLUNTEER CALCULATOR (Лаб. 11) — друга вкладка розділу «Долучитися» ============
+           Логіка — assets/js/widget.js. Корінь [data-volunteer-calc]: скрипт шукає частини віджета
+           через data-vc всередині кореня, тому екземплярів може бути кілька (id — лише для label/aria). -->
+      <div class="calc-panel" id="calculator" role="tabpanel" aria-labelledby="tab-calc" hidden>
+        <h3 class="calc-panel__title" id="calculator-title" data-i18n="lab11.subtitle">Оберіть, скільки часу готові приділяти, — і побачите, скільки годин допомоги це дасть фундації.</h3>
+        <div class="tw-grid tw-grid-cols-1 tw-gap-5 lg:tw-grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:tw-gap-6" data-volunteer-calc>
+          <!-- novalidate: замість системних «бульбашок» браузера — власні повідомлення під полем -->
+          <form class="tw-rounded-[var(--radius-l)] tw-border tw-border-solid tw-border-line tw-bg-surface tw-p-5 sm:tw-p-8" data-vc="form" novalidate>
+            <div class="tw-grid tw-gap-6">
+              <div class="tw-grid tw-gap-2">
+                <label for="vc-hours" class="tw-flex tw-items-baseline tw-justify-between tw-gap-3 tw-text-sm tw-font-semibold tw-text-ink">
+                  <span data-i18n="lab11.hours">Годин на тиждень</span>
+                  <span class="tw-text-xs tw-font-medium tw-text-muted" data-i18n="lab11.hoursRange">від 1 до 40</span>
+                </label>
+                <input id="vc-hours" name="hours" type="number" inputmode="numeric" min="1" max="40" step="1" value="2" required
+                       aria-describedby="vc-hours-help vc-error-hours" data-vc="hours"
+                       class="tw-min-h-[52px] tw-w-full tw-rounded-[14px] tw-border tw-border-solid tw-border-[color:var(--line-strong)] tw-bg-surface tw-px-4 tw-font-display tw-text-lg tw-text-ink tw-transition-[border-color,box-shadow] tw-duration-300 focus:tw-border-[color:var(--accent)] focus:tw-outline-none focus:tw-shadow-[0_0_0_4px_rgba(0,70,155,0.18)]" />
+                <p id="vc-hours-help" class="tw-m-0 tw-text-sm tw-text-muted" data-i18n="lab11.hoursHelp">Ціле число: стільки годин на тиждень ви готові допомагати.</p>
+                <p id="vc-error-hours" class="tw-m-0 tw-hidden tw-text-sm tw-font-medium" data-vc="error" aria-live="polite"></p>
               </div>
-              <input id="vc-friends" name="friends" type="range" min="0" max="5" step="1" value="0" data-vc="friends"
-                     aria-describedby="vc-friends-help" class="tw-h-11 tw-w-full tw-cursor-pointer tw-accent-[var(--accent)]" />
-              <p id="vc-friends-help" class="tw-m-0 tw-text-sm tw-text-muted" data-i18n="lab11.friendsHelp">Кожен друг, що долучиться з таким самим графіком, додає ще стільки ж основних годин.</p>
-            </div>
-          </div>
-        </form>
 
-        <aside class="tw-flex tw-flex-col tw-rounded-[var(--radius-l)] tw-bg-brand tw-p-5 tw-text-white sm:tw-p-8" aria-labelledby="vc-summary-title">
-          <h3 id="vc-summary-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-white/80" data-i18n="lab11.summary">Ваш внесок</h3>
-          <p class="tw-m-0 tw-mt-4 tw-font-display tw-text-5xl tw-leading-none tw-text-yellow tw-transition-opacity tw-duration-300 sm:tw-text-6xl" id="vc-total" data-vc="total" aria-live="polite" aria-atomic="true">26 год</p>
-          <p class="tw-m-0 tw-mt-3 tw-text-sm tw-text-white/85"><span data-i18n="lab11.avg">У середньому на місяць:</span> <strong id="vc-month-avg" data-vc="avg">8,7 год</strong></p>
-          <ul id="vc-breakdown" class="tw-m-0 tw-mt-6 tw-grid tw-list-none tw-gap-2 tw-border-0 tw-border-t tw-border-solid tw-border-white/20 tw-p-0 tw-pt-5 tw-text-sm" data-vc="breakdown">
-            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partBase">Основні години</span><span class="tw-font-semibold" data-vc-part="base">26 год</span></li>
-            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partEvents">Події фундації</span><span class="tw-font-semibold" data-vc-part="events">0 год</span></li>
-            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partBriefing">Інструктаж</span><span class="tw-font-semibold" data-vc-part="briefing">0 год</span></li>
-            <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partFriends">Друзі</span><span class="tw-font-semibold" data-vc-part="friends">0 год</span></li>
-          </ul>
-          <p class="tw-m-0 tw-mt-auto tw-pt-6 tw-text-xs tw-leading-relaxed tw-text-white/70" data-i18n="lab11.note">Розрахунок орієнтовний: місяць ≈ 4,33 тижня (1 міс. — 4 тиж., 3 — 13, 6 — 26, 12 — 52). Точний графік погоджуємо з координатором.</p>
-          <a href="#contact" class="tw-mt-5 tw-inline-flex tw-min-h-[48px] tw-items-center tw-justify-center tw-self-start tw-rounded-full tw-bg-white tw-px-6 tw-text-sm tw-font-semibold tw-text-brand tw-no-underline tw-transition-colors tw-duration-200 hover:tw-bg-yellow hover:tw-text-[#071a45] focus-visible:tw-outline-none focus-visible:tw-ring-4 focus-visible:tw-ring-yellow focus-visible:tw-ring-offset-2 focus-visible:tw-ring-offset-brand" data-i18n="lab11.cta">Записатися волонтером</a>
-        </aside>
+              <div class="tw-grid tw-gap-2">
+                <label for="vc-duration" class="tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.duration">Тривалість участі</label>
+                <select id="vc-duration" name="duration" data-vc="duration"
+                        class="tw-min-h-[52px] tw-w-full tw-rounded-[14px] tw-border tw-border-solid tw-border-[color:var(--line-strong)] tw-bg-surface tw-px-4 tw-text-base tw-text-ink focus:tw-border-[color:var(--accent)] focus:tw-outline-none focus:tw-shadow-[0_0_0_4px_rgba(0,70,155,0.18)]">
+                  <option value="1" data-i18n="lab11.m1">1 місяць</option>
+                  <option value="3" selected data-i18n="lab11.m3">3 місяці</option>
+                  <option value="6" data-i18n="lab11.m6">6 місяців</option>
+                  <option value="12" data-i18n="lab11.m12">12 місяців</option>
+                </select>
+              </div>
+
+              <fieldset class="tw-m-0 tw-grid tw-gap-3 tw-border-0 tw-p-0">
+                <legend class="tw-mb-2 tw-p-0 tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.extra">Додатково</legend>
+                <label for="vc-events" class="tw-flex tw-min-h-[52px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-[14px] tw-border tw-border-solid tw-border-line tw-px-4 tw-py-2 tw-transition-colors hover:tw-border-[color:var(--accent)]">
+                  <input id="vc-events" name="events" type="checkbox" data-vc="events" aria-describedby="vc-events-help" class="tw-h-5 tw-w-5 tw-shrink-0 tw-accent-[var(--accent)]" />
+                  <span class="tw-grid">
+                    <span class="tw-text-sm tw-font-medium tw-text-ink" data-i18n="lab11.events">Беру участь у подіях фундації</span>
+                    <span id="vc-events-help" class="tw-text-xs tw-text-muted" data-i18n="lab11.eventsHelp">+4 год щомісяця</span>
+                  </span>
+                </label>
+                <label for="vc-briefing" class="tw-flex tw-min-h-[52px] tw-cursor-pointer tw-items-center tw-gap-3 tw-rounded-[14px] tw-border tw-border-solid tw-border-line tw-px-4 tw-py-2 tw-transition-colors hover:tw-border-[color:var(--accent)]">
+                  <input id="vc-briefing" name="briefing" type="checkbox" data-vc="briefing" aria-describedby="vc-briefing-help" class="tw-h-5 tw-w-5 tw-shrink-0 tw-accent-[var(--accent)]" />
+                  <span class="tw-grid">
+                    <span class="tw-text-sm tw-font-medium tw-text-ink" data-i18n="lab11.briefing">Пройду вступний інструктаж</span>
+                    <span id="vc-briefing-help" class="tw-text-xs tw-text-muted" data-i18n="lab11.briefingHelp">+2 год одноразово</span>
+                  </span>
+                </label>
+              </fieldset>
+
+              <div class="tw-grid tw-gap-2">
+                <div class="tw-flex tw-items-baseline tw-justify-between tw-gap-3">
+                  <label for="vc-friends" class="tw-text-sm tw-font-semibold tw-text-ink" data-i18n="lab11.friends">Скільки друзів приведу</label>
+                  <output id="vc-friends-out" for="vc-friends" class="tw-font-display tw-text-lg tw-text-ink" data-vc="friends-out">0</output>
+                </div>
+                <input id="vc-friends" name="friends" type="range" min="0" max="5" step="1" value="0" data-vc="friends"
+                       aria-describedby="vc-friends-help" class="tw-h-11 tw-w-full tw-cursor-pointer tw-accent-[var(--accent)]" />
+                <p id="vc-friends-help" class="tw-m-0 tw-text-sm tw-text-muted" data-i18n="lab11.friendsHelp">Кожен друг, що долучиться з таким самим графіком, додає ще стільки ж основних годин.</p>
+              </div>
+            </div>
+          </form>
+
+          <aside class="tw-flex tw-flex-col tw-rounded-[var(--radius-l)] tw-bg-brand tw-p-5 tw-text-white sm:tw-p-8" aria-labelledby="vc-summary-title">
+            <h3 id="vc-summary-title" class="tw-m-0 tw-text-sm tw-font-semibold tw-uppercase tw-tracking-[0.16em] tw-text-white/80" data-i18n="lab11.summary">Ваш внесок</h3>
+            <p class="tw-m-0 tw-mt-4 tw-font-display tw-text-5xl tw-leading-none tw-text-yellow tw-transition-opacity tw-duration-300 sm:tw-text-6xl" id="vc-total" data-vc="total" aria-live="polite" aria-atomic="true">26 год</p>
+            <p class="tw-m-0 tw-mt-3 tw-text-sm tw-text-white/85"><span data-i18n="lab11.avg">У середньому на місяць:</span> <strong id="vc-month-avg" data-vc="avg">8,7 год</strong></p>
+            <ul id="vc-breakdown" class="tw-m-0 tw-mt-6 tw-grid tw-list-none tw-gap-2 tw-border-0 tw-border-t tw-border-solid tw-border-white/20 tw-p-0 tw-pt-5 tw-text-sm" data-vc="breakdown">
+              <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partBase">Основні години</span><span class="tw-font-semibold" data-vc-part="base">26 год</span></li>
+              <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partEvents">Події фундації</span><span class="tw-font-semibold" data-vc-part="events">0 год</span></li>
+              <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partBriefing">Інструктаж</span><span class="tw-font-semibold" data-vc-part="briefing">0 год</span></li>
+              <li class="tw-flex tw-justify-between tw-gap-3"><span class="tw-text-white/80" data-i18n="lab11.partFriends">Друзі</span><span class="tw-font-semibold" data-vc-part="friends">0 год</span></li>
+            </ul>
+            <p class="tw-m-0 tw-mt-auto tw-pt-6 tw-text-xs tw-leading-relaxed tw-text-white/70" data-i18n="lab11.note">Розрахунок орієнтовний: місяць ≈ 4,33 тижня (1 міс. — 4 тиж., 3 — 13, 6 — 26, 12 — 52). Точний графік погоджуємо з координатором.</p>
+            <a href="#contact" class="tw-mt-5 tw-inline-flex tw-min-h-[48px] tw-items-center tw-justify-center tw-self-start tw-rounded-full tw-bg-white tw-px-6 tw-text-sm tw-font-semibold tw-text-brand tw-no-underline tw-transition-colors tw-duration-200 hover:tw-bg-yellow hover:tw-text-[#071a45] focus-visible:tw-outline-none focus-visible:tw-ring-4 focus-visible:tw-ring-yellow focus-visible:tw-ring-offset-2 focus-visible:tw-ring-offset-brand" data-i18n="lab11.cta">Записатися волонтером</a>
+          </aside>
+        </div>
       </div>
     </div>
   </section>
+
 
 
   <!-- ============ CONTACT ============ -->
@@ -597,7 +558,6 @@
               allowfullscreen
             ></iframe>
           </div>
-          <figcaption class="tw-mt-3 tw-text-sm tw-text-muted" data-i18n="lab7.mapCaption">02002, м. Київ, Дніпровський район, вул. Євгена Сверстюка, 19, офіс 209.</figcaption>
         </figure>
 
         <div class="legal-box">
@@ -681,12 +641,6 @@
     <div>
       <h3 class="footer-h" data-i18n="footer.linksTitle">Розділи</h3>
       <ul class="footer-links" id="footer-links"></ul>
-    </div>
-
-    <div>
-      <h3 class="footer-h" data-i18n="footer.contactsTitle">Контакти</h3>
-      <ul class="footer-links" id="footer-contacts"></ul>
-      <div class="social-row social-row--sm" id="footer-social"></div>
     </div>
   </div>
 

@@ -10,49 +10,33 @@
   var TEXT = {
     ua: {
       nav: "Галерея",
-      eyebrow: "Галерея",
-      title: "Наші справи у фото",
-      subtitle: "Події 2026 року, у яких брала участь фундація. Натисніть на фото, щоб відкрити альбом на весь екран.",
+      eyebrow: "Новини",
+      title: "Новини фундації",
+      subtitle: "Події 2026 року, у яких брала участь фундація. Натисніть на картку, щоб прочитати новину й переглянути фото на весь екран.",
       typedLead: "Фундація — це",
       typed: ["правова підтримка", "допомога захисникам", "нові партнерства", "пам'ять про героїв", "спорт, що об'єднує громаду"],
       prev: "Попереднє фото",
       next: "Наступне фото",
       pause: "Зупинити автопрокрутку",
       play: "Увімкнути автопрокрутку",
-      open: "Відкрити фото на весь екран: ",
+      open: "Читати новину й відкрити фото: ",
       bullet: "Перейти до фото {{index}}",
       slide: "Фото {{index}} з {{slidesLength}}",
-      items: [
-        "Крок до системної правової підтримки",
-        "Три інвалідні візки для наших захисників",
-        "Нові партнерства заради спільних справ",
-        "«Пам'ять в обличчях»: історії киян-героїв",
-        "Фестиваль «Липневі Перці»: спорт, спілкування, єдність",
-        "Family Fishing Fest: день для ветеранів і їхніх родин",
-      ],
     },
     en: {
       nav: "Gallery",
-      eyebrow: "Gallery",
-      title: "Our work in photos",
-      subtitle: "Events of 2026 the foundation took part in. Click a photo to open the album full screen.",
+      eyebrow: "News",
+      title: "Foundation news",
+      subtitle: "Events of 2026 the foundation took part in. Click a card to read the story and view the photo full screen.",
       typedLead: "The foundation is",
       typed: ["legal support", "help for our defenders", "new partnerships", "remembering our heroes", "sport that unites the community"],
       prev: "Previous photo",
       next: "Next photo",
       pause: "Pause autoplay",
       play: "Resume autoplay",
-      open: "Open photo full screen: ",
+      open: "Read the story and open the photo: ",
       bullet: "Go to photo {{index}}",
       slide: "Photo {{index}} of {{slidesLength}}",
-      items: [
-        "A step toward systemic legal support",
-        "Three wheelchairs for our defenders",
-        "New partnerships for shared causes",
-        "\"Faces of Memory\": stories of Kyiv's heroes",
-        "\"Lypnevi Perci\" Festival: sport, connection, unity",
-        "Family Fishing Fest: a day for veterans and their families",
-      ],
     },
   };
 
@@ -144,9 +128,41 @@
     );
   }
 
+  /* Тексти карток беремо з data.js (FSF_DATA.news) — це єдине джерело новин на сайті.
+     Рендеримо одразу й при зміні мови, не чекаючи на бібліотеки з CDN */
+  var DATE_FMT = { ua: "uk-UA", en: "en-GB" };
+  function esc(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function renderCards() {
+    var section = document.getElementById("gallery");
+    var news = (window.FSF_DATA && window.FSF_DATA.news) || [];
+    if (!section) return;
+    var l = document.documentElement.lang === "en" ? "en" : "ua";
+    section.querySelectorAll(".gallery-card__link").forEach(function (a) {
+      var i = Number(a.dataset.index);
+      var item = news[i];
+      if (!item) return;
+      var card = a.closest(".gallery-card");
+      var time = card.querySelector("time");
+      var d = new Date(item.date + "T12:00:00");
+      var date = d.toLocaleDateString(DATE_FMT[l], { day: "numeric", month: "long", year: "numeric" });
+      time.setAttribute("datetime", item.date);
+      time.textContent = date;
+      card.querySelector(".gallery-card__title").textContent = item.title[l];
+      var text = card.querySelector(".gallery-card__text");
+      if (text) text.textContent = item.text[l];
+      // В альбомі під фото — повний текст новини
+      a.dataset.caption = "<strong>" + esc(date + " — " + item.title[l]) + "</strong><br>" + esc(item.text[l]);
+      a.setAttribute("aria-label", TEXT[l].open + date + " — " + item.title[l]);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     var section = document.getElementById("gallery");
     if (!section) return;
+    renderCards();
+    new MutationObserver(renderCards).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
     var started = false;
     function start() {
       if (started) return;
@@ -271,22 +287,9 @@
       });
     }
 
-    /* ---------- Мова: підписи карток, альбому й Typed.js ---------- */
-    var dateFmt = { ua: "uk-UA", en: "en-GB" };
+    /* ---------- Мова: підписи слайдера й Typed.js (тексти карток — renderCards) ---------- */
     function renderLang() {
       var l = lang();
-      links.forEach(function (a) {
-        var i = Number(a.dataset.index);
-        var card = a.closest(".gallery-card");
-        var title = TEXT[l].items[i];
-        var time = card.querySelector("time");
-        var d = new Date(time.getAttribute("datetime") + "T12:00:00");
-        time.textContent = d.toLocaleDateString(dateFmt[l], { day: "numeric", month: "long", year: "numeric" });
-        var label = time.textContent + " — " + title;
-        card.querySelector(".gallery-card__title").textContent = title;
-        a.dataset.caption = label;
-        a.setAttribute("aria-label", TEXT[l].open + label);
-      });
       if (swiper) {
         // підписи слайдів і крапок пагінації для скрінрідера — теж мовою сторінки
         var total = links.length;

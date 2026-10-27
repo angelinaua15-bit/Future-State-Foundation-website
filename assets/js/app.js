@@ -6,7 +6,7 @@
    - прелоадер: дерево з логотипу малюється лініями, потім синьо-жовта шторка;
    - hero «апертура»: вікно з фото розкривається на весь екран зі скролом;
    - «Напрями»: список з власними іконками і фото, що пливе за курсором;
-   - «Новини»: стрічка сама пливе по колу, тягнеться мишкою/пальцем, новина відкривається в модалці;
+   - «Новини»: одна секція на базі галереї лаб. 10 (assets/js/lab10-gallery.js);
    - перемикач світлої/темної теми з круговим розкриттям (View Transitions).
    ========================================================================== */
 (function () {
@@ -24,6 +24,7 @@
     lang: "ua",
     join: { view: "wizard", step: 1, role: null, direction: null, detail: null },
     teamActive: 0,
+    joinTab: 0,
   };
 
   function clamp(v, a, b) {
@@ -519,6 +520,7 @@
       state.join.view = "wizard";
       state.join.direction = cta.getAttribute("data-direction");
       if (!state.join.role) state.join.step = 1;
+      selectJoinTab(0);
       renderJoin();
     });
     function rowIndex(e) {
@@ -567,11 +569,10 @@
     });
   }
 
-  /* ---------------- Модалка (біографія або новина) ---------------- */
+  /* ---------------- Модалка з біографією ---------------- */
   var lastFocusedBeforeModal = null;
   function openModal(opts) {
     var backdrop = document.getElementById("team-modal");
-    backdrop.classList.toggle("is-news", !!opts.news);
     document.getElementById("team-modal-name").textContent = opts.title;
     document.getElementById("team-modal-role").textContent = opts.sub;
     document.getElementById("team-modal-bio").textContent = opts.body;
@@ -580,7 +581,6 @@
     lastFocusedBeforeModal = document.activeElement;
     backdrop.classList.add("is-open");
     document.body.classList.add("modal-open");
-    newsLoop.pause("modal", true);
     document.getElementById("team-modal-close").focus();
   }
   function openTeamModal(index) {
@@ -591,7 +591,6 @@
   function closeTeamModal() {
     document.getElementById("team-modal").classList.remove("is-open");
     document.body.classList.remove("modal-open");
-    newsLoop.pause("modal", false);
     if (lastFocusedBeforeModal && lastFocusedBeforeModal.focus) lastFocusedBeforeModal.focus();
   }
 
@@ -627,233 +626,22 @@
     });
   }
 
-  /* ---------------- News ---------------- */
-  var newsFmt = null;
-  function newsCardHTML(n, i, clone) {
-    var base = n.image.replace(/\.webp$/, "");
-    var date = newsFmt.format(new Date(n.date));
-    return (
-      '<li class="news-item"' + (clone ? ' aria-hidden="true"' : "") + ">" +
-      '<button type="button" class="news-card" data-news="' + i + '" data-cursor="open"' + (clone ? ' tabindex="-1"' : "") + ">" +
-      '<span class="news-card__media"><img src="' + base + '@800w.webp" srcset="' + base + "@480w.webp 480w, " + base + "@800w.webp 800w, " + n.image + ' 1300w" sizes="(max-width: 860px) 76vw, 380px" alt="" loading="lazy" decoding="async" draggable="false" /></span>' +
-      '<span class="news-card__body">' +
-      '<time class="news-card__date" datetime="' + n.date + '">' + date + "</time>" +
-      '<span class="news-card__title">' + n.title[state.lang] + "</span>" +
-      '<span class="news-card__more">' + t("media.open") + "</span>" +
-      "</span></button></li>"
-    );
-  }
-
-  function renderMedia() {
-    var wrap = document.getElementById("news-grid");
-    if (!wrap) return;
-    newsFmt = new Intl.DateTimeFormat(state.lang === "ua" ? "uk-UA" : "en-US", { day: "numeric", month: "long", year: "numeric" });
-    // Два однакові набори карток підряд — стрічка «закільцьовується» без стрибка
-    var html = "";
-    DATA.news.forEach(function (n, i) { html += newsCardHTML(n, i, false); });
-    DATA.news.forEach(function (n, i) { html += newsCardHTML(n, i, true); });
-    wrap.innerHTML = html;
-    newsLoop.measure();
-  }
-
-  function openNews(i) {
-    var n = DATA.news[i];
-    if (!n) return;
-    openModal({ news: true, img: n.image, title: n.title[state.lang], sub: newsFmt.format(new Date(n.date)), body: n.text[state.lang] });
-  }
-
-  /* Стрічка новин: власний цикл анімації замість прив'язки до скролу.
-     - пливе з постійною швидкістю, лише коли секція на екрані;
-     - зупиняється під курсором, у фокусі та поки відкрита новина;
-     - тягнеться мишкою/пальцем з інерцією; кнопки ← → гортають на одну картку. */
-  var newsLoop = (function () {
-    var track, viewport, half = 0, step = 300;
-    var x = 0, target = null, vel = 0;
-    var speed = reduced ? 0 : 38; // px/с
-    var pauses = {};
-    var visible = false, raf = null, lastT = 0;
-    var drag = null;
-
-    function paused() {
-      for (var k in pauses) if (pauses[k]) return true;
-      return false;
-    }
-    function wrap(v) {
-      if (!half) return v;
-      v = v % half;
-      return v < 0 ? v + half : v;
-    }
-    function apply() {
-      track.style.transform = "translate3d(" + (-x).toFixed(1) + "px,0,0)";
-    }
-    function frame(tm) {
-      var dt = Math.min(0.05, (tm - (lastT || tm)) / 1000);
-      lastT = tm;
-      if (drag) {
-        // позицію задає палець/мишка
-      } else if (target !== null) {
-        var d = target - x;
-        x += d * Math.min(1, dt * 9);
-        if (Math.abs(d) < 0.5) {
-          x = target;
-          target = null;
-        }
-      } else if (Math.abs(vel) > 5) {
-        x += vel * dt;
-        vel *= Math.pow(0.04, dt); // інерція після відпускання
-      } else if (!paused()) {
-        vel = 0;
-        x += speed * dt;
-      }
-      if (target === null) x = wrap(x);
-      apply();
-      if (visible) raf = requestAnimationFrame(frame);
-      else raf = null;
-    }
-    function start() {
-      if (!raf && visible) {
-        lastT = 0;
-        raf = requestAnimationFrame(frame);
-      }
-    }
-
-    function init() {
-      track = document.getElementById("news-grid");
-      viewport = document.getElementById("news-viewport");
-      if (!track) return;
-
-      if ("IntersectionObserver" in window) {
-        new IntersectionObserver(function (entries) {
-          visible = entries[0].isIntersecting;
-          if (visible) start();
-        }, { rootMargin: "100px 0px" }).observe(viewport);
-      } else {
-        visible = true;
-        start();
-      }
-
-      viewport.addEventListener("pointerenter", function (e) {
-        if (e.pointerType === "mouse") pauses.hover = true;
-      });
-      viewport.addEventListener("pointerleave", function (e) {
-        if (e.pointerType === "mouse") pauses.hover = false;
-      });
-      viewport.addEventListener("focusin", function () { pauses.focus = true; });
-      viewport.addEventListener("focusout", function () { pauses.focus = false; });
-
-      // Перетягування
-      viewport.addEventListener("pointerdown", function (e) {
-        if (e.button !== 0) return;
-        drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, start: x, moved: false, lastX: e.clientX, lastT: performance.now(), v: 0, axis: null };
-        target = null;
-        vel = 0;
-      });
-      viewport.addEventListener("pointermove", function (e) {
-        if (!drag || e.pointerId !== drag.id) return;
-        var dx = e.clientX - drag.x0;
-        var dy = e.clientY - drag.y0;
-        // На телефоні вертикальний свайп лишаємо сторінці
-        if (!drag.axis && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) drag.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
-        if (drag.axis === "y") {
-          drag = null;
-          return;
-        }
-        if (drag.axis !== "x") return;
-        if (!drag.moved) {
-          drag.moved = true;
-          viewport.setPointerCapture(e.pointerId);
-          viewport.classList.add("is-dragging");
-        }
-        var now = performance.now();
-        drag.v = ((drag.lastX - e.clientX) / Math.max(1, now - drag.lastT)) * 1000;
-        drag.lastX = e.clientX;
-        drag.lastT = now;
-        x = drag.start - dx;
-        start();
-      });
-      function endDrag(e) {
-        if (!drag || e.pointerId !== drag.id) return;
-        if (drag.moved) {
-          vel = clamp(drag.v, -2500, 2500);
-          viewport.classList.remove("is-dragging");
-          // Клік після перетягування не має відкривати новину
-          var stop = function (ev) {
-            ev.stopPropagation();
-            ev.preventDefault();
-          };
-          viewport.addEventListener("click", stop, { capture: true, once: true });
-          setTimeout(function () { viewport.removeEventListener("click", stop, true); }, 0);
-        }
-        drag = null;
-      }
-      viewport.addEventListener("pointerup", endDrag);
-      viewport.addEventListener("pointercancel", endDrag);
-
-      track.addEventListener("click", function (e) {
-        var card = e.target.closest("[data-news]");
-        if (card) openNews(parseInt(card.getAttribute("data-news"), 10));
-      });
-      // Клавіатурний фокус на картці — підкручуємо, щоб її було видно
-      track.addEventListener("focusin", function (e) {
-        var item = e.target.closest(".news-item");
-        if (!item) return;
-        var left = item.offsetLeft - x;
-        if (left < 0 || left + item.offsetWidth > viewport.clientWidth) {
-          target = item.offsetLeft - 24;
-          start();
-        }
-      });
-
-      document.getElementById("news-prev").addEventListener("click", function () { nudge(-1); });
-      document.getElementById("news-next").addEventListener("click", function () { nudge(1); });
-    }
-
-    function nudge(dir) {
-      var base = target !== null ? target : x;
-      var snapped = Math.round(base / step) * step;
-      target = snapped + dir * step;
-      if (target < 0) {
-        x += half;
-        target += half;
-      }
-      vel = 0;
-      start();
-    }
-
-    function measure() {
-      if (!track) return;
-      var items = track.children;
-      var n = items.length / 2;
-      if (!n) return;
-      half = items[n].offsetLeft - items[0].offsetLeft;
-      step = items.length > 1 ? items[1].offsetLeft - items[0].offsetLeft : 300;
-      x = wrap(x);
-      apply();
-    }
-
-    return {
-      init: init,
-      measure: measure,
-      pause: function (key, on) {
-        pauses[key] = on;
-      },
-    };
-  })();
-
-  /* 3D-нахил картки за курсором (лише миша) */
+  /* 3D-нахил карток команди за курсором (лише миша) */
   function bindTilt() {
     if (!finePointer || reduced) return;
-    document.addEventListener("pointermove", function (e) {
-      var card = e.target.closest && e.target.closest(".news-card, .member");
-      if (!card || document.getElementById("news-viewport").classList.contains("is-dragging")) return;
+    var grid = document.getElementById("team-grid");
+    if (!grid) return;
+    grid.addEventListener("pointermove", function (e) {
+      var card = e.target.closest(".member");
+      if (!card) return;
       var r = card.getBoundingClientRect();
       var px = (e.clientX - r.left) / r.width - 0.5;
       var py = (e.clientY - r.top) / r.height - 0.5;
       card.style.setProperty("--rx", (-py * 7).toFixed(2) + "deg");
       card.style.setProperty("--ry", (px * 9).toFixed(2) + "deg");
     }, { passive: true });
-    document.addEventListener("pointerout", function (e) {
-      var card = e.target.closest && e.target.closest(".news-card, .member");
+    grid.addEventListener("pointerout", function (e) {
+      var card = e.target.closest(".member");
       if (card && !card.contains(e.relatedTarget)) {
         card.style.setProperty("--rx", "0deg");
         card.style.setProperty("--ry", "0deg");
@@ -861,7 +649,7 @@
     });
   }
 
-  /* CSS-анімації (стрічки, біжучий рядок, бейдж) ставимо на паузу, коли їх не видно */
+  /* CSS-анімації (біжучий рядок, підказка «гортайте») ставимо на паузу, коли їх не видно */
   function bindOffscreenPause() {
     if (!("IntersectionObserver" in window)) return;
     var io = new IntersectionObserver(function (entries) {
@@ -869,39 +657,50 @@
         en.target.classList.toggle("is-offscreen", !en.isIntersecting);
       });
     }, { rootMargin: "80px 0px" });
-    document.querySelectorAll(".ribbons, .marquee, .spin-badge, .hero__hint").forEach(function (n) { io.observe(n); });
+    document.querySelectorAll(".marquee, .hero__hint").forEach(function (n) { io.observe(n); });
   }
 
-  /* ---------------- Рухомі стрічки і бейдж ---------------- */
-  function renderRibbons() {
-    var a = document.getElementById("ribbon-a");
-    var b = document.getElementById("ribbon-b");
-    if (a) {
-      var ha = t("directions.items").map(function (d) {
-        return '<span class="ribbon__item">' + window.FSF_ICONS.svg(d.icon) + d.title + "</span>";
-      }).join("");
-      a.innerHTML = ha + ha;
-    }
-    if (b) {
-      var hb = t("about.values").concat(t("footer.marquee").map(function (m) { return { title: m }; })).map(function (v) {
-        return '<span class="ribbon__item"><span class="ribbon__star">✦</span>' + v.title + "</span>";
-      }).join("");
-      b.innerHTML = hb + hb;
-    }
+  /* ---------------- «Долучитися»: вкладки конструктора і калькулятора ---------------- */
+  function selectJoinTab(i, focus) {
+    var tabs = [document.getElementById("tab-builder"), document.getElementById("tab-calc")];
+    var panels = [document.getElementById("panel-builder"), document.getElementById("calculator")];
+    if (!tabs[0] || !tabs[1]) return;
+    state.joinTab = i;
+    tabs.forEach(function (tb, k) {
+      tb.setAttribute("aria-selected", k === i ? "true" : "false");
+      tb.tabIndex = k === i ? 0 : -1;
+    });
+    panels.forEach(function (p, k) {
+      if (!p) return;
+      p.hidden = k !== i;
+      if (k === i) p.classList.add("is-visible"); // панель могла ще не «проявитись» через reveal
+    });
+    var skip = document.getElementById("join-skip");
+    if (skip) skip.hidden = i === 1 || state.join.view === "cards";
+    if (focus) tabs[i].focus();
   }
 
-  function renderBadge() {
-    var badge = document.getElementById("spin-badge");
-    if (!badge) return;
-    badge.innerHTML =
-      '<svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">' +
-      '<defs><path id="badge-path" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs>' +
-      '<g class="spin-badge__ring"><text font-size="15.5"><textPath href="#badge-path" textLength="486" lengthAdjust="spacingAndGlyphs">' + t("join.badge") + "</textPath></text></g>" +
-      '<circle cx="100" cy="100" r="46" class="spin-badge__core"/>' +
-      '<path d="M84 116l32-32M92 84h24v24" class="spin-badge__arrow" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>' +
-      "</svg>";
-    // Лаб. 7 (аудит axe, WCAG 2.5.3 «Label in Name»): доступна назва починається з видимого тексту на кільці
-    badge.setAttribute("aria-label", t("join.badge").replace(/\s*✦\s*/g, ", ").replace(/,\s*$/, "") + ". " + t("join.badgeLabel"));
+  function bindJoinTabs() {
+    var list = document.querySelector(".join-tabs");
+    if (!list) return;
+    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+    tabs.forEach(function (tb, k) {
+      tb.addEventListener("click", function () { selectJoinTab(k); });
+    });
+    // Клавіатура за патерном WAI-ARIA Tabs: ← → Home End
+    list.addEventListener("keydown", function (e) {
+      var cur = state.joinTab || 0;
+      var next = { ArrowRight: cur + 1, ArrowLeft: cur - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (next === undefined) return;
+      e.preventDefault();
+      selectJoinTab((next + tabs.length) % tabs.length, true);
+    });
+    // Посилання на #calculator відкривають другу вкладку
+    function fromHash() {
+      if (location.hash === "#calculator") selectJoinTab(1);
+    }
+    window.addEventListener("hashchange", fromHash);
+    fromHash();
   }
 
   /* ---------------- Footer ---------------- */
@@ -1004,7 +803,7 @@
       panel.innerHTML = renderJoinCards();
       return;
     }
-    skipBtn.hidden = false;
+    skipBtn.hidden = state.joinTab === 1;
 
     var totalSteps = 3;
     var progress = Math.min(state.join.step, totalSteps + 1) / (totalSteps + 1);
@@ -1401,7 +1200,6 @@
     geo.vh = vh;
     geo.vw = window.innerWidth;
     geo.mobile = mqMobile.matches;
-    newsLoop.measure();
     if (nodes.hero) {
       geo.heroTop = absTop(nodes.hero);
       geo.heroRange = Math.max(1, nodes.hero.offsetHeight - vh);
@@ -1658,9 +1456,6 @@
     renderDirections();
     renderTeam();
     renderJoin();
-    renderMedia();
-    renderRibbons();
-    renderBadge();
     renderFooter();
     renderContactStatic();
     if (nodes.hero) nodes.widgets = Array.prototype.slice.call(document.querySelectorAll("#hero-stats .widget"));
@@ -1701,8 +1496,8 @@
     bindTheme();
     bindChrome();
     bindTeam();
-    newsLoop.init();
     bindTilt();
+    bindJoinTabs();
     bindOffscreenPause();
     bindDirections();
     bindJoinEvents();

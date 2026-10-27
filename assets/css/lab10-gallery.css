@@ -167,6 +167,19 @@
   line-height: 1.35;
   color: var(--ink);
 }
+/* Початок тексту новини (повний текст — в альбомі під фото) */
+.gallery-card__text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.gallery-card__text:empty {
+  display: none;
+}
 
 /* ---------- Fancybox: кольори фундації ---------- */
 .fancybox__container {
@@ -176,6 +189,16 @@
 .fancybox__caption {
   font-family: var(--font-body);
   font-size: 1rem;
+  line-height: 1.55;
+  max-width: 760px;
+  margin-inline: auto;
+}
+.fancybox__caption strong {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: #fec301;
 }
 
 @media (prefers-reduced-motion: reduce) {
