@@ -1009,10 +1009,11 @@ ol {
   overflow: hidden;
   background: var(--bg-3);
 }
-/* Запас зверху — фото під час скролу їде вниз (паралакс) */
+/* Невеликий запас зверху — фото під час скролу їде вниз (паралакс).
+   Чим менший запас, тим менше браузер збільшує фото — тим воно чіткіше */
 .hero__media {
   position: absolute;
-  inset: -14% 0 0 0;
+  inset: -6% 0 0 0;
   will-change: transform;
 }
 .hero__slide {
@@ -1063,7 +1064,7 @@ ol {
 }
 @keyframes hero-zoom {
   from {
-    scale: 1.22;
+    scale: 1.08;
     filter: saturate(0.3) brightness(1.15);
   }
 }
@@ -1626,6 +1627,185 @@ ol {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+/* ==========================================================================
+   ПРАВОВА ДОПОМОГА — партнер «Вовк Родя та Партнери»
+   ========================================================================== */
+.legal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr);
+  gap: clamp(16px, 2vw, 24px);
+  align-items: start;
+}
+/* Картка партнера — темно-синя, закріплюється поруч із послугами */
+.legal-partner {
+  position: sticky;
+  top: calc(var(--header-h) + 20px);
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  padding: clamp(24px, 2.6vw, 34px);
+  border-radius: var(--radius-l);
+  background: linear-gradient(160deg, #0a2a6e 0%, #071a45 70%);
+  color: #fff;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  isolation: isolate;
+}
+.legal-partner::after {
+  content: "";
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  z-index: -1;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 195, 1, 0.28), transparent 70%);
+}
+.legal-partner__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 6px;
+  border-radius: 20px;
+  background: #fff;
+  --ic-b: #d3e2fb;
+  --ic-a: #fec301;
+  --ic-l: #071a45;
+}
+.legal-partner__icon .ic {
+  width: 46px;
+  height: 46px;
+}
+.legal-partner__kind {
+  font-size: 0.88rem;
+  color: var(--brand-yellow);
+}
+.legal-partner__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.legal-partner__text {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.98rem;
+}
+.legal-partner__cta {
+  margin-top: 10px;
+  background: var(--brand-yellow);
+  color: #071a45;
+}
+.legal-partner__cta::before {
+  background: #fff;
+}
+.legal-partner__cta:hover {
+  color: #071a45;
+}
+
+.legal-services {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 16px);
+  align-items: start;
+}
+.legal-card {
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  transition: box-shadow 0.4s, border-color 0.3s;
+}
+.legal-card:hover {
+  box-shadow: var(--shadow);
+}
+.legal-card[open] {
+  border-color: var(--line-strong);
+}
+.legal-card__head {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 24px;
+  gap: 14px;
+  align-items: start;
+  padding: 20px 20px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+.legal-card__head::-webkit-details-marker {
+  display: none;
+}
+.legal-card__head:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  border-radius: var(--radius-m);
+}
+.legal-card__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+}
+.legal-card__icon .ic {
+  width: 38px;
+  height: 38px;
+}
+.legal-card__titles {
+  display: grid;
+  gap: 6px;
+}
+.legal-card__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.legal-card__text {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+/* Шеврон: ⌄ → ⌃ */
+.legal-card__chevron {
+  width: 10px;
+  height: 10px;
+  margin: 8px auto 0;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.35s var(--ease-out);
+}
+.legal-card[open] .legal-card__chevron {
+  transform: translateY(4px) rotate(-135deg);
+}
+.legal-card__list {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 4px 20px 22px 86px;
+}
+.legal-card__list li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 0.93rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.legal-card__list svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--accent);
+}
+.legal-card[open] .legal-card__list {
+  animation: step-in 0.45s var(--ease-out);
 }
 
 /* ==========================================================================
@@ -2475,6 +2655,13 @@ body.modal-open {
    Responsive
    ========================================================================== */
 @media (max-width: 1100px) {
+  .legal-grid {
+    grid-template-columns: 1fr;
+  }
+  .legal-partner {
+    position: relative;
+    top: auto;
+  }
   .main-nav {
     display: none;
   }
@@ -2582,6 +2769,33 @@ body.modal-open {
   .head-split {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  /* Правова допомога: картка партнера зверху, послуги — акордеоном */
+  .legal-grid,
+  .legal-services {
+    grid-template-columns: 1fr;
+  }
+  .legal-partner {
+    position: relative;
+    top: auto;
+  }
+  .legal-card__head {
+    grid-template-columns: 44px minmax(0, 1fr) 20px;
+    gap: 12px;
+    padding: 16px 16px 12px;
+  }
+  .legal-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+  .legal-card__icon .ic {
+    width: 32px;
+    height: 32px;
+  }
+  .legal-card__list {
+    padding: 2px 16px 18px 16px;
   }
 
   /* Напрями на телефоні: компактні рядки «іконка — назва й опис — стрілка»

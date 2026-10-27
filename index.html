@@ -133,6 +133,7 @@
     <span class="main-nav__pill" aria-hidden="true"></span>
     <a href="#about" data-i18n="nav.about">Про нас</a>
     <a href="#directions" data-i18n="nav.directions">Напрями</a>
+    <a href="#legal" data-i18n="nav.legal">Правова допомога</a>
     <a href="#team" data-i18n="nav.team">Команда</a>
     <a href="#gallery" data-i18n="nav.news">Новини</a>
     <a href="#contact" data-i18n="nav.contacts">Контакти</a>
@@ -163,6 +164,7 @@
   <nav class="mobile-nav__inner" aria-label="Мобільна навігація">
     <a href="#about" data-i18n="nav.about">Про нас</a>
     <a href="#directions" data-i18n="nav.directions">Напрями</a>
+    <a href="#legal" data-i18n="nav.legal">Правова допомога</a>
     <a href="#team" data-i18n="nav.team">Команда</a>
     <a href="#gallery" data-i18n="nav.news">Новини</a>
     <a href="#join" data-i18n="nav.cta">Долучитися</a>
@@ -192,7 +194,7 @@
                На смартфоні — версія 640×360 (463 КБ замість 1,3 МБ): атрибут media у <source>.
                Друге фото (7-team-yard) більше не вантажиться з fetchpriority="high" — воно з'являється
                лише через 5 с і конкурувало з постером відео (LCP); тепер — як решта слайдів, після load -->
-          <figure class="hero__slide is-active"><video loop muted playsinline preload="none" poster="assets/media/hero-poster.webp" width="1280" height="720" aria-hidden="true" data-hero-video><source src="assets/media/hero-loop-640.webm" type="video/webm" media="(max-width: 767px)" /><source src="assets/media/hero-loop-640.mp4" type="video/mp4" media="(max-width: 767px)" /><source src="assets/media/hero-loop.webm" type="video/webm" /><source src="assets/media/hero-loop.mp4" type="video/mp4" /></video></figure>
+          <figure class="hero__slide is-active"><video loop muted playsinline preload="none" poster="assets/media/hero-poster.webp" width="1280" height="720" aria-hidden="true" data-hero-video><source src="assets/media/hero-loop-mobile.webm" type="video/webm" media="(max-width: 767px)" /><source src="assets/media/hero-loop-mobile.mp4" type="video/mp4" media="(max-width: 767px)" /><source src="assets/media/hero-loop.webm" type="video/webm" /><source src="assets/media/hero-loop.mp4" type="video/mp4" /></video></figure>
           <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/7-team-yard.webp" data-srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" data-sizes="100vw" alt="" /></figure>
           <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" data-sizes="100vw" alt="" /></figure>
           <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/2-wheelchairs.webp" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.webp 480w, assets/img/hero/bg/2-wheelchairs@800w.webp 800w, assets/img/hero/bg/2-wheelchairs.webp 952w" data-sizes="100vw" alt="" /></figure>
@@ -258,6 +260,31 @@
             </div>
           </div>
         </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ПРАВОВА ДОПОМОГА: партнер «Вовк Родя та Партнери» ============
+       Тексти й перелік послуг — i18n.js → legal (без цін); картки рендерить app.js → renderLegal -->
+  <section id="legal" class="section legal" aria-labelledby="legal-title">
+    <div class="container">
+      <div class="head-split reveal">
+        <div>
+          <p class="section-tag"><span data-i18n="legal.eyebrow">Партнер фундації</span></p>
+          <h2 id="legal-title" class="section-title" data-i18n="legal.title">Правова допомога</h2>
+        </div>
+        <p class="section-subtitle" data-i18n="legal.lead"></p>
+      </div>
+
+      <div class="legal-grid">
+        <aside class="legal-partner reveal" aria-labelledby="legal-partner-name">
+          <span class="legal-partner__icon" data-legal-icon></span>
+          <p class="legal-partner__kind" data-i18n="legal.partnerKind">Юридична компанія</p>
+          <h3 class="legal-partner__name" id="legal-partner-name" data-i18n="legal.partnerName">Вовк Родя та Партнери</h3>
+          <p class="legal-partner__text" data-i18n="legal.partnerText"></p>
+          <a href="#contact" class="btn btn-primary legal-partner__cta" data-legal-cta data-magnetic data-i18n="legal.cta">Отримати консультацію</a>
+        </aside>
+        <div class="legal-services" id="legal-groups"></div>
       </div>
     </div>
   </section>

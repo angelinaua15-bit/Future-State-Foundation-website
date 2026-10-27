@@ -538,6 +538,45 @@
     });
   }
 
+  /* ---------------- Правова допомога ----------------
+     4 групи послуг партнера. <details>: на десктопі всі відкриті (сітка 2×2),
+     на телефоні — лише перша, решта розгортаються дотиком (інакше ~30 пунктів поспіль) */
+  var CHECK_SVG =
+    '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3.2 3.2L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function renderLegal() {
+    var wrap = document.getElementById("legal-groups");
+    if (!wrap) return;
+    var openAll = !mqMobile.matches;
+    wrap.innerHTML = t("legal.groups")
+      .map(function (g, i) {
+        return (
+          '<details class="legal-card reveal" style="--reveal-delay:' + i * 90 + '"' + (openAll || i === 0 ? " open" : "") + ">" +
+          '<summary class="legal-card__head">' +
+          '<span class="legal-card__icon">' + window.FSF_ICONS.svg(g.icon) + "</span>" +
+          '<span class="legal-card__titles"><span class="legal-card__title">' + g.title + '</span><span class="legal-card__text">' + g.text + "</span></span>" +
+          '<span class="legal-card__chevron" aria-hidden="true"></span>' +
+          "</summary>" +
+          '<ul class="legal-card__list">' +
+          g.items.map(function (it) { return "<li>" + CHECK_SVG + "<span>" + it + "</span></li>"; }).join("") +
+          "</ul></details>"
+        );
+      })
+      .join("");
+    var icon = document.querySelector("[data-legal-icon]");
+    if (icon) icon.innerHTML = window.FSF_ICONS.svg("legal-advice");
+    observeReveals(wrap);
+  }
+
+  function bindLegal() {
+    document.querySelectorAll("[data-legal-cta]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        goToContactWithSubject(t("legal.subject"));
+      });
+    });
+  }
+
   /* ---------------- Team ---------------- */
   function renderTeam() {
     var wrap = document.getElementById("team-grid");
@@ -1268,7 +1307,8 @@
     var p = clamp((y - geo.heroTop) / geo.vh, 0, 1);
     if (!reduced) {
       var px = -par.x * 16, py = -par.y * 10;
-      setStyle(nodes.heroMedia, "hm", "transform", "translate3d(" + px.toFixed(1) + "px," + (p * geo.vh * 0.28 + py).toFixed(1) + "px,0)");
+      // На телефоні фото без запасу зверху — тож і без паралаксу (інакше вгорі з'явилася б смуга)
+      if (!geo.mobile) setStyle(nodes.heroMedia, "hm", "transform", "translate3d(" + px.toFixed(1) + "px," + (p * geo.vh * 0.12 + py).toFixed(1) + "px,0)");
       var fade = clamp(1 - p * 1.5, 0, 1).toFixed(3);
       setStyle(nodes.heroContent, "hc", "opacity", fade);
       setStyle(nodes.heroContent, "hct", "transform", "translate3d(0," + (-p * 70).toFixed(1) + "px,0)");
@@ -1454,6 +1494,7 @@
     renderHeroFacts();
     renderAbout();
     renderDirections();
+    renderLegal();
     renderTeam();
     renderJoin();
     renderFooter();
@@ -1500,6 +1541,7 @@
     bindJoinTabs();
     bindOffscreenPause();
     bindDirections();
+    bindLegal();
     bindJoinEvents();
     bindContactForm();
     bindNewsletterForm();
