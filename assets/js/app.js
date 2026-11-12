@@ -563,6 +563,18 @@
         );
       })
       .join("");
+    // Акцентний блок після Hero: тези списком
+    var points = document.getElementById("legal-promo-points");
+    if (points) points.innerHTML = t("legalPromo.points").map(function (p) { return "<li>" + CHECK_SVG + "<span>" + p + "</span></li>"; }).join("");
+    var areas = document.getElementById("legal-areas");
+    if (areas) areas.innerHTML = t("legal.areas").map(function (a) { return "<li>" + a + "</li>"; }).join("");
+    // Телефон юристів — з data.js (одне місце для зміни)
+    var phone = (DATA.contact && DATA.contact.legalPhone) || "";
+    document.querySelectorAll("[data-legal-phone]").forEach(function (a) {
+      a.href = "tel:+38" + phone.replace(/\D/g, "");
+      var txt = a.querySelector("[data-legal-phone-text]");
+      if (txt) txt.textContent = phone;
+    });
     var icon = document.querySelector("[data-legal-icon]");
     if (icon) icon.innerHTML = window.FSF_ICONS.svg("legal-advice");
     observeReveals(wrap);

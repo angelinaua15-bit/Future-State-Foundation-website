@@ -220,6 +220,27 @@
     </div>
   </section>
 
+  <!-- ============ ЮРИДИЧНА ДОПОМОГА — акцентний блок одразу після першого екрана ============
+       Тексти — i18n.js → legalPromo, телефон — data.js → contact.legalPhone -->
+  <section class="legal-promo" id="legal-promo" aria-labelledby="legal-promo-title">
+    <div class="container">
+      <div class="legal-promo__card reveal">
+        <div class="legal-promo__main">
+          <p class="legal-promo__badge"><span aria-hidden="true">⚖️</span> <span data-i18n="legalPromo.badge">Безкоштовна юридична консультація</span></p>
+          <h2 class="legal-promo__title" id="legal-promo-title" data-i18n="legalPromo.title">Маєте право на державну допомогу, але не знаєте, як її оформити?</h2>
+          <p class="legal-promo__text" data-i18n="legalPromo.text"></p>
+          <ul class="legal-promo__points" id="legal-promo-points"></ul>
+        </div>
+        <div class="legal-promo__call">
+          <span class="legal-promo__call-label" data-i18n="legalPromo.callLabel">Зателефонувати юристу</span>
+          <a class="legal-promo__phone" href="tel:+380500867586" data-legal-phone><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 3.5h2.6l1.5 4.2-2 1.4a12 12 0 0 0 6.2 6.2l1.4-2 4.2 1.5v2.6a2 2 0 0 1-2.2 2A17 17 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-legal-phone-text>050 086 75 86</span></a>
+          <span class="legal-promo__firm" data-i18n="legal.partnerName">Вовк Родя та Партнери</span>
+          <a class="btn-text legal-promo__more" href="#legal" data-i18n="legalPromo.more">Усі юридичні послуги</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ ABOUT ============ -->
   <section id="about" class="section about" aria-labelledby="about-manifest">
     <div class="container">
@@ -282,6 +303,10 @@
           <p class="legal-partner__kind" data-i18n="legal.partnerKind">Юридична компанія</p>
           <h3 class="legal-partner__name" id="legal-partner-name" data-i18n="legal.partnerName">Вовк Родя та Партнери</h3>
           <p class="legal-partner__text" data-i18n="legal.partnerText"></p>
+          <a class="legal-partner__phone" href="tel:+380500867586" data-legal-phone><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 3.5h2.6l1.5 4.2-2 1.4a12 12 0 0 0 6.2 6.2l1.4-2 4.2 1.5v2.6a2 2 0 0 1-2.2 2A17 17 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-legal-phone-text>050 086 75 86</span></a>
+          <p class="legal-partner__note" data-i18n="legal.phoneNote">Безкоштовна консультація</p>
+          <h4 class="legal-partner__areas-title" data-i18n="legal.areasTitle">Основні напрями</h4>
+          <ul class="legal-partner__areas" id="legal-areas"></ul>
           <a href="#contact" class="btn btn-primary legal-partner__cta" data-legal-cta data-magnetic data-i18n="legal.cta">Отримати консультацію</a>
         </aside>
         <div class="legal-services" id="legal-groups"></div>

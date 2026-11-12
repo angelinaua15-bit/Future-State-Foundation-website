@@ -111,6 +111,8 @@ window.FSF_DATA = {
   contact: {
     email: "fundatsiyamd@gmail.com",
     phone: "050 086 75 86",
+    // Телефон юристів «Вовк Родя та Партнери» — у блоці-акценті після Hero і в секції «Правова допомога»
+    legalPhone: "050 086 75 86",
   },
 
   donorImpact: { small: 2, medium: 20, large: 60 },
