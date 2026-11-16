@@ -994,11 +994,8 @@ ol {
    ========================================================================== */
 .hero {
   position: relative;
-  padding-block: calc(var(--header-h) + clamp(28px, 5vh, 64px)) clamp(32px, 5vh, 64px);
-  min-height: min(100vh, 920px);
-  min-height: min(100svh, 920px);
-  display: grid;
-  align-items: center;
+  /* Без «на весь екран»: висота = контент, тож над заголовком немає порожнечі */
+  padding-block: calc(var(--header-h) + clamp(16px, 2.5vw, 36px)) clamp(28px, 4vw, 56px);
 }
 .hero__grid {
   display: grid;
