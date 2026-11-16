@@ -89,7 +89,7 @@
 <link rel="stylesheet" href="assets/css/tailwind.css" />
 
 <!-- Перший кадр Hero — постер відео: вантажимо найпершим (LCP) -->
-<link rel="preload" as="image" fetchpriority="high" href="assets/media/hero-poster.webp" />
+<link rel="preload" as="image" fetchpriority="high" href="assets/img/hero/bg/7-team-yard.webp" imagesrcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" imagesizes="(max-width: 860px) 92vw, 46vw" />
 </head>
 <body>
 <!-- Живий фон: м'які кольорові плями, крапкова сітка і листочки з логотипу.
@@ -182,41 +182,35 @@
 <main id="main-content">
 
   <!-- ============ HERO: фото на весь екран ============ -->
+  <!-- ============ HERO: текст ліворуч, фото праворуч ============
+       Фото — у картці приблизно свого реального розміру (найбільші оригінали ≈1200–1300 px),
+       а не на весь екран: так вони чіткі. Слайди лише плавно змінюються (opacity),
+       без «наїзду», паралаксу й відео — нічого не тремтить. -->
   <section class="hero" id="hero" aria-labelledby="hero-title">
     <div id="top"></div>
-    <div class="hero__sticky">
-      <div class="hero__frame" id="hero-frame" aria-hidden="true">
-        <div class="hero__media" id="hero-media">
-          <!-- МЕДІА (лаб. 7): нативне відео — перший кадр Hero. muted обов'язковий для автозапуску,
-               playsinline — iPhone не відкриває відео на весь екран, poster — кадр до завантаження -->
-          <!-- Лаб. 12: відео стартує з JS після події load (lab7-media.js): до того видно постер — це LCP,
-               і 0,5–1,3 МБ відео більше не конкурують за канал із CSS, шрифтами й скриптами першого екрана.
-               На смартфоні — версія 640×360 (463 КБ замість 1,3 МБ): атрибут media у <source>.
-               Друге фото (7-team-yard) більше не вантажиться з fetchpriority="high" — воно з'являється
-               лише через 5 с і конкурувало з постером відео (LCP); тепер — як решта слайдів, після load -->
-          <figure class="hero__slide is-active"><video loop muted playsinline preload="none" poster="assets/media/hero-poster.webp" width="1280" height="720" aria-hidden="true" data-hero-video><source src="assets/media/hero-loop-mobile.webm" type="video/webm" media="(max-width: 767px)" /><source src="assets/media/hero-loop-mobile.mp4" type="video/mp4" media="(max-width: 767px)" /><source src="assets/media/hero-loop.webm" type="video/webm" /><source src="assets/media/hero-loop.mp4" type="video/mp4" /></video></figure>
-          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/7-team-yard.webp" data-srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" data-sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" data-sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/2-wheelchairs.webp" data-srcset="assets/img/hero/bg/2-wheelchairs@480w.webp 480w, assets/img/hero/bg/2-wheelchairs@800w.webp 800w, assets/img/hero/bg/2-wheelchairs.webp 952w" data-sizes="100vw" alt="" /></figure>
-          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/1-lawyers.webp" data-srcset="assets/img/hero/bg/1-lawyers@480w.webp 480w, assets/img/hero/bg/1-lawyers@800w.webp 800w, assets/img/hero/bg/1-lawyers.webp 952w" data-sizes="100vw" alt="" /></figure>
-        </div>
-        <div class="hero__shade" id="hero-shade"></div>
-      </div>
-
+    <div class="container hero__grid">
       <div class="hero__content">
+        <p class="hero__eyebrow" data-i18n="hero.eyebrow">Фундація майбутнього держави</p>
         <h1 id="hero-title" class="hero__title" data-i18n="hero.title">Ми не чекаємо на державу майбутнього — ми її будуємо вже сьогодні</h1>
         <p class="hero__subtitle" data-i18n="hero.subtitle">Об'єднуємо активних людей, локальні ініціативи та експертну аналітику, щоб реформи ставали реальністю, а не обіцянками.</p>
         <div class="hero__actions">
           <a href="#join" class="btn btn-primary" data-magnetic data-i18n="hero.ctaPrimary">Долучитися</a>
-          <a href="#directions" class="btn btn-glass" data-magnetic data-i18n="hero.ctaSecondary">Наші напрями</a>
+          <a href="#directions" class="btn btn-outline" data-magnetic data-i18n="hero.ctaSecondary">Наші напрями</a>
         </div>
+        <div class="hero__stats" id="hero-stats" role="group" aria-label="Ключові факти про фундацію"></div>
       </div>
 
-      <!-- Скляні віджети з фактами (як «панелі керування» в референсі) -->
-      <div class="hero__widgets" id="hero-stats" role="group" aria-label="Ключові факти про фундацію"></div>
-
-      <div class="hero__dots" id="hero-dots"></div>
-      <p class="hero__hint" aria-hidden="true"><span data-i18n="hero.scrollHint">Гортайте</span><span class="hero__hint-line"></span></p>
+      <div class="hero__visual">
+        <div class="hero__frame" id="hero-frame" aria-hidden="true">
+          <div class="hero__media" id="hero-media">
+          <figure class="hero__slide is-active"><img src="assets/img/hero/bg/7-team-yard.webp" srcset="assets/img/hero/bg/7-team-yard@480w.webp 480w, assets/img/hero/bg/7-team-yard@800w.webp 800w, assets/img/hero/bg/7-team-yard.webp 1200w" sizes="(max-width: 860px) 92vw, 46vw" width="1200" height="675" alt="" fetchpriority="high" decoding="async" /></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/hero/bg/8-team-office.webp" data-srcset="assets/img/hero/bg/8-team-office@480w.webp 480w, assets/img/hero/bg/8-team-office@800w.webp 800w, assets/img/hero/bg/8-team-office.webp 1200w" data-sizes="(max-width: 860px) 92vw, 46vw" alt="" decoding="async" /></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/news/6-fishingfest.webp" data-srcset="assets/img/news/6-fishingfest@480w.webp 480w, assets/img/news/6-fishingfest@800w.webp 800w, assets/img/news/6-fishingfest.webp 1297w" data-sizes="(max-width: 860px) 92vw, 46vw" alt="" decoding="async" /></figure>
+          <figure class="hero__slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="assets/img/news/4-exhibition.webp" data-srcset="assets/img/news/4-exhibition@480w.webp 480w, assets/img/news/4-exhibition@800w.webp 800w, assets/img/news/4-exhibition.webp 1283w" data-sizes="(max-width: 860px) 92vw, 46vw" alt="" decoding="async" /></figure>
+          </div>
+        </div>
+        <div class="hero__dots" id="hero-dots"></div>
+      </div>
     </div>
   </section>
 

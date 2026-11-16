@@ -1,4 +1,5 @@
-// Лаб. 7 — медіа: YouTube-«фасад» і відео-фон першого екрана.
+// Лаб. 7 — медіа: YouTube-«фасад».
+// (Відео-фон першого екрана прибрано: відео з розтягнутих фото виглядало розмитим і тремтіло.)
 // (Інформер із курсом НБУ й погодою прибрано з сайту — для громадської організації він був зайвим.)
 // Підключено з defer: скрипт не блокує перше малювання сторінки.
 document.addEventListener("DOMContentLoaded", function () {
@@ -20,22 +21,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Відео-фон. Лаб. 12: замість autoplay — запуск після завантаження сторінки й появи Hero,
-  // щоб відео не забирало канал у першого екрана (до того видно постер). Не запускаємо,
-  // якщо користувач вимкнув анімації в системі або увімкнув режим економії трафіку
-  var video = $("[data-hero-video]");
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var saveData = navigator.connection && navigator.connection.saveData;
-  if (video && !reduceMotion && !saveData) {
-    var startVideo = function () {
-      video.preload = "auto";
-      var played = video.play();
-      if (played && played.catch) played.catch(function () { /* автозапуск заборонено — лишається постер */ });
-    };
-    // Чекаємо load і ще 1,5 с — поки завершиться поява Hero (анімація hero-reveal, 1,25 с):
-    // Lighthouse показав, що відео, запущене одразу після load, потрапляло в «вікно» LCP
-    var later = function () { setTimeout(startVideo, 1500); };
-    if (document.readyState === "complete") later();
-    else window.addEventListener("load", later);
-  }
 });

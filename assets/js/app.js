@@ -1288,47 +1288,9 @@
     node.style[prop] = value;
   }
 
-  /* Паралакс першого екрана за курсором (лише поки вікно не розкрилось) */
-  var par = { x: 0, y: 0, tx: 0, ty: 0, raf: null };
-  function bindHeroParallax() {
-    if (!finePointer || reduced || !nodes.hero) return;
-    function loop() {
-      par.x += (par.tx - par.x) * 0.08;
-      par.y += (par.ty - par.y) * 0.08;
-      updateHero(window.scrollY);
-      if (Math.abs(par.tx - par.x) > 0.002 || Math.abs(par.ty - par.y) > 0.002) par.raf = requestAnimationFrame(loop);
-      else par.raf = null;
-    }
-    nodes.hero.addEventListener("pointermove", function (e) {
-      par.tx = e.clientX / geo.vw - 0.5;
-      par.ty = e.clientY / geo.vh - 0.5;
-      if (!par.raf) par.raf = requestAnimationFrame(loop);
-    });
-    nodes.hero.addEventListener("pointerleave", function () {
-      par.tx = 0;
-      par.ty = 0;
-      if (!par.raf) par.raf = requestAnimationFrame(loop);
-    });
-  }
-
-  /* Перший екран: фото на весь екран. Під час скролу фото їде повільніше
-     за сторінку (паралакс), а текст і факти м'яко згасають. */
+  /* Перший екран: без паралаксу й руху фото — лише прибираємо підказку після скролу */
   function updateHero(y) {
-    var hero = nodes.hero;
-    if (!hero || y > geo.heroBottom + 50) return;
-    var p = clamp((y - geo.heroTop) / geo.vh, 0, 1);
-    if (!reduced) {
-      var px = -par.x * 16, py = -par.y * 10;
-      // На телефоні фото без запасу зверху — тож і без паралаксу (інакше вгорі з'явилася б смуга)
-      if (!geo.mobile) setStyle(nodes.heroMedia, "hm", "transform", "translate3d(" + px.toFixed(1) + "px," + (p * geo.vh * 0.12 + py).toFixed(1) + "px,0)");
-      var fade = clamp(1 - p * 1.5, 0, 1).toFixed(3);
-      setStyle(nodes.heroContent, "hc", "opacity", fade);
-      setStyle(nodes.heroContent, "hct", "transform", "translate3d(0," + (-p * 70).toFixed(1) + "px,0)");
-      setStyle(nodes.heroStats, "hso", "opacity", fade);
-      setStyle(nodes.heroStats, "hst", "transform", "translate3d(0," + (-p * 40).toFixed(1) + "px,0)");
-    }
-    hero.classList.toggle("is-scrolled", p > 0.03);
-    nodes.header.classList.toggle("on-photo", y < geo.heroBottom - 80);
+    if (nodes.hero) nodes.hero.classList.toggle("is-scrolled", y > 30);
   }
 
   function startHeroIntro() {
@@ -1525,9 +1487,6 @@
       hero: document.getElementById("hero"),
       header: document.getElementById("site-header"),
       mobileNav: document.getElementById("mobile-nav"),
-      heroFrame: document.getElementById("hero-frame"),
-      heroMedia: document.getElementById("hero-media"),
-      heroShade: document.getElementById("hero-shade"),
       heroContent: document.querySelector(".hero__content"),
       wordWrap: document.querySelector(".hero__word"),
       wordL: document.querySelector(".hero__word-l"),
@@ -1565,7 +1524,6 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     bindCursor();
-    bindHeroParallax();
     runPreloader();
     // Без якоря в адресі сайт завжди відкривається з першого екрана
     if (!location.hash) window.scrollTo(0, 0);
